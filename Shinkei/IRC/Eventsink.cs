@@ -28,7 +28,13 @@ namespace Shinkei.IRC
 
         #endregion
 
-        public Eventsink()
+        private static Eventsink Instance = new Eventsink();
+        public static Eventsink GetInstance()
+        {
+            return Instance;
+        }
+
+        private Eventsink()
         {
             OnIrcMessage = new IrcMessageDelegate(IrcMessageHandler);
         }

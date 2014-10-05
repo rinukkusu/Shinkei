@@ -10,7 +10,7 @@ namespace Shinkei
     {
         static void Main(string[] args)
         {
-            IRC.Eventsink myEventsink = new IRC.Eventsink();
+            IRC.Eventsink myEventsink = IRC.Eventsink.GetInstance();
 
             PluginContainer myPluginContainer = new PluginContainer();
             myPluginContainer.LoadPlugins();
