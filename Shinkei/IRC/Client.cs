@@ -9,7 +9,7 @@ namespace Shinkei.IRC
 {
     class Client
     {
-        Regex MessageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
+        
 
         
 

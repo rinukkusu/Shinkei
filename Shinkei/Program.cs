@@ -22,6 +22,9 @@ namespace Shinkei
 
             myEventsink.OnIrcMessage(new IRC.Message());
 
+            IRC.Server myServer = new IRC.Server("lolnein.de", 6667, "test");
+            myServer.Connect();
+
             Console.ReadLine();
         }
     }

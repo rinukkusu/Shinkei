@@ -71,8 +71,8 @@ namespace Shinkei.IRC
         ERR_NOORIGIN            = 409,      // PING or PONG message missing the originator parameter which is required since these commands must work without valid prefixes
         ERR_NORECIPIENT         = 411,      // Returned when no recipient is given with a command
         ERR_NOTEXTTOSEND        = 412,      // Returned when NOTICE/PRIVMSG is used with no message given
-        ERR_NOTEXTTOSEND        = 413,      // Used when a message is being sent to a mask without being limited to a top-level domain (i.e. * instead of *.au)
-        ERR_NOTOPLEVEL          = 414,      // Used when a message is being sent to a mask with a wild-card for a top level domain (i.e. *.*)
+        ERR_NOTOPLEVEL          = 413,      // Used when a message is being sent to a mask without being limited to a top-level domain (i.e. * instead of *.au)
+        ERR_WILDTOPLEVEL        = 414,      // Used when a message is being sent to a mask with a wild-card for a top level domain (i.e. *.*)
         ERR_BADMASK             = 415,      // Used when a message is being sent to a mask with an invalid syntax
         ERR_TOOMANYMATCHES      = 416,      // Returned when too many matches have been found for a command and the output has been truncated.
         ERR_UNKNOWNCOMMAND      = 421,      // Returned when the given command is unknown to the server (or hidden because of lack of access rights)
