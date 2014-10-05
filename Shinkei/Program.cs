@@ -20,7 +20,7 @@ namespace Shinkei
                 Plugin.Value.RegisterEvents(myEventsink);
             }
 
-            myEventsink.OnIrcMessage(new IRC.Message());
+            //myEventsink.OnIrcMessage(new IRC.Message());
 
             IRC.SettingsLoader mySettings = new IRC.SettingsLoader();
             mySettings.Load();
