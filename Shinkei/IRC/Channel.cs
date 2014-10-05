@@ -8,11 +8,18 @@ namespace Shinkei.IRC
 {
     public class Channel : IEntity
     {
-        string Name;
+        private string _Name;
+        public string Name
+        { 
+            get
+            {
+                return _Name;
+            }
+        }
 
-        public string GetName()
+        public Channel (string Name)
         {
-            return Name;
+            this._Name = Name;
         }
     }
 }

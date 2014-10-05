@@ -8,13 +8,49 @@ namespace Shinkei.IRC
 {
     public class User : IEntity
     {
-        string Name;
-        string Login;
-        string Hostmask;
+        private string _Username;
+         public string Username
+        { 
+            get
+            {
+                return _Username;
+            }
+        }
 
-        public string GetName()
+        private string _Host;
+        public string Host
+        { 
+            get
+            {
+                return _Host;
+            }
+        }
+
+        private string _Nickname;
+        public string Nickname
+        { 
+            get
+            {
+                return _Nickname;
+            }
+        }
+
+        public User (string Name)
         {
-            return Name;
+            if (Name.Contains('@'))
+            {
+                string Nickparts = Name.Split('@')[0];
+                if (Nickparts.Contains('!'))
+                {
+                    _Nickname = Nickparts.Split('!')[0];
+                    _Username = Nickparts.Split('!')[1];
+                }
+                _Host = Name.Split('@')[1];
+            }
+            else
+            {
+                _Nickname = Name;
+            }
         }
     }
 }
