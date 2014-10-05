@@ -8,6 +8,6 @@ namespace Shinkei.IRC
 {
     public interface IEntity
     {
-        string GetName();
+        
     }
 }
