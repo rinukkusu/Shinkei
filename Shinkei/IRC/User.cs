@@ -9,7 +9,7 @@ namespace Shinkei.IRC
     public class User : IEntity
     {
         private string _Username;
-         public string Username
+        public string Username
         { 
             get
             {

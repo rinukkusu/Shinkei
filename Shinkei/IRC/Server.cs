@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace Shinkei.IRC
 {
-    class Server
+    public class Server
     {
         Regex MessageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
 
@@ -46,7 +46,43 @@ namespace Shinkei.IRC
                 while (bRunning)
                 {
                     string Line = Reader.ReadLine();
-                    Match Parts = MessageParser.Match(Line);
+                    if (Line != null)
+                    {
+                        Console.WriteLine("<< " + Line);
+
+                        Match Parts = MessageParser.Match(Line);
+
+                        int ResponseCode = 0;
+                        try { ResponseCode = Convert.ToInt32(Parts.Groups[2].Value); }
+                        catch { }
+
+                        User Sender = new User(Parts.Groups[1].Value);
+
+                        if (ResponseCode > 0)
+                        {
+
+                        }
+                        else if (Parts.Groups[2].Value == "PRIVMSG")
+                        {
+                            IEntity Recipient;
+                            if (Parts.Groups[3].Value.StartsWith("#")) {
+                                Recipient = new Channel(Parts.Groups[3].Value);
+                            }
+                            else {
+                                Recipient = new User(Parts.Groups[3].Value);
+                            }
+                            IRC.Eventsink.GetInstance().OnIrcMessage(new Message(this, Sender, Recipient, Parts.Groups[4].Value));
+                        }
+                        else if (Parts.Groups[0].Value.StartsWith("PING"))
+                        {
+                            WriteLine(Parts.Groups[0].Value.Replace("PING", "PONG"));
+                        }
+
+                        foreach (Group G in Parts.Groups)
+                        {
+                            string s = G.Value;
+                        }
+                    }
                 }
             }
         }
@@ -57,6 +93,7 @@ namespace Shinkei.IRC
             {
                 StreamWriter Writer = new StreamWriter(Socket.GetStream());
 
+                Console.WriteLine(">> " + text);
                 Writer.WriteLine(text);
                 Writer.Flush();
             }
