@@ -35,6 +35,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +51,7 @@
     <Compile Include="IPlugin.cs" />
     <Compile Include="IRC\ResponseCodes.cs" />
     <Compile Include="IRC\Server.cs" />
+    <Compile Include="IRC\SettingsLoader.cs" />
     <Compile Include="IRC\User.cs" />
     <Compile Include="PluginContainer.cs" />
     <Compile Include="Program.cs" />
