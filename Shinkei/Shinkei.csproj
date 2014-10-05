@@ -43,10 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IRC\Channel.cs" />
+    <Compile Include="IRC\Client.cs" />
     <Compile Include="IRC\Eventsink.cs" />
     <Compile Include="IRC\IEntity.cs" />
     <Compile Include="IRC\Message.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="IRC\ResponseCodes.cs" />
+    <Compile Include="IRC\Server.cs" />
     <Compile Include="IRC\User.cs" />
     <Compile Include="PluginContainer.cs" />
     <Compile Include="Program.cs" />
