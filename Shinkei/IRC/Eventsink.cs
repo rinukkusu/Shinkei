@@ -10,20 +10,28 @@ namespace Shinkei.IRC
     {
         #region Delegates
 
-        public delegate void IrcMessageDelegate(Message data);
+        public delegate void IrcMessageDelegate(PrivateMessage data);
+        public delegate void IrcCommandDelegate(CommandMessage data);
 
         #endregion
 
         #region Members
 
         public IrcMessageDelegate OnIrcMessage;
+        public IrcCommandDelegate OnIrcCommand;
 
         #endregion
 
         #region Main Eventhandlers
 
-        private void IrcMessageHandler (Message data) {
-            Console.WriteLine("Mainhandler");
+        private void IrcMessageHandler(PrivateMessage data)
+        {
+            Console.WriteLine("IrcMessageHandler");
+        }
+
+        private void IrcCommandHandler(CommandMessage data)
+        {
+            Console.WriteLine("IrcCommandHandler");
         }
 
         #endregion
@@ -37,6 +45,7 @@ namespace Shinkei.IRC
         private Eventsink()
         {
             OnIrcMessage = new IrcMessageDelegate(IrcMessageHandler);
+            OnIrcCommand = new IrcCommandDelegate(IrcCommandHandler);
         }
     }
 }

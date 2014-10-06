@@ -45,10 +45,12 @@
   <ItemGroup>
     <Compile Include="IRC\Channel.cs" />
     <Compile Include="IRC\Client.cs" />
+    <Compile Include="IRC\CommandMessage.cs" />
     <Compile Include="IRC\Eventsink.cs" />
     <Compile Include="IRC\IEntity.cs" />
     <Compile Include="IRC\Message.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="IRC\PrivateMessage.cs" />
     <Compile Include="IRC\ResponseCodes.cs" />
     <Compile Include="IRC\Server.cs" />
     <Compile Include="IRC\SettingsLoader.cs" />
