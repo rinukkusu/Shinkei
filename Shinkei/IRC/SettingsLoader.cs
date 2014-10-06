@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Json;
 
 namespace Shinkei.IRC
 {
-    class SettingsLoader
+    public class SettingsLoader
     {
         [DataContractAttribute]
         public class Settings
@@ -50,13 +50,22 @@ namespace Shinkei.IRC
             public string Realname;
 
             [DataMemberAttribute]
+            public char CommandCharacter = '+';
+
+            [DataMemberAttribute]
             public List<ServerSettings> Servers;
         }
 
         string m_Path;
-        Settings m_Settings;
+        public Settings m_Settings;
 
-        public SettingsLoader(string _path = "config.json")
+        private static SettingsLoader Instance = new SettingsLoader("config.json");
+        public static SettingsLoader GetInstance()
+        {
+            return Instance;
+        }
+
+        private SettingsLoader(string _path)
         {
             m_Path = _path;
 

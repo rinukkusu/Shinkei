@@ -71,20 +71,69 @@ namespace Shinkei.IRC
                             else {
                                 Recipient = new User(Parts.Groups[3].Value);
                             }
-                            IRC.Eventsink.GetInstance().OnIrcMessage(new Message(this, Sender, Recipient, Parts.Groups[4].Value));
+
+                            // Dispatch PRIVMSG event
+                            IRC.Eventsink.GetInstance().OnIrcMessage(new PrivateMessage(this, Sender, Recipient, Parts.Groups[4].Value));
+
+                            if (IsCommandCharacter(Parts.Groups[4].Value[0]))
+                            {
+                                // Dispatch command event
+                                string CommandString = Parts.Groups[4].Value.Split(' ')[0];
+                                string Command = CommandString.Substring(1);
+
+                                string ArgumentString = Parts.Groups[4].Value.Substring(CommandString.Length);
+                                List<string> Arguments = ParseArguments(ArgumentString);
+                                
+                                IRC.Eventsink.GetInstance().OnIrcCommand(new CommandMessage(this, Sender, Recipient, Command, Arguments));
+                            }
+                            
                         }
                         else if (Parts.Groups[0].Value.StartsWith("PING"))
                         {
                             WriteLine(Parts.Groups[0].Value.Replace("PING", "PONG"));
                         }
-
-                        foreach (Group G in Parts.Groups)
-                        {
-                            string s = G.Value;
-                        }
                     }
                 }
             }
+        }
+
+        public bool IsCommandCharacter(char C)
+        {
+            return (C == SettingsLoader.GetInstance().m_Settings.CommandCharacter);
+        }
+
+        public List<string> ParseArguments(string ArgumentString)
+        {
+            List<string> Arguments = new List<string>();
+
+            string SingleArgument = "";
+            bool bInQuotes = false;
+            foreach (char C in ArgumentString)
+            {
+                if (C == '\'')
+                {
+                    bInQuotes = !bInQuotes;
+                }
+
+                if (C == ' ')
+                {
+                    if (bInQuotes)
+                    {
+                        SingleArgument += C.ToString();
+                    }
+                    else
+                    {
+                        Arguments.Add(SingleArgument);
+                        SingleArgument = "";
+                    }
+                }
+                else
+                {
+                    SingleArgument += C.ToString();
+                }
+            }
+
+            return Arguments;
         }
 
         public void WriteLine(string text)

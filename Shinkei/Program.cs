@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shinkei.IRC;
 
 namespace Shinkei
 {
@@ -22,7 +23,7 @@ namespace Shinkei
 
             //myEventsink.OnIrcMessage(new IRC.Message());
 
-            IRC.SettingsLoader mySettings = new IRC.SettingsLoader();
+            IRC.SettingsLoader mySettings = IRC.SettingsLoader.GetInstance();
             mySettings.Load();
 
             IRC.Server myServer = new IRC.Server("lolnein.de", 6667, "test");
