@@ -16,7 +16,8 @@ namespace Shinkei.IRC
     {
         Regex MessageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
 
-        List<Channel> Channels;
+        public SettingsLoader.Settings.ServerSettings localSettings; // just for reference
+        public List<Channel> Channels;
         string Host;
         int Port;
 
@@ -36,6 +37,18 @@ namespace Shinkei.IRC
             Nickname = _Nickname;
             Username = _Username;
             Realname = _Realname;
+
+            Channels = new List<Channel>();
+        }
+
+        private void JoinThread()
+        {
+            Thread.Sleep(5000);
+
+            foreach (Channel C in Channels)
+            {
+                C.Join();
+            }
         }
 
         private void ReadThread()
@@ -43,6 +56,9 @@ namespace Shinkei.IRC
             if (Socket.Connected) 
             {
                 Authenticate();
+
+                Thread TJoin = new Thread(JoinThread);
+                TJoin.Start();
 
                 StreamReader Reader = new StreamReader(Socket.GetStream());
                 while (bRunning)
@@ -58,20 +74,45 @@ namespace Shinkei.IRC
                         try { ResponseCode = Convert.ToInt32(Parts.Groups[2].Value); }
                         catch { }
 
-                        User Sender = new User(Parts.Groups[1].Value);
+                        EntUser Sender = new EntUser(Parts.Groups[1].Value);
 
                         if (ResponseCode > 0)
                         {
 
                         }
+                        else if (Parts.Groups[2].Value == "JOIN")
+                        {
+                            EntChannel Recipient = new EntChannel(Parts.Groups[4].Value);
+
+                            // Dispatch JOIN event
+                            IRC.Eventsink.GetInstance().OnIrcJoin(new JoinMessage(this, Sender, Recipient));
+                        }
+                        else if (Parts.Groups[2].Value == "KICK")
+                        {
+                            string ChannelRecipient = Parts.Groups[3].Value;
+                            EntChannel Channel = new EntChannel(ChannelRecipient.Split(' ')[0]);
+                            EntUser Recipient = new EntUser(ChannelRecipient.Split(' ')[1]);
+
+                            // Dispatch KICK event
+                            IRC.Eventsink.GetInstance().OnIrcKick(new KickMessage(this, Sender, Recipient, Channel, Parts.Groups[4].Value));
+                        }
+                        else if (Parts.Groups[2].Value == "PART")
+                        {
+                            EntChannel Channel = new EntChannel(Parts.Groups[3].Value);
+
+                            // Dispatch PART event
+                            IRC.Eventsink.GetInstance().OnIrcPart(new PartMessage(this, Sender, Channel, Parts.Groups[4].Value));
+                        }
                         else if (Parts.Groups[2].Value == "PRIVMSG")
                         {
                             IEntity Recipient;
-                            if (Parts.Groups[3].Value.StartsWith("#")) {
-                                Recipient = new Channel(Parts.Groups[3].Value);
+                            if (Parts.Groups[3].Value.StartsWith("#"))
+                            {
+                                Recipient = new EntChannel(Parts.Groups[3].Value);
                             }
-                            else {
-                                Recipient = new User(Parts.Groups[3].Value);
+                            else
+                            {
+                                Recipient = new EntUser(Parts.Groups[3].Value);
                             }
 
                             // Dispatch PRIVMSG event
@@ -85,10 +126,10 @@ namespace Shinkei.IRC
 
                                 string ArgumentString = Parts.Groups[4].Value.Substring(CommandString.Length);
                                 List<string> Arguments = ParseArguments(ArgumentString);
-                                
+
                                 IRC.Eventsink.GetInstance().OnIrcCommand(new CommandMessage(this, Sender, Recipient, Command, Arguments));
                             }
-                            
+
                         }
                         else if (Parts.Groups[0].Value.StartsWith("PING"))
                         {
@@ -191,11 +232,6 @@ namespace Shinkei.IRC
         {
             Disconnect();
             Reconnect();
-        }
-
-        public void JoinChannel(string _Channel)
-        {
-            
         }
     }
 }

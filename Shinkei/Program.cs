@@ -26,8 +26,7 @@ namespace Shinkei
             IRC.SettingsLoader mySettings = IRC.SettingsLoader.GetInstance();
             mySettings.Load();
 
-            IRC.Server myServer = new IRC.Server("lolnein.de", 6667, "test");
-            myServer.Connect();
+            mySettings.EnforceSettings();
 
             Console.ReadLine();
         }

@@ -43,18 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IRC\Entities\Channel.cs" />
+    <Compile Include="IRC\Channel.cs" />
+    <Compile Include="IRC\Entities\EntChannel.cs" />
     <Compile Include="IRC\Client.cs" />
     <Compile Include="IRC\Messages\CommandMessage.cs" />
     <Compile Include="IRC\Eventsink.cs" />
     <Compile Include="IRC\Entities\IEntity.cs" />
+    <Compile Include="IRC\Messages\JoinMessage.cs" />
+    <Compile Include="IRC\Messages\KickMessage.cs" />
     <Compile Include="IRC\Messages\Message.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="IRC\Messages\PartMessage.cs" />
     <Compile Include="IRC\Messages\PrivateMessage.cs" />
     <Compile Include="IRC\ResponseCodes.cs" />
     <Compile Include="IRC\Server.cs" />
     <Compile Include="IRC\SettingsLoader.cs" />
-    <Compile Include="IRC\Entities\User.cs" />
+    <Compile Include="IRC\Entities\EntUser.cs" />
     <Compile Include="PluginContainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
