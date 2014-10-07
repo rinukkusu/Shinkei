@@ -13,6 +13,9 @@ namespace Shinkei.IRC
 
         public delegate void IrcMessageDelegate(PrivateMessage data);
         public delegate void IrcCommandDelegate(CommandMessage data);
+        public delegate void IrcJoinDelegate(JoinMessage data);
+        public delegate void IrcKickDelegate(KickMessage data);
+        public delegate void IrcPartDelegate(PartMessage data);
 
         #endregion
 
@@ -20,6 +23,9 @@ namespace Shinkei.IRC
 
         public IrcMessageDelegate OnIrcMessage;
         public IrcCommandDelegate OnIrcCommand;
+        public IrcJoinDelegate OnIrcJoin;
+        public IrcKickDelegate OnIrcKick;
+        public IrcPartDelegate OnIrcPart;
 
         #endregion
 
@@ -27,12 +33,27 @@ namespace Shinkei.IRC
 
         private void IrcMessageHandler(PrivateMessage data)
         {
-            Console.WriteLine("IrcMessageHandler");
+            Console.WriteLine("Eventsink.IrcMessageHandler");
         }
 
         private void IrcCommandHandler(CommandMessage data)
         {
-            Console.WriteLine("IrcCommandHandler");
+            Console.WriteLine("Eventsink.IrcCommandHandler");
+        }
+
+        private void IrcJoinHandler(JoinMessage data)
+        {
+            Console.WriteLine("Eventsink.IrcJoinHandler");
+        }
+
+        private void IrcKickHandler(KickMessage data)
+        {
+            Console.WriteLine("Eventsink.IrcKickHandler");
+        }
+
+        private void IrcPartHandler(PartMessage data)
+        {
+            Console.WriteLine("Eventsink.IrcPartHandler");
         }
 
         #endregion
@@ -47,6 +68,9 @@ namespace Shinkei.IRC
         {
             OnIrcMessage = new IrcMessageDelegate(IrcMessageHandler);
             OnIrcCommand = new IrcCommandDelegate(IrcCommandHandler);
+            OnIrcJoin = new IrcJoinDelegate(IrcJoinHandler);
+            OnIrcKick = new IrcKickDelegate(IrcKickHandler);
+            OnIrcPart = new IrcPartDelegate(IrcPartHandler);
         }
     }
 }
