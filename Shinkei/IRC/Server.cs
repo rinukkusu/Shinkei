@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.IO;
 using System.Text.RegularExpressions;
+using Shinkei.IRC.Entities;
+using Shinkei.IRC.Messages;
 
 namespace Shinkei.IRC
 {

@@ -114,6 +114,7 @@ namespace Shinkei.IRC
 
             FileStream SettingsFile = File.Open(m_Path, FileMode.Open);
             m_Settings = (Settings) Serializer.ReadObject(SettingsFile);
+            SettingsFile.Close();
         }   
     }
 }

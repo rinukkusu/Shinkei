@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Shinkei;
 using System.ComponentModel.Composition;
 using Shinkei.IRC;
+using Shinkei.IRC.Messages;
 
 [Export(typeof(Shinkei.IPlugin))]
 [ExportMetadata("Name", "RandomPlugin")]

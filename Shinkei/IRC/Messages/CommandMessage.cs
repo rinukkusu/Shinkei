@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shinkei.IRC.Entities;
 
-namespace Shinkei.IRC
+namespace Shinkei.IRC.Messages
 {
-    class CommandMessage : Message
+    public class CommandMessage : Message
     {
         public string Command;
         public List<string> Arguments;
