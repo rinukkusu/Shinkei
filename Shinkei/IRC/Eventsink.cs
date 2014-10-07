@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shinkei.IRC.Messages;
+﻿using Shinkei.IRC.Messages;
+using System;
 
 namespace Shinkei.IRC
 {

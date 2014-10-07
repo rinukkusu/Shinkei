@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Net.Sockets;
-using System.IO;
-using System.Text.RegularExpressions;
-using Shinkei.IRC.Entities;
+﻿using Shinkei.IRC.Entities;
 using Shinkei.IRC.Messages;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Sockets;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Shinkei.IRC
 {

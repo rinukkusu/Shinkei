@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shinkei;
-using System.ComponentModel.Composition;
+﻿using Shinkei;
 using Shinkei.IRC;
 using Shinkei.IRC.Messages;
+using System;
+using System.ComponentModel.Composition;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
-using System.IO;
 using System.Threading;
 
 [Export(typeof(Shinkei.IPlugin))]
