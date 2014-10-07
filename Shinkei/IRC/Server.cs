@@ -17,7 +17,7 @@ namespace Shinkei.IRC
         Regex MessageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
 
         public SettingsLoader.Settings.ServerSettings localSettings; // just for reference
-        public List<Channel> Channels;
+        public Dictionary<string, Channel> Channels;
         string Host;
         int Port;
 
@@ -38,16 +38,16 @@ namespace Shinkei.IRC
             Username = _Username;
             Realname = _Realname;
 
-            Channels = new List<Channel>();
+            Channels = new Dictionary<string, Channel>();
         }
 
         private void JoinThread()
         {
             Thread.Sleep(5000);
 
-            foreach (Channel C in Channels)
+            foreach (KeyValuePair<string, Channel> C in Channels)
             {
-                C.Join();
+                C.Value.Join();
             }
         }
 

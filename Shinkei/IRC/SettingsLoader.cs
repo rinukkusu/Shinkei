@@ -144,7 +144,7 @@ namespace Shinkei.IRC
                 {
                     Channel newChannel = new Channel(newServer, ChanSettings.Channel, ChanSettings.Key);
 
-                    newServer.Channels.Add(newChannel);
+                    newServer.Channels.Add(ChanSettings.Channel, newChannel);
                 }
 
                 newServer.Connect();
