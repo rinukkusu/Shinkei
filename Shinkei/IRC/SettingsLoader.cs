@@ -58,6 +58,7 @@ namespace Shinkei.IRC
 
         string m_Path;
         public Settings m_Settings;
+        public List<Server> m_Servers;
 
         private static SettingsLoader Instance = new SettingsLoader("config.json");
         public static SettingsLoader GetInstance()
@@ -115,6 +116,39 @@ namespace Shinkei.IRC
             FileStream SettingsFile = File.Open(m_Path, FileMode.Open);
             m_Settings = (Settings) Serializer.ReadObject(SettingsFile);
             SettingsFile.Close();
-        }   
+        }
+
+        public void EnforceSettings()
+        {
+            if (m_Servers != null)
+            {
+                foreach (Server S in m_Servers)
+                {
+                    S.Disconnect();
+                }
+
+                m_Servers.Clear();
+            }
+
+            foreach (Settings.ServerSettings ServSettings in m_Settings.Servers)
+            {
+                Server newServer = new Server(ServSettings.Hostname, 
+                                              ServSettings.Port, 
+                                              ServSettings.Nickname, 
+                                              ServSettings.Username, 
+                                              ServSettings.Realname);
+
+                newServer.localSettings = ServSettings;
+
+                foreach (Settings.ServerSettings.ChannelSettings ChanSettings in ServSettings.Channels)
+                {
+                    Channel newChannel = new Channel(newServer, ChanSettings.Channel, ChanSettings.Key);
+
+                    newServer.Channels.Add(newChannel);
+                }
+
+                newServer.Connect();
+            }
+        }
     }
 }
