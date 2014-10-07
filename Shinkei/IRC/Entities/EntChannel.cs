@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shinkei.IRC.Entities
 {
-    public class Channel : IEntity
+    public class EntChannel : IEntity
     {
         private string _Name;
         public string Name
@@ -17,7 +17,7 @@ namespace Shinkei.IRC.Entities
             }
         }
 
-        public Channel (string Name)
+        public EntChannel (string Name)
         {
             this._Name = Name;
         }

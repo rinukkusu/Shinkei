@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shinkei.IRC.Entities
 {
-    public class User : IEntity
+    public class EntUser : IEntity
     {
         private string _Username;
         public string Username
@@ -35,7 +35,7 @@ namespace Shinkei.IRC.Entities
             }
         }
 
-        public User (string Name)
+        public EntUser (string Name)
         {
             if (Name.Contains('@'))
             {
