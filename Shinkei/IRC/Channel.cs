@@ -52,6 +52,8 @@ namespace Shinkei.IRC
 
         private void OnIrcJoin(Messages.JoinMessage data)
         {
+            Console.WriteLine("Channel.OnIrcJoin");
+
             EntUser MsgUser = (EntUser)data.Sender;
             EntChannel MsgChannel = (EntChannel)data.Recipient;
 
@@ -61,10 +63,14 @@ namespace Shinkei.IRC
                     _InChannel = true;
                 }
             }
+
+            Eventsink.GetInstance().OnIrcQueuedJoin(data);
         }
 
         private void OnIrcKick(Messages.KickMessage data)
         {
+            Console.WriteLine("Channel.OnIrcKick");
+
             EntUser MsgKicker = (EntUser)data.Sender;
             EntUser MsgKickedOne = (EntUser)data.Recipient;
             EntChannel MsgChannel = (EntChannel)data.Channel;
@@ -76,10 +82,14 @@ namespace Shinkei.IRC
                     _InChannel = false;
                 }
             }
+
+            Eventsink.GetInstance().OnIrcQueuedKick(data);
         }
 
         private void OnIrcPart(Messages.PartMessage data)
         {
+            Console.WriteLine("Channel.OnIrcPart");
+
             EntUser MsgUser = (EntUser)data.Sender;
             EntChannel MsgChannel = (EntChannel)data.Recipient;
 
@@ -90,24 +100,29 @@ namespace Shinkei.IRC
                     _InChannel = false;
                 }
             }
+
+            Eventsink.GetInstance().OnIrcQueuedPart(data);
         }
 
         public bool Join(string Key = null)
         {
-            if (Key != null)
+            if (!_InChannel)
             {
-                _Key = Key;
-            }
+                if (Key != null)
+                {
+                    _Key = Key;
+                }
 
-            _Server.WriteLine("JOIN " + _Name + " " + _Key);
+                _Server.WriteLine("JOIN " + _Name + " " + _Key);
 
-            int Interval = 250;
-            int Counter = (1000 / Interval) * 5; // wait for 5 seconds
+                int Interval = 250;
+                int Counter = (1000 / Interval) * 5; // wait for 5 seconds
 
-            while ((Counter > 0) && (!_InChannel))
-            {
-                System.Threading.Thread.Sleep(Interval);
-                Counter--;
+                while ((Counter > 0) && (!_InChannel))
+                {
+                    System.Threading.Thread.Sleep(Interval);
+                    Counter--;
+                }
             }
 
             return _InChannel;

@@ -17,6 +17,11 @@ namespace Shinkei.IRC
         public delegate void IrcKickDelegate(KickMessage data);
         public delegate void IrcPartDelegate(PartMessage data);
 
+        public delegate void IrcQueuedCommandDelegate(CommandMessage data);
+        public delegate void IrcQueuedJoinDelegate(JoinMessage data);
+        public delegate void IrcQueuedKickDelegate(KickMessage data);
+        public delegate void IrcQueuedPartDelegate(PartMessage data);
+
         #endregion
 
         #region Members
@@ -26,6 +31,11 @@ namespace Shinkei.IRC
         public IrcJoinDelegate OnIrcJoin;
         public IrcKickDelegate OnIrcKick;
         public IrcPartDelegate OnIrcPart;
+
+        public IrcQueuedCommandDelegate OnIrcQueuedCommand;
+        public IrcQueuedJoinDelegate OnIrcQueuedJoin;
+        public IrcQueuedKickDelegate OnIrcQueuedKick;
+        public IrcQueuedPartDelegate OnIrcQueuedPart;
 
         #endregion
 
@@ -39,6 +49,7 @@ namespace Shinkei.IRC
         private void IrcCommandHandler(CommandMessage data)
         {
             Console.WriteLine("Eventsink.IrcCommandHandler");
+            OnIrcQueuedCommand(data);
         }
 
         private void IrcJoinHandler(JoinMessage data)
@@ -58,6 +69,30 @@ namespace Shinkei.IRC
 
         #endregion
 
+        #region Queued Eventhandlers (for Plugins)
+
+        private void IrcQueuedCommandHandler(CommandMessage data)
+        {
+            Console.WriteLine("Eventsink.IrcQueuedCommandHandler");
+        }
+
+        private void IrcQueuedJoinHandler(JoinMessage data)
+        {
+            Console.WriteLine("Eventsink.IrcQueuedJoinHandler");
+        }
+
+        private void IrcQueuedKickHandler(KickMessage data)
+        {
+            Console.WriteLine("Eventsink.IrcQueuedKickHandler");
+        }
+
+        private void IrcQueuedPartHandler(PartMessage data)
+        {
+            Console.WriteLine("Eventsink.IrcQueuedPartHandler");
+        }
+
+        #endregion
+
         private static Eventsink Instance = new Eventsink();
         public static Eventsink GetInstance()
         {
@@ -71,6 +106,11 @@ namespace Shinkei.IRC
             OnIrcJoin = new IrcJoinDelegate(IrcJoinHandler);
             OnIrcKick = new IrcKickDelegate(IrcKickHandler);
             OnIrcPart = new IrcPartDelegate(IrcPartHandler);
+
+            OnIrcQueuedCommand = new IrcQueuedCommandDelegate(IrcQueuedCommandHandler);
+            OnIrcQueuedJoin = new IrcQueuedJoinDelegate(IrcQueuedJoinHandler);
+            OnIrcQueuedKick = new IrcQueuedKickDelegate(IrcQueuedKickHandler);
+            OnIrcQueuedPart = new IrcQueuedPartDelegate(IrcQueuedPartHandler);
         }
     }
 }
