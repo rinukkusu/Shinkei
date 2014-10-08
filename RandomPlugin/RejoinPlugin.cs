@@ -14,6 +14,13 @@ using System.Threading;
 [ExportMetadata("Author", "rinukkusu")]
 public class RejoinPlugin : IPlugin
 {
+    [DataContractAttribute]
+    public class Settings
+    {
+        [DataMemberAttribute]
+        public int WaitUntilRejoin;
+    }
+    
     public static Settings m_Settings = LoadSettings();
 
     public bool IsEnabled()
@@ -60,11 +67,4 @@ public class RejoinPlugin : IPlugin
 
         return newSettings;
     }
-}
-
-[DataContractAttribute]
-public class Settings
-{
-    [DataMemberAttribute]
-    public int WaitUntilRejoin;
 }
