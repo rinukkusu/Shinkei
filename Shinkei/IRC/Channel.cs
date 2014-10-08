@@ -57,9 +57,10 @@ namespace Shinkei.IRC
                 if (MsgUser.Nickname == data.ServerInstance.localSettings.Nickname) {
                     _InChannel = true;
                 }
-            }
 
-            Eventsink.GetInstance().OnIrcQueuedJoin(data);
+                // dispatch queued event
+                Eventsink.GetInstance().OnIrcQueuedJoin(data);
+            }
         }
 
         private void OnIrcKick(Messages.KickMessage data)
@@ -76,9 +77,10 @@ namespace Shinkei.IRC
                 {
                     _InChannel = false;
                 }
-            }
 
-            Eventsink.GetInstance().OnIrcQueuedKick(data);
+                // dispatch queued event
+                Eventsink.GetInstance().OnIrcQueuedKick(data);
+            }
         }
 
         private void OnIrcPart(Messages.PartMessage data)
@@ -94,9 +96,10 @@ namespace Shinkei.IRC
                 {
                     _InChannel = false;
                 }
-            }
 
-            Eventsink.GetInstance().OnIrcQueuedPart(data);
+                // dispatch queued event
+                Eventsink.GetInstance().OnIrcQueuedPart(data);
+            }
         }
 
         public bool Join(string Key = null)
