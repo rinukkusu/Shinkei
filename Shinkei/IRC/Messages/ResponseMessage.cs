@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Shinkei.IRC.Messages
 {
-    public class ResponeMessage
+    public class ResponseMessage
     {
-        private Server _Server;
-        public Server Server
+        private Server _ServerInstance;
+        public Server ServerInstance
         {
-            get { return _Server; }
+            get { return _ServerInstance; }
         }
 
         private int _ResponseCode;
@@ -26,9 +26,9 @@ namespace Shinkei.IRC.Messages
             get { return _RawLine; }
         }
 
-        public ResponeMessage(Server _Server, int _ResponseCode, string _RawLine)
+        public ResponseMessage(Server _Server, int _ResponseCode, string _RawLine)
         {
-            this._Server = _Server;
+            this._ServerInstance = _Server;
             this._ResponseCode = _ResponseCode;
             this._RawLine = _RawLine;
         }

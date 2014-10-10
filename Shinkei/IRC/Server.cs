@@ -75,8 +75,8 @@ namespace Shinkei.IRC
 
                         if (ResponseCode > 0)
                         {
-                            ResponeMessage RawMessage = new ResponeMessage(this, ResponseCode, Parts.Groups[3].Value);
-                            IRC.Eventsink.GetInstance().OnIrcRawMessage(RawMessage);
+                            ResponseMessage RawMessage = new ResponseMessage(this, ResponseCode, Parts.Groups[3].Value);
+                            IRC.Eventsink.GetInstance().OnIrcServerResponse(RawMessage);
                         }
                         else if (Parts.Groups[2].Value == "JOIN")
                         {
@@ -213,6 +213,7 @@ namespace Shinkei.IRC
             {
                 try
                 {
+                    Console.WriteLine(ex.Message);
                     Socket.Close();
                 }
                 catch { }

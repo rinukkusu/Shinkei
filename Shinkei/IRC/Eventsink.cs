@@ -7,7 +7,7 @@ namespace Shinkei.IRC
     {
         #region Delegates
 
-        public delegate void IrcRawMessageDelegate(ResponeMessage data);
+        public delegate void IrcServerResponseDelegate(ResponseMessage data);
         public delegate void IrcMessageDelegate(PrivateMessage data);
         public delegate void IrcCommandDelegate(CommandMessage data);
         public delegate void IrcJoinDelegate(JoinMessage data);
@@ -23,7 +23,7 @@ namespace Shinkei.IRC
 
         #region Members
 
-        public IrcRawMessageDelegate OnIrcRawMessage;
+        public IrcServerResponseDelegate OnIrcServerResponse;
         public IrcMessageDelegate OnIrcMessage;
         public IrcCommandDelegate OnIrcCommand;
         public IrcJoinDelegate OnIrcJoin;
@@ -39,9 +39,9 @@ namespace Shinkei.IRC
 
         #region Main Eventhandlers
 
-        private void IrcRawMessageHandler(ResponeMessage data)
+        private void IrcServerResponseHandler(ResponseMessage data)
         {
-            Console.WriteLine("Eventsink.IrcRawMessageHandler");
+            Console.WriteLine("Eventsink.IrcServerResponseHandler");
         }
 
         private void IrcMessageHandler(PrivateMessage data)
@@ -104,7 +104,7 @@ namespace Shinkei.IRC
 
         private Eventsink()
         {
-            OnIrcRawMessage = new IrcRawMessageDelegate(IrcRawMessageHandler);
+            OnIrcServerResponse = new IrcServerResponseDelegate(IrcServerResponseHandler);
             OnIrcMessage = new IrcMessageDelegate(IrcMessageHandler);
             OnIrcCommand = new IrcCommandDelegate(IrcCommandHandler);
             OnIrcJoin = new IrcJoinDelegate(IrcJoinHandler);
