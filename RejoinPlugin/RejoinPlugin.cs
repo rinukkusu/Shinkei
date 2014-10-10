@@ -2,6 +2,7 @@
 using Shinkei.IRC;
 using Shinkei.IRC.Messages;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Runtime.Serialization;
@@ -12,7 +13,7 @@ using System.Threading;
 [ExportMetadata("Name", "Rejoin")]
 [ExportMetadata("Version", "0.1")]
 [ExportMetadata("Author", "rinukkusu")]
-[ExportMetadata("Description", "Automatically performs a rejoin after being kicked from a channel.");
+[ExportMetadata("Description", "Automatically performs a rejoin after being kicked from a channel.")]
 public class RejoinPlugin : IPlugin
 {
     [DataContractAttribute]
@@ -71,6 +72,11 @@ public class RejoinPlugin : IPlugin
 
     public string GetHelp()
     {
-        return
+        return "Automatically performs a rejoin after being kicked from a channel.";
+    }
+
+    public List<string> GetCommands()
+    {
+        return new List<string>();
     }
 }

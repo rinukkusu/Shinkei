@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace Shinkei
 {
     public interface IPluginData
@@ -16,5 +17,6 @@ namespace Shinkei
 
         void RegisterEvents(IRC.Eventsink Eventdata);
         string GetHelp();
+        List<string> GetCommands();
     }
 }
