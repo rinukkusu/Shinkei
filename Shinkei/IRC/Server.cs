@@ -75,7 +75,7 @@ namespace Shinkei.IRC
 
                         if (ResponseCode > 0)
                         {
-                            RawMessage RawMessage = new RawMessage(this, ResponseCode, Parts.Groups[3].Value);
+                            ResponeMessage RawMessage = new ResponeMessage(this, ResponseCode, Parts.Groups[3].Value);
                             IRC.Eventsink.GetInstance().OnIrcRawMessage(RawMessage);
                         }
                         else if (Parts.Groups[2].Value == "JOIN")

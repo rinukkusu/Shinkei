@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shinkei.IRC.Messages
 {
-    public class RawMessage
+    public class ResponeMessage
     {
         private Server _Server;
         public Server Server
@@ -26,7 +26,7 @@ namespace Shinkei.IRC.Messages
             get { return _RawLine; }
         }
 
-        public RawMessage(Server _Server, int _ResponseCode, string _RawLine)
+        public ResponeMessage(Server _Server, int _ResponseCode, string _RawLine)
         {
             this._Server = _Server;
             this._ResponseCode = _ResponseCode;
