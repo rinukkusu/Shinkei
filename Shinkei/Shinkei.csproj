@@ -55,6 +55,7 @@
     <Compile Include="IPlugin.cs" />
     <Compile Include="IRC\Messages\PartMessage.cs" />
     <Compile Include="IRC\Messages\PrivateMessage.cs" />
+    <Compile Include="IRC\Messages\RawMessage.cs" />
     <Compile Include="IRC\ResponseCodes.cs" />
     <Compile Include="IRC\Server.cs" />
     <Compile Include="IRC\SettingsLoader.cs" />
