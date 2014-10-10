@@ -8,7 +8,7 @@ namespace Shinkei
         {
             IRC.Eventsink myEventsink = IRC.Eventsink.GetInstance();
 
-            PluginContainer myPluginContainer = new PluginContainer();
+            PluginContainer myPluginContainer = PluginContainer.GetInstance();
             myPluginContainer.LoadPlugins();
 
             foreach (Lazy<IPlugin, IPluginData> Plugin in myPluginContainer.Plugins)

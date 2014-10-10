@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Shinkei
 {
-    class PluginContainer
+    public class PluginContainer
     {
         private string m_Path;
         private CompositionContainer m_Container;
@@ -14,7 +14,13 @@ namespace Shinkei
         [ImportMany]
         public IEnumerable<Lazy<IPlugin, IPluginData>> Plugins;
 
-        public PluginContainer(string Path = "./plugins")
+        private static PluginContainer Instance = new PluginContainer("./plugins");
+        public static PluginContainer GetInstance()
+        {
+            return Instance;
+        }
+
+        private PluginContainer(string Path = "./plugins")
         {
             m_Path = Path;
         }
