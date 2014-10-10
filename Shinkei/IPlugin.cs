@@ -6,6 +6,7 @@ namespace Shinkei
         string Name { get; }
         string Version { get; }
         string Author { get; }
+        string Description { get; }
     }
 
 
@@ -14,5 +15,6 @@ namespace Shinkei
         bool IsEnabled();
 
         void RegisterEvents(IRC.Eventsink Eventdata);
+        string GetHelp();
     }
 }

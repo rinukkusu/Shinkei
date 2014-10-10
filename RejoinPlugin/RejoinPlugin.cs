@@ -12,6 +12,7 @@ using System.Threading;
 [ExportMetadata("Name", "Rejoin")]
 [ExportMetadata("Version", "0.1")]
 [ExportMetadata("Author", "rinukkusu")]
+[ExportMetadata("Description", "Automatically performs a rejoin after being kicked from a channel.");
 public class RejoinPlugin : IPlugin
 {
     [DataContractAttribute]
@@ -66,5 +67,10 @@ public class RejoinPlugin : IPlugin
         SettingsFile.Close();
 
         return newSettings;
+    }
+
+    public string GetHelp()
+    {
+        return
     }
 }
