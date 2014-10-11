@@ -70,11 +70,6 @@ public class RejoinPlugin : IPlugin
         return newSettings;
     }
 
-    public string GetHelp()
-    {
-        return "Automatically performs a rejoin after being kicked from a channel.";
-    }
-
     public List<CommandDescription> GetCommands()
     {
         return new List<CommandDescription>();

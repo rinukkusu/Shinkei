@@ -15,7 +15,6 @@ namespace Shinkei
         bool IsEnabled();
 
         void RegisterEvents(IRC.Eventsink Eventdata);
-        string GetHelp();
         List<CommandDescription> GetCommands();
     }
 

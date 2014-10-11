@@ -107,11 +107,6 @@ public class HelpPlugin : IPlugin
         }
     }
 
-    public string GetHelp()
-    {
-        return "Retrieves information of other plugins and displays it to the user.";
-    }
-
     public List<CommandDescription> GetCommands()
     {
         return this.Commands;
