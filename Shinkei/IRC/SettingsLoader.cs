@@ -102,6 +102,9 @@ namespace Shinkei.IRC
                 DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(Settings));
                 Serializer.WriteObject(newFile, newSettings);
                 newFile.Close();
+
+                string reformat = File.ReadAllText(m_Path);
+                File.WriteAllText(m_Path, JsonHelper.FormatJson(reformat));
             }
         }
 
