@@ -48,5 +48,10 @@ namespace Shinkei.IRC.Entities
                 _Nickname = Name;
             }
         }
+
+        public string GetName()
+        {
+            return this.Nickname;
+        }
     }
 }

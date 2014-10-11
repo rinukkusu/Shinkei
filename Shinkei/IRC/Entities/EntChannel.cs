@@ -16,5 +16,10 @@ namespace Shinkei.IRC.Entities
         {
             this._Name = Name;
         }
+
+        public string GetName()
+        {
+            return this.Name;
+        }
     }
 }

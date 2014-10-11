@@ -75,8 +75,8 @@ public class RejoinPlugin : IPlugin
         return "Automatically performs a rejoin after being kicked from a channel.";
     }
 
-    public List<string> GetCommands()
+    public List<CommandDescription> GetCommands()
     {
-        return new List<string>();
+        return new List<CommandDescription>();
     }
 }

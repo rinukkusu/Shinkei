@@ -11,6 +11,8 @@ namespace Shinkei.IRC
 {
     public class Server
     {
+        public const int MAX_MESSAGE_LENGTH = 512;
+
         Regex MessageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
 
         public SettingsLoader.Settings.ServerSettings localSettings; // just for reference
@@ -146,6 +148,7 @@ namespace Shinkei.IRC
         public List<string> ParseArguments(string ArgumentString)
         {
             List<string> Arguments = new List<string>();
+            ArgumentString = ArgumentString.Trim();
 
             string SingleArgument = "";
             bool bInQuotes = false;
@@ -174,6 +177,11 @@ namespace Shinkei.IRC
                 }
             }
 
+            if (ArgumentString.Length > 0)
+            {
+                Arguments.Add(ArgumentString);
+            }
+
             return Arguments;
         }
 
@@ -181,11 +189,34 @@ namespace Shinkei.IRC
         {
             if (Socket.Connected && bRunning)
             {
+                Console.WriteLine(">> " + text);
+
                 StreamWriter Writer = new StreamWriter(Socket.GetStream());
 
-                Console.WriteLine(">> " + text);
                 Writer.WriteLine(text);
                 Writer.Flush();
+            }
+        }
+
+        public void PrivateMessage(IEntity Recipient, string text)
+        {
+            string MessageHeader = "PRIVMSG " + Recipient.GetName() + " :";
+
+            if ((MessageHeader.Length + text.Length) <= MAX_MESSAGE_LENGTH)
+            {
+                WriteLine(MessageHeader + text);
+            }
+            else
+            {
+                int nOffset = 0;
+                while (text.Length > 0)
+                {
+                    string Part = text.Substring(nOffset, (MAX_MESSAGE_LENGTH - MessageHeader.Length));
+
+                    WriteLine(MessageHeader + Part);
+
+                    nOffset += (MAX_MESSAGE_LENGTH - MessageHeader.Length);
+                }
             }
         }
 

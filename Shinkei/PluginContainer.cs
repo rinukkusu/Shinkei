@@ -45,5 +45,19 @@ namespace Shinkei
                 Console.WriteLine(compositionException.ToString());
             }
         }
+
+        public List<CommandDescription> GetAllCommands()
+        {
+            List<CommandDescription> AllCommands = new List<CommandDescription>();
+
+            foreach (Lazy<IPlugin, IPluginData> Plugin in this.Plugins)
+            {
+                AllCommands.AddRange(Plugin.Value.GetCommands());
+            }
+
+            AllCommands.Sort(new CommandComparer());
+
+            return AllCommands;
+        }
     }
 }
