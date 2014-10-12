@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Json;
 
 namespace Shinkei
 {
-    class JsonHelper
+    public class JsonHelper
     {
         private const string INDENT_STRING = "    ";
         public static string FormatJson(string str)

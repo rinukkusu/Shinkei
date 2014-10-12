@@ -48,24 +48,19 @@ public class RejoinPlugin : IPlugin
         DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(Settings));
 
         string Path = "plugins/RejoinPlugin.json";
-        FileStream SettingsFile;
-        Settings newSettings;
+         Settings newSettings;
 
         if (!File.Exists(Path))
         {
             newSettings = new Settings();
             newSettings.WaitUntilRejoin = 2000;
 
-            SettingsFile = File.Create(Path);
-            Serializer.WriteObject(SettingsFile, newSettings);
+            JsonHelper.Serialize<Settings>(newSettings, Path);
         }
         else
         {
-            SettingsFile = File.Open(Path, FileMode.Open);
-            newSettings = (Settings)Serializer.ReadObject(SettingsFile);
+            newSettings = JsonHelper.Deserialize<Settings>(Path);
         }
-
-        SettingsFile.Close();
 
         return newSettings;
     }
