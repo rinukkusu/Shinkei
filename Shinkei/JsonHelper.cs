@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace Shinkei
 {
@@ -65,6 +68,29 @@ namespace Shinkei
                 }
             }
             return sb.ToString();
+        }
+
+        public static T Deserialize<T>(string path)
+        {
+            DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(T));
+
+            FileStream SettingsFile = File.Open(path, FileMode.Open);
+            T Settings = (T)Serializer.ReadObject(SettingsFile);
+            SettingsFile.Close();
+
+            return Settings;
+        }
+
+        public static void Serialize<T>(object _object, string path)
+        {
+            FileStream newFile = File.Create(path);
+
+            DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(T));
+            Serializer.WriteObject(newFile, _object);
+            newFile.Close();
+
+            string reformat = File.ReadAllText(path);
+            File.WriteAllText(path, JsonHelper.FormatJson(reformat));
         }
     }
 

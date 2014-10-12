@@ -16,10 +16,5 @@ Fancy stuff that needs to be done
     <br/>
     To interact properly from the console or to find servers from our plugins, we might want to add aliases to the server configuration and also in the settings
   </li>
-  <li>
-    <b>JSON Wrapper</b>
-    <br/>
-    The current handling of de-/serialization isn't really clean. A wrapper for centralizing json stuff should fix that.
-  </li>
   
 </ul>

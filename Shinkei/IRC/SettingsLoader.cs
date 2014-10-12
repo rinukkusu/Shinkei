@@ -97,24 +97,24 @@ namespace Shinkei.IRC
                 newServer.Channels.Add(newChannel);
                 newSettings.Servers.Add(newServer);
 
-                FileStream newFile = File.Create(m_Path);
-
-                DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(Settings));
-                Serializer.WriteObject(newFile, newSettings);
-                newFile.Close();
-
-                string reformat = File.ReadAllText(m_Path);
-                File.WriteAllText(m_Path, JsonHelper.FormatJson(reformat));
+                JsonHelper.Serialize<Settings>(newSettings, m_Path);
             }
         }
 
         public void Load()
         {
-            DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(Settings));
+            m_Settings = JsonHelper.Deserialize<Settings>(m_Path);
+        }
 
-            FileStream SettingsFile = File.Open(m_Path, FileMode.Open);
-            m_Settings = (Settings) Serializer.ReadObject(SettingsFile);
-            SettingsFile.Close();
+        public void Save()
+        {
+            JsonHelper.Serialize<Settings>(m_Settings, m_Path);
+        }
+
+        public void Reload()
+        {
+            Load();
+            EnforceSettings();
         }
 
         public void EnforceSettings()
