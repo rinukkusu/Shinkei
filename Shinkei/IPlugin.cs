@@ -93,7 +93,7 @@ namespace Shinkei
                         // If the strings are of equal length, 
                         // sort them with ordinary string comparison. 
                         // 
-                        return x.Command.CompareTo(y);
+                        return x.Command.CompareTo(y.Command);
                     }
                 }
             }

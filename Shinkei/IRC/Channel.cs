@@ -125,5 +125,24 @@ namespace Shinkei.IRC
 
             return _InChannel;
         }
+
+        public bool Part()
+        {
+            if (_InChannel)
+            {
+                _Server.WriteLine("PART " + _Name);
+
+                int Interval = 250;
+                int Counter = (1000 / Interval) * 5; // wait for 5 seconds
+
+                while ((Counter > 0) && (_InChannel))
+                {
+                    System.Threading.Thread.Sleep(Interval);
+                    Counter--;
+                }
+            }
+
+            return !(_InChannel);
+        }
     }
 }

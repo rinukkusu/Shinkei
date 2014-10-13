@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RejoinPlugin", "RejoinPlugi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpPlugin", "HelpPlugin\HelpPlugin.csproj", "{7164F251-0AB1-4394-966E-AD266A3D0286}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlPlugin", "ControlPlugin\ControlPlugin.csproj", "{7C5084F6-0EEF-4214-8B7E-ACA7299318C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{7164F251-0AB1-4394-966E-AD266A3D0286}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7164F251-0AB1-4394-966E-AD266A3D0286}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7164F251-0AB1-4394-966E-AD266A3D0286}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C5084F6-0EEF-4214-8B7E-ACA7299318C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C5084F6-0EEF-4214-8B7E-ACA7299318C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C5084F6-0EEF-4214-8B7E-ACA7299318C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C5084F6-0EEF-4214-8B7E-ACA7299318C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
