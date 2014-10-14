@@ -77,7 +77,7 @@ namespace Shinkei.IRC
             if (!File.Exists(m_Path))
             {
                 Settings newSettings = new Settings();
-                newSettings.Nickname = "Shinkei";
+                newSettings.Nickname = "Shinkei_" + (new Random()).Next(1000,9999);
                 newSettings.Username = "shinkei";
                 newSettings.Realname = "Shinkei Bot";
                 newSettings.Servers = new List<Settings.ServerSettings>();
