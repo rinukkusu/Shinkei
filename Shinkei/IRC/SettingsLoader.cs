@@ -91,7 +91,7 @@ namespace Shinkei.IRC
                 newServer.Channels = new List<Settings.ServerSettings.ChannelSettings>();
 
                 Settings.ServerSettings.ChannelSettings newChannel = new Settings.ServerSettings.ChannelSettings();
-                newChannel.Channel = "#dev";
+                newChannel.Channel = "#shinkei";
                 newChannel.Key = "";
 
                 newServer.Channels.Add(newChannel);
