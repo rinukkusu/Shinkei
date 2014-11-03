@@ -48,6 +48,7 @@
     <ProjectReference Include="..\Shinkei\Shinkei.csproj">
       <Project>{15170f0c-0667-48fe-901c-4e53988449dc}</Project>
       <Name>Shinkei</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
