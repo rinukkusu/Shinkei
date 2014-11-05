@@ -5,16 +5,6 @@ an IRC bot written in C# with a massive plugin system.
 
 Fancy stuff that needs to be done
 ---------------------------------
-<ul>
-  <li>
-    <b>Input loop</b>
-    <br/>
-    We need an input loop in <code>Program.cs</code> for interacting on console level
-  </li>
-  <li>
-    <b>Aliases for servers</b>
-    <br/>
-    To interact properly from the console or to find servers from our plugins, we might want to add aliases to the server configuration and also in the settings
-  </li>
-  
-</ul>
+- [ ] an input loop in <code>Program.cs</code> for interacting on console level
+- [ ] aliases for servers to interact properly from the console or to find servers from our plugins
+- [ ] usage of template functions for registering events (don't expose <code>Eventsink</code>)
