@@ -191,10 +191,11 @@ namespace Shinkei.IRC
             {
                 Console.WriteLine(">> " + text);
 
-                StreamWriter Writer = new StreamWriter(Socket.GetStream());
-
-                Writer.WriteLine(text);
-                Writer.Flush();
+                using(StreamWriter Writer = new StreamWriter(Socket.GetStream()))
+                {
+                    Writer.WriteLine(text);
+                    Writer.Flush();
+                }
             }
         }
 
