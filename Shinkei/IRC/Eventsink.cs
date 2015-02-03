@@ -46,13 +46,6 @@ namespace Shinkei.IRC
         private void ConsoleCommandHandler(ConsoleCommandMessage data)
         {
             Console.WriteLine("Eventsink.ConsoleCommandHandler");
-            String args = "";
-            foreach (String s in data.Arguments)
-            {
-                args += " " + s;
-            }
-
-            Console.WriteLine(data.Command + " : " + args);
             OnConsoleQueuedCommand(data);
         }
 
@@ -94,13 +87,6 @@ namespace Shinkei.IRC
         private void ConsoleQueuedCommandHandler(ConsoleCommandMessage data)
         {
             Console.WriteLine("Eventsink.ConsoleQueuedCommandHandler");
-            String args = "";
-            foreach (String s in data.Arguments)
-            {
-                args += " " + s;
-            }
-
-            Console.WriteLine(data.Command + " : " + args);
         }
 
         private void IrcQueuedCommandHandler(CommandMessage data)
