@@ -1,5 +1,6 @@
 ﻿using Shinkei.IRC.Entities;
 using Shinkei.IRC.Messages;
+using Shinkei.IRC.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,7 +66,7 @@ namespace Shinkei.IRC
                     string Line = Reader.ReadLine();
                     if (Line != null)
                     {
-                        Console.WriteLine("<< " + Line);
+                        Console.WriteLine(Host + ": << " + Line);
 
                         Match Parts = MessageParser.Match(Line);
 
@@ -189,13 +190,11 @@ namespace Shinkei.IRC
         {
             if (Socket.Connected && bRunning)
             {
-                Console.WriteLine(">> " + text);
+                Console.WriteLine(Host + ": >> " + text);
 
-                using(StreamWriter Writer = new StreamWriter(Socket.GetStream()))
-                {
-                    Writer.WriteLine(text);
-                    Writer.Flush();
-                }
+                StreamWriter Writer = new StreamWriter(Socket.GetStream());
+                Writer.WriteLine(text);
+                Writer.Flush();
             }
         }
 

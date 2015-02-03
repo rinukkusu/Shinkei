@@ -46,6 +46,9 @@
     <Compile Include="IRC\Channel.cs" />
     <Compile Include="IRC\Entities\EntChannel.cs" />
     <Compile Include="IRC\Client.cs" />
+    <Compile Include="IRC\Exceptions\ConnectionException.cs" />
+    <Compile Include="IRC\Exceptions\ConnectionRefusedException.cs" />
+    <Compile Include="IRC\Exceptions\Reportable.cs" />
     <Compile Include="IRC\Messages\CommandMessage.cs" />
     <Compile Include="IRC\Eventsink.cs" />
     <Compile Include="IRC\Entities\IEntity.cs" />
