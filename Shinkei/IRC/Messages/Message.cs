@@ -17,7 +17,7 @@ namespace Shinkei.IRC.Messages
         }
 
         protected IEntity _Recipient;
-        public IEntity Recipient
+        public virtual IEntity Recipient
         {
             get { return _Recipient; }
         }

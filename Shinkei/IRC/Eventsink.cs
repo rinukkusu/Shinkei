@@ -7,6 +7,7 @@ namespace Shinkei.IRC
     {
         #region Delegates
 
+        public delegate void ConsoleCommandDelegate(ConsoleCommandMessage data);
         public delegate void IrcServerResponseDelegate(ResponseMessage data);
         public delegate void IrcMessageDelegate(PrivateMessage data);
         public delegate void IrcCommandDelegate(CommandMessage data);
@@ -14,6 +15,7 @@ namespace Shinkei.IRC
         public delegate void IrcKickDelegate(KickMessage data);
         public delegate void IrcPartDelegate(PartMessage data);
 
+        public delegate void ConsoleQueuedCommandDelegate(ConsoleCommandMessage data);
         public delegate void IrcQueuedCommandDelegate(CommandMessage data);
         public delegate void IrcQueuedJoinDelegate(JoinMessage data);
         public delegate void IrcQueuedKickDelegate(KickMessage data);
@@ -23,6 +25,7 @@ namespace Shinkei.IRC
 
         #region Members
 
+        public ConsoleCommandDelegate OnConsoleCommand;
         public IrcServerResponseDelegate OnIrcServerResponse;
         public IrcMessageDelegate OnIrcMessage;
         public IrcCommandDelegate OnIrcCommand;
@@ -30,6 +33,7 @@ namespace Shinkei.IRC
         public IrcKickDelegate OnIrcKick;
         public IrcPartDelegate OnIrcPart;
 
+        public ConsoleQueuedCommandDelegate OnConsoleQueuedCommand;
         public IrcQueuedCommandDelegate OnIrcQueuedCommand;
         public IrcQueuedJoinDelegate OnIrcQueuedJoin;
         public IrcQueuedKickDelegate OnIrcQueuedKick;
@@ -38,6 +42,19 @@ namespace Shinkei.IRC
         #endregion
 
         #region Main Eventhandlers
+
+        private void ConsoleCommandHandler(ConsoleCommandMessage data)
+        {
+            Console.WriteLine("Eventsink.ConsoleCommandHandler");
+            String args = "";
+            foreach (String s in data.Arguments)
+            {
+                args += " " + s;
+            }
+
+            Console.WriteLine(data.Command + " : " + args);
+            OnConsoleQueuedCommand(data);
+        }
 
         private void IrcServerResponseHandler(ResponseMessage data)
         {
@@ -74,6 +91,18 @@ namespace Shinkei.IRC
 
         #region Queued Eventhandlers (for Plugins)
 
+        private void ConsoleQueuedCommandHandler(ConsoleCommandMessage data)
+        {
+            Console.WriteLine("Eventsink.ConsoleQueuedCommandHandler");
+            String args = "";
+            foreach (String s in data.Arguments)
+            {
+                args += " " + s;
+            }
+
+            Console.WriteLine(data.Command + " : " + args);
+        }
+
         private void IrcQueuedCommandHandler(CommandMessage data)
         {
             Console.WriteLine("Eventsink.IrcQueuedCommandHandler");
@@ -104,13 +133,15 @@ namespace Shinkei.IRC
 
         private Eventsink()
         {
+            OnConsoleCommand = new ConsoleCommandDelegate(ConsoleCommandHandler);
             OnIrcServerResponse = new IrcServerResponseDelegate(IrcServerResponseHandler);
             OnIrcMessage = new IrcMessageDelegate(IrcMessageHandler);
             OnIrcCommand = new IrcCommandDelegate(IrcCommandHandler);
             OnIrcJoin = new IrcJoinDelegate(IrcJoinHandler);
             OnIrcKick = new IrcKickDelegate(IrcKickHandler);
             OnIrcPart = new IrcPartDelegate(IrcPartHandler);
-
+            
+            OnConsoleQueuedCommand = new ConsoleQueuedCommandDelegate(ConsoleQueuedCommandHandler);
             OnIrcQueuedCommand = new IrcQueuedCommandDelegate(IrcQueuedCommandHandler);
             OnIrcQueuedJoin = new IrcQueuedJoinDelegate(IrcQueuedJoinHandler);
             OnIrcQueuedKick = new IrcQueuedKickDelegate(IrcQueuedKickHandler);

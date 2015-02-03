@@ -126,7 +126,7 @@ namespace Shinkei.IRC
                                 string command = commandString.Substring(1);
 
                                 string argumentString = parts.Groups[4].Value.Substring(commandString.Length);
-                                List<string> arguments = ParseArguments(argumentString);
+                                List<string> arguments = Util.ParseArguments(argumentString);
 
                                 IRC.Eventsink.GetInstance().OnIrcCommand(new CommandMessage(this, sender, recipient, command, arguments));
                             }
@@ -146,45 +146,7 @@ namespace Shinkei.IRC
             return (c == SettingsLoader.GetInstance().MSettings.CommandCharacter);
         }
 
-        public List<string> ParseArguments(string argumentString)
-        {
-            List<string> arguments = new List<string>();
-            argumentString = argumentString.Trim();
 
-            string singleArgument = "";
-            bool bInQuotes = false;
-            foreach (char c in argumentString)
-            {
-                if (c == '\'')
-                {
-                    bInQuotes = !bInQuotes;
-                }
-
-                if (c == ' ')
-                {
-                    if (bInQuotes)
-                    {
-                        singleArgument += c.ToString();
-                    }
-                    else
-                    {
-                        arguments.Add(singleArgument);
-                        singleArgument = "";
-                    }
-                }
-                else
-                {
-                    singleArgument += c.ToString();
-                }
-            }
-
-            if (argumentString.Length > 0)
-            {
-                arguments.Add(argumentString);
-            }
-
-            return arguments;
-        }
 
         public void WriteLine(string text)
         {
@@ -261,7 +223,7 @@ namespace Shinkei.IRC
         public void Reconnect()
         {
             Disconnect();
-            Reconnect();
+            Connect();
         }
     }
 }
