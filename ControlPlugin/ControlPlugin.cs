@@ -16,10 +16,10 @@ using Shinkei.IRC.Entities;
 [ExportMetadata("Description", "Offers commands to control the bot.")]
 public class ControlPlugin : IPlugin
 {
-    private List<CommandDescription> _Commands;
+    private List<CommandDescription> _commands;
     public List<CommandDescription> Commands
     {
-        get { return _Commands; }
+        get { return _commands; }
     }
 
     public bool IsEnabled()
@@ -27,13 +27,13 @@ public class ControlPlugin : IPlugin
         return true;
     }
 
-    public void RegisterEvents(Eventsink Eventdata)
+    public void RegisterEvents(Eventsink eventdata)
     {
-        _Commands = new List<CommandDescription>();
-        _Commands.Add(new CommandDescription("join", "join <channel> <key>", "Lets the bot join a channel with an optional channel key."));
-        _Commands.Add(new CommandDescription("part", "part <channel>", "Lets the bot leave a channel."));
+        _commands = new List<CommandDescription>();
+        _commands.Add(new CommandDescription("join", "join <channel> <key>", "Lets the bot join a channel with an optional channel key."));
+        _commands.Add(new CommandDescription("part", "part <channel>", "Lets the bot leave a channel."));
 
-        Eventdata.OnIrcCommand += new Eventsink.IrcCommandDelegate(this.IrcCommandHandler);
+        eventdata.OnIrcCommand += new Eventsink.IrcCommandDelegate(this.IrcCommandHandler);
     }
 
     public List<CommandDescription> GetCommands()
@@ -66,23 +66,23 @@ public class ControlPlugin : IPlugin
                         newChannel = new Channel(data.ServerInstance, channel, key);
                     }
 
-                    bool JoinSucceeded = newChannel.Join();
+                    bool joinSucceeded = newChannel.Join();
 
-                    if (JoinSucceeded)
+                    if (joinSucceeded)
                     {
                         data.ServerInstance.Channels.Add(channel, newChannel);
                     }
                     else
                     {
-                        IEntity AnswerRcpt;
+                        IEntity answerRcpt;
                         if (data.Recipient.GetType() == typeof(EntUser)) {
-                            AnswerRcpt = data.Sender;
+                            answerRcpt = data.Sender;
                         }
                         else {
-                            AnswerRcpt = data.Recipient;
+                            answerRcpt = data.Recipient;
                         }
 
-                        data.ServerInstance.PrivateMessage(AnswerRcpt, data.Sender.GetName() + ": Couldn't join channel.");
+                        data.ServerInstance.PrivateMessage(answerRcpt, data.Sender.GetName() + ": Couldn't join channel.");
                     }
                 }
 
@@ -96,21 +96,21 @@ public class ControlPlugin : IPlugin
 
                     if (data.ServerInstance.Channels.Keys.Contains(channel))
                     {
-                        bool PartSucceeded = data.ServerInstance.Channels[channel].Part();
+                        bool partSucceeded = data.ServerInstance.Channels[channel].Part();
 
-                        if (!PartSucceeded)
+                        if (!partSucceeded)
                         {
-                            IEntity AnswerRcpt;
+                            IEntity answerRcpt;
                             if (data.Recipient.GetType() == typeof(EntUser))
                             {
-                                AnswerRcpt = data.Sender;
+                                answerRcpt = data.Sender;
                             }
                             else
                             {
-                                AnswerRcpt = data.Recipient;
+                                answerRcpt = data.Recipient;
                             }
 
-                            data.ServerInstance.PrivateMessage(AnswerRcpt, data.Sender.GetName() + ": Couldn't part channel.");
+                            data.ServerInstance.PrivateMessage(answerRcpt, data.Sender.GetName() + ": Couldn't part channel.");
                         }
                     }
                 }

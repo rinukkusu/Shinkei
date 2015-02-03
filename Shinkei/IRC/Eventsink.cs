@@ -96,10 +96,10 @@ namespace Shinkei.IRC
 
         #endregion
 
-        private static Eventsink Instance = new Eventsink();
+        private static Eventsink _instance = new Eventsink();
         public static Eventsink GetInstance()
         {
-            return Instance;
+            return _instance;
         }
 
         private Eventsink()

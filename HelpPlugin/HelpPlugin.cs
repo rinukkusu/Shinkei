@@ -16,10 +16,10 @@ using Shinkei.IRC.Entities;
 [ExportMetadata("Description", "Retrieves information of other plugins and displays it to the user.")]
 public class HelpPlugin : IPlugin
 {
-    private List<CommandDescription> _Commands;
+    private List<CommandDescription> _commands;
     public List<CommandDescription> Commands
     {
-        get { return _Commands; }
+        get { return _commands; }
     }
 
     public bool IsEnabled()
@@ -27,13 +27,13 @@ public class HelpPlugin : IPlugin
         return true;
     }
 
-    public void RegisterEvents(Eventsink Eventdata)
+    public void RegisterEvents(Eventsink eventdata)
     {
-        _Commands = new List<CommandDescription>();
-        _Commands.Add(new CommandDescription("help", "help [command]", "Retrieves the description and usage information of commands."));
-        _Commands.Add(new CommandDescription("listplugins", "listplugins", "Lists all plugins and their description."));
+        _commands = new List<CommandDescription>();
+        _commands.Add(new CommandDescription("help", "help [command]", "Retrieves the description and usage information of commands."));
+        _commands.Add(new CommandDescription("listplugins", "listplugins", "Lists all plugins and their description."));
 
-        Eventdata.OnIrcCommand += new Eventsink.IrcCommandDelegate(this.IrcCommandHandler);
+        eventdata.OnIrcCommand += new Eventsink.IrcCommandDelegate(this.IrcCommandHandler);
     }
 
     private void IrcCommandHandler(CommandMessage data)
@@ -42,48 +42,48 @@ public class HelpPlugin : IPlugin
         {
             case "help":
             {
-                string CommandInfo = "";
-                List<CommandDescription> AllCommands = PluginContainer.GetInstance().GetAllCommands();
+                string commandInfo = "";
+                List<CommandDescription> allCommands = PluginContainer.GetInstance().GetAllCommands();
 
                 if (data.Arguments.Count > 0)
                 {
-                    string ReqCommand = data.Arguments[0];
-                    CommandDescription Command = AllCommands.Find(x => x.Command.Equals(ReqCommand));
+                    string reqCommand = data.Arguments[0];
+                    CommandDescription command = allCommands.Find(x => x.Command.Equals(reqCommand));
 
-                    if (Command != null)
+                    if (command != null)
                     {
-                        IEntity AnswerRcpt;
+                        IEntity answerRcpt;
                         if (data.Recipient.GetType() == typeof(EntUser)) {
-                            AnswerRcpt = data.Sender;
+                            answerRcpt = data.Sender;
                         }
                         else {
-                            AnswerRcpt = data.Recipient;
+                            answerRcpt = data.Recipient;
                         }
 
-                        CommandInfo = String.Format("Usage: {0}{1}",
-                                                    SettingsLoader.GetInstance().m_Settings.CommandCharacter,
-                                                    Command.Usage);
+                        commandInfo = String.Format("Usage: {0}{1}",
+                                                    SettingsLoader.GetInstance().MSettings.CommandCharacter,
+                                                    command.Usage);
 
-                        data.ServerInstance.PrivateMessage(AnswerRcpt, CommandInfo);
+                        data.ServerInstance.PrivateMessage(answerRcpt, commandInfo);
                     }
                     else
                     {
-                        data.ServerInstance.PrivateMessage(data.Sender, "Command '" + ReqCommand + "' not found.");
+                        data.ServerInstance.PrivateMessage(data.Sender, "Command '" + reqCommand + "' not found.");
                     }
                 }
                 else
                 {
-                    foreach (CommandDescription Command in AllCommands)
+                    foreach (CommandDescription command in allCommands)
                     {
-                        if (CommandInfo.Length > 0)
+                        if (commandInfo.Length > 0)
                         {
-                            CommandInfo += ", ";
+                            commandInfo += ", ";
                         }
 
-                        CommandInfo += Command.Command;
+                        commandInfo += command.Command;
                     }
 
-                    data.ServerInstance.PrivateMessage(data.Sender, "Available commands: " + CommandInfo);
+                    data.ServerInstance.PrivateMessage(data.Sender, "Available commands: " + commandInfo);
                 }
 
                 break;
@@ -91,14 +91,14 @@ public class HelpPlugin : IPlugin
             case "listplugins":
             {
                 data.ServerInstance.PrivateMessage(data.Sender, "Loaded plugins:");
-                foreach (Lazy<IPlugin, IPluginData> Plugin in PluginContainer.GetInstance().Plugins)
+                foreach (Lazy<IPlugin, IPluginData> plugin in PluginContainer.GetInstance().Plugins)
                 {
-                    string PluginInfo = String.Format("  {0} v{1} ({2}) - {3}", 
-                                                      Plugin.Metadata.Name, 
-                                                      Plugin.Metadata.Version, 
-                                                      Plugin.Metadata.Author, 
-                                                      Plugin.Metadata.Description);
-                    data.ServerInstance.PrivateMessage(data.Sender, PluginInfo);
+                    string pluginInfo = String.Format("  {0} v{1} ({2}) - {3}", 
+                                                      plugin.Metadata.Name, 
+                                                      plugin.Metadata.Version, 
+                                                      plugin.Metadata.Author, 
+                                                      plugin.Metadata.Description);
+                    data.ServerInstance.PrivateMessage(data.Sender, pluginInfo);
                 }
                 break;
             }

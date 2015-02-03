@@ -23,43 +23,43 @@ public class RejoinPlugin : IPlugin
         public int WaitUntilRejoin;
     }
     
-    public static Settings m_Settings = LoadSettings();
+    public static Settings MSettings = LoadSettings();
 
     public bool IsEnabled()
     {
         return true;
     }
 
-    public void RegisterEvents(Eventsink Eventdata)
+    public void RegisterEvents(Eventsink eventdata)
     {
-        Eventdata.OnIrcQueuedKick += new Eventsink.IrcQueuedKickDelegate(this.IrcKickHandler);
+        eventdata.OnIrcQueuedKick += new Eventsink.IrcQueuedKickDelegate(this.IrcKickHandler);
     }
 
-    public void IrcKickHandler(KickMessage MessageData)
+    public void IrcKickHandler(KickMessage messageData)
     {
         Console.WriteLine("RejoinPlugin.IrcKickHandler");
 
-        Thread.Sleep(RejoinPlugin.m_Settings.WaitUntilRejoin);
-        MessageData.ServerInstance.Channels[MessageData.Channel.Name].Join();
+        Thread.Sleep(RejoinPlugin.MSettings.WaitUntilRejoin);
+        messageData.ServerInstance.Channels[messageData.Channel.Name].Join();
     }
 
     public static Settings LoadSettings()
     {
-        DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(Settings));
+        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Settings));
 
-        string Path = "plugins/RejoinPlugin.json";
+        string path = "plugins/RejoinPlugin.json";
          Settings newSettings;
 
-        if (!File.Exists(Path))
+        if (!File.Exists(path))
         {
             newSettings = new Settings();
             newSettings.WaitUntilRejoin = 2000;
 
-            JsonHelper.Serialize<Settings>(newSettings, Path);
+            JsonHelper.Serialize<Settings>(newSettings, path);
         }
         else
         {
-            newSettings = JsonHelper.Deserialize<Settings>(Path);
+            newSettings = JsonHelper.Deserialize<Settings>(path);
         }
 
         return newSettings;

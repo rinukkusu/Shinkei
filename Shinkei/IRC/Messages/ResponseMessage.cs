@@ -8,29 +8,29 @@ namespace Shinkei.IRC.Messages
 {
     public class ResponseMessage
     {
-        private Server _ServerInstance;
+        private Server _serverInstance;
         public Server ServerInstance
         {
-            get { return _ServerInstance; }
+            get { return _serverInstance; }
         }
 
-        private int _ResponseCode;
+        private int _responseCode;
         public int ResponseCode
         {
-            get { return _ResponseCode; }
+            get { return _responseCode; }
         }
 
-        private string _RawLine;
+        private string _rawLine;
         public string RawLine
         {
-            get { return _RawLine; }
+            get { return _rawLine; }
         }
 
-        public ResponseMessage(Server _Server, int _ResponseCode, string _RawLine)
+        public ResponseMessage(Server server, int responseCode, string rawLine)
         {
-            this._ServerInstance = _Server;
-            this._ResponseCode = _ResponseCode;
-            this._RawLine = _RawLine;
+            this._serverInstance = server;
+            this._responseCode = responseCode;
+            this._rawLine = rawLine;
         }
     }
 }

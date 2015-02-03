@@ -5,40 +5,40 @@ namespace Shinkei.IRC
 {
     public class Channel
     {
-        Server _Server;
+        Server _server;
 
-        private bool _InChannel;
+        private bool _inChannel;
         public bool InChannel
         {
             get
             {
-                return _InChannel;
+                return _inChannel;
             }
         }
 
-        private string _Name;
+        private string _name;
         public string Name
         { 
             get
             {
-                return _Name;
+                return _name;
             }
         }
 
-        private string _Key;
+        private string _key;
         public string Key
         {
             get
             {
-                return _Key;
+                return _key;
             }
         }
 
-        public Channel(Server Server, string Name, string Key = "")
+        public Channel(Server server, string name, string key = "")
         {
-            this._Server = Server;
-            this._Name = Name;
-            this._Key = Key;
+            this._server = server;
+            this._name = name;
+            this._key = key;
 
             Eventsink.GetInstance().OnIrcJoin += new Eventsink.IrcJoinDelegate(OnIrcJoin);
             Eventsink.GetInstance().OnIrcKick += new Eventsink.IrcKickDelegate(OnIrcKick);
@@ -49,13 +49,13 @@ namespace Shinkei.IRC
         {
             Console.WriteLine("Channel.OnIrcJoin");
 
-            EntUser MsgUser = (EntUser)data.Sender;
-            EntChannel MsgChannel = (EntChannel)data.Recipient;
+            EntUser msgUser = (EntUser)data.Sender;
+            EntChannel msgChannel = (EntChannel)data.Recipient;
 
-            if (MsgChannel.Name == this.Name)
+            if (msgChannel.Name == this.Name)
             {
-                if (MsgUser.Nickname == data.ServerInstance.localSettings.Nickname) {
-                    _InChannel = true;
+                if (msgUser.Nickname == data.ServerInstance.LocalSettings.Nickname) {
+                    _inChannel = true;
                 }
 
                 // dispatch queued event
@@ -67,15 +67,15 @@ namespace Shinkei.IRC
         {
             Console.WriteLine("Channel.OnIrcKick");
 
-            EntUser MsgKicker = (EntUser)data.Sender;
-            EntUser MsgKickedOne = (EntUser)data.Recipient;
-            EntChannel MsgChannel = (EntChannel)data.Channel;
+            EntUser msgKicker = (EntUser)data.Sender;
+            EntUser msgKickedOne = (EntUser)data.Recipient;
+            EntChannel msgChannel = (EntChannel)data.Channel;
 
-            if (MsgChannel.Name == this.Name)
+            if (msgChannel.Name == this.Name)
             {
-                if (MsgKickedOne.Nickname == data.ServerInstance.localSettings.Nickname)
+                if (msgKickedOne.Nickname == data.ServerInstance.LocalSettings.Nickname)
                 {
-                    _InChannel = false;
+                    _inChannel = false;
                 }
 
                 // dispatch queued event
@@ -87,14 +87,14 @@ namespace Shinkei.IRC
         {
             Console.WriteLine("Channel.OnIrcPart");
 
-            EntUser MsgUser = (EntUser)data.Sender;
-            EntChannel MsgChannel = (EntChannel)data.Recipient;
+            EntUser msgUser = (EntUser)data.Sender;
+            EntChannel msgChannel = (EntChannel)data.Recipient;
 
-            if (MsgChannel.Name == this.Name)
+            if (msgChannel.Name == this.Name)
             {
-                if (MsgUser.Nickname == data.ServerInstance.localSettings.Nickname)
+                if (msgUser.Nickname == data.ServerInstance.LocalSettings.Nickname)
                 {
-                    _InChannel = false;
+                    _inChannel = false;
                 }
 
                 // dispatch queued event
@@ -102,47 +102,47 @@ namespace Shinkei.IRC
             }
         }
 
-        public bool Join(string Key = null)
+        public bool Join(string key = null)
         {
-            if (!_InChannel)
+            if (!_inChannel)
             {
-                if (Key != null)
+                if (key != null)
                 {
-                    _Key = Key;
+                    _key = key;
                 }
 
-                _Server.WriteLine("JOIN " + _Name + " " + _Key);
+                _server.WriteLine("JOIN " + _name + " " + _key);
 
-                int Interval = 250;
-                int Counter = (1000 / Interval) * 5; // wait for 5 seconds
+                int interval = 250;
+                int counter = (1000 / interval) * 5; // wait for 5 seconds
 
-                while ((Counter > 0) && (!_InChannel))
+                while ((counter > 0) && (!_inChannel))
                 {
-                    System.Threading.Thread.Sleep(Interval);
-                    Counter--;
+                    System.Threading.Thread.Sleep(interval);
+                    counter--;
                 }
             }
 
-            return _InChannel;
+            return _inChannel;
         }
 
         public bool Part()
         {
-            if (_InChannel)
+            if (_inChannel)
             {
-                _Server.WriteLine("PART " + _Name);
+                _server.WriteLine("PART " + _name);
 
-                int Interval = 250;
-                int Counter = (1000 / Interval) * 5; // wait for 5 seconds
+                int interval = 250;
+                int counter = (1000 / interval) * 5; // wait for 5 seconds
 
-                while ((Counter > 0) && (_InChannel))
+                while ((counter > 0) && (_inChannel))
                 {
-                    System.Threading.Thread.Sleep(Interval);
-                    Counter--;
+                    System.Threading.Thread.Sleep(interval);
+                    counter--;
                 }
             }
 
-            return !(_InChannel);
+            return !(_inChannel);
         }
     }
 }

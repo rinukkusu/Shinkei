@@ -4,8 +4,8 @@ namespace Shinkei.IRC.Messages
 {
     public class JoinMessage : Message
     {
-        public JoinMessage(Server _Server, IEntity _Sender, IEntity _Recipient)
-            : base(_Server, _Sender, _Recipient)
+        public JoinMessage(Server server, IEntity sender, IEntity recipient)
+            : base(server, sender, recipient)
         {
         }
     }

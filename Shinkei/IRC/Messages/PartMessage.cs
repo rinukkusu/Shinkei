@@ -4,16 +4,16 @@ namespace Shinkei.IRC.Messages
 {
     public class PartMessage : Message
     {
-        private string _Text;
+        private string _text;
         public string Text
         {
-            get { return _Text; }
+            get { return _text; }
         }
 
-        public PartMessage(Server _Server, EntUser _Sender, EntChannel _Recipient, string _Text)
-            : base(_Server, _Sender, _Recipient)
+        public PartMessage(Server server, EntUser sender, EntChannel recipient, string text)
+            : base(server, sender, recipient)
         {
-            this._Text = _Text;
+            this._text = text;
         }
     }
 }

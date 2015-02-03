@@ -8,37 +8,37 @@ namespace Shinkei
 {
     public class PluginContainer
     {
-        private string m_Path;
-        private CompositionContainer m_Container;
+        private string _mPath;
+        private CompositionContainer _mContainer;
 
         [ImportMany]
         public IEnumerable<Lazy<IPlugin, IPluginData>> Plugins;
 
-        private static PluginContainer Instance = new PluginContainer("./plugins");
+        private static PluginContainer _instance = new PluginContainer("./plugins");
         public static PluginContainer GetInstance()
         {
-            return Instance;
+            return _instance;
         }
 
-        private PluginContainer(string Path = "./plugins")
+        private PluginContainer(string path = "./plugins")
         {
-            m_Path = Path;
+            _mPath = path;
         }
 
         public void LoadPlugins()
         {
-            if (!Directory.Exists(m_Path))
+            if (!Directory.Exists(_mPath))
             {
-                Directory.CreateDirectory(m_Path);
+                Directory.CreateDirectory(_mPath);
             }
 
             var catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new DirectoryCatalog(m_Path));
-            m_Container = new CompositionContainer(catalog);
+            catalog.Catalogs.Add(new DirectoryCatalog(_mPath));
+            _mContainer = new CompositionContainer(catalog);
 
             try
             {
-                this.m_Container.ComposeParts(this);
+                this._mContainer.ComposeParts(this);
             }
             catch (CompositionException compositionException)
             {
@@ -48,16 +48,16 @@ namespace Shinkei
 
         public List<CommandDescription> GetAllCommands()
         {
-            List<CommandDescription> AllCommands = new List<CommandDescription>();
+            List<CommandDescription> allCommands = new List<CommandDescription>();
 
-            foreach (Lazy<IPlugin, IPluginData> Plugin in this.Plugins)
+            foreach (Lazy<IPlugin, IPluginData> plugin in this.Plugins)
             {
-                AllCommands.AddRange(Plugin.Value.GetCommands());
+                allCommands.AddRange(plugin.Value.GetCommands());
             }
 
-            AllCommands.Sort(new CommandComparer());
+            allCommands.Sort(new CommandComparer());
 
-            return AllCommands;
+            return allCommands;
         }
     }
 }

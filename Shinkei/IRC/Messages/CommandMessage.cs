@@ -5,23 +5,23 @@ namespace Shinkei.IRC.Messages
 {
     public class CommandMessage : Message
     {
-        private string _Command;
+        private string _command;
         public string Command
         {
-            get { return _Command; }
+            get { return _command; }
         }
 
-        private List<string> _Arguments;
+        private List<string> _arguments;
         public List<string> Arguments
         {
-            get { return _Arguments; }
+            get { return _arguments; }
         }
 
-        public CommandMessage(Server _Server, IEntity _Sender, IEntity _Recipient, string _Command, List<string> _Arguments) 
-            : base(_Server, _Sender, _Recipient)
+        public CommandMessage(Server server, IEntity sender, IEntity recipient, string command, List<string> arguments) 
+            : base(server, sender, recipient)
         {
-            this._Command = _Command;
-            this._Arguments = _Arguments;
+            this._command = command;
+            this._arguments = arguments;
         }
     }
 }

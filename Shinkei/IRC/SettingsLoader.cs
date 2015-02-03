@@ -53,21 +53,21 @@ namespace Shinkei.IRC
             public List<ServerSettings> Servers;
         }
 
-        string m_Path;
-        public Settings m_Settings;
-        public List<Server> m_Servers;
+        string _mPath;
+        public Settings MSettings;
+        public List<Server> MServers;
 
-        private static SettingsLoader Instance = new SettingsLoader("config.json");
+        private static SettingsLoader _instance = new SettingsLoader("config.json");
         public static SettingsLoader GetInstance()
         {
-            return Instance;
+            return _instance;
         }
 
-        private SettingsLoader(string _path)
+        private SettingsLoader(string path)
         {
-            m_Path = _path;
+            _mPath = path;
 
-            if (!File.Exists(m_Path))
+            if (!File.Exists(_mPath))
             {
                 GenerateSampleConfig();
             }
@@ -75,7 +75,7 @@ namespace Shinkei.IRC
 
         public void GenerateSampleConfig()
         {
-            if (!File.Exists(m_Path))
+            if (!File.Exists(_mPath))
             {
                 Settings newSettings = new Settings();
                 newSettings.Nickname = "Shinkei_" + (new Random()).Next(1000,9999);
@@ -98,18 +98,18 @@ namespace Shinkei.IRC
                 newServer.Channels.Add(newChannel);
                 newSettings.Servers.Add(newServer);
 
-                JsonHelper.Serialize<Settings>(newSettings, m_Path);
+                JsonHelper.Serialize<Settings>(newSettings, _mPath);
             }
         }
 
         public void Load()
         {
-            m_Settings = JsonHelper.Deserialize<Settings>(m_Path);
+            MSettings = JsonHelper.Deserialize<Settings>(_mPath);
         }
 
         public void Save()
         {
-            JsonHelper.Serialize<Settings>(m_Settings, m_Path);
+            JsonHelper.Serialize<Settings>(MSettings, _mPath);
         }
 
         public void Reload()
@@ -120,31 +120,31 @@ namespace Shinkei.IRC
 
         public void EnforceSettings()
         {
-            if (m_Servers != null)
+            if (MServers != null)
             {
-                foreach (Server S in m_Servers)
+                foreach (Server s in MServers)
                 {
-                    S.Disconnect();
+                    s.Disconnect();
                 }
 
-                m_Servers.Clear();
+                MServers.Clear();
             }
 
-            foreach (Settings.ServerSettings ServSettings in m_Settings.Servers)
+            foreach (Settings.ServerSettings servSettings in MSettings.Servers)
             {
-                Server newServer = new Server(ServSettings.Hostname, 
-                                              ServSettings.Port, 
-                                              ServSettings.Nickname, 
-                                              ServSettings.Username, 
-                                              ServSettings.Realname);
+                Server newServer = new Server(servSettings.Hostname, 
+                                              servSettings.Port, 
+                                              servSettings.Nickname, 
+                                              servSettings.Username, 
+                                              servSettings.Realname);
 
-                newServer.localSettings = ServSettings;
+                newServer.LocalSettings = servSettings;
 
-                foreach (Settings.ServerSettings.ChannelSettings ChanSettings in ServSettings.Channels)
+                foreach (Settings.ServerSettings.ChannelSettings chanSettings in servSettings.Channels)
                 {
-                    Channel newChannel = new Channel(newServer, ChanSettings.Channel, ChanSettings.Key);
+                    Channel newChannel = new Channel(newServer, chanSettings.Channel, chanSettings.Key);
 
-                    newServer.Channels.Add(ChanSettings.Channel, newChannel);
+                    newServer.Channels.Add(chanSettings.Channel, newChannel);
                 }
 
                 newServer.Connect();

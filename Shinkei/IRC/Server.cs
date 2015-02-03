@@ -12,31 +12,31 @@ namespace Shinkei.IRC
 {
     public class Server
     {
-        public const int MAX_MESSAGE_LENGTH = 512;
+        public const int MaxMessageLength = 512;
 
-        Regex MessageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
+        Regex _messageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
 
-        public SettingsLoader.Settings.ServerSettings localSettings; // just for reference
+        public SettingsLoader.Settings.ServerSettings LocalSettings; // just for reference
         public Dictionary<string, Channel> Channels;
-        string Host;
-        int Port;
+        string _host;
+        int _port;
 
-        string Nickname;
-        string Username;
-        string Realname;
-        string NickservPassword;
+        string _nickname;
+        string _username;
+        string _realname;
+        string _nickservPassword;
 
-        Thread TReader;
-        TcpClient Socket;
-        bool bRunning;
+        Thread _reader;
+        TcpClient _socket;
+        bool _bRunning;
 
-        public Server(string _Host, int _Port, string _Nickname, string _Username = "shinkei", string _Realname = "Shinkei Bot")
+        public Server(string host, int port, string nickname, string username = "shinkei", string realname = "Shinkei Bot")
         {
-            Host = _Host;
-            Port = _Port;
-            Nickname = _Nickname;
-            Username = _Username;
-            Realname = _Realname;
+            _host = host;
+            _port = port;
+            _nickname = nickname;
+            _username = username;
+            _realname = realname;
 
             Channels = new Dictionary<string, Channel>();
         }
@@ -45,199 +45,199 @@ namespace Shinkei.IRC
         {
             Thread.Sleep(5000);
 
-            foreach (KeyValuePair<string, Channel> C in Channels)
+            foreach (KeyValuePair<string, Channel> c in Channels)
             {
-                C.Value.Join();
+                c.Value.Join();
             }
         }
 
         private void ReadThread()
         {
-            if (Socket.Connected) 
+            if (_socket.Connected) 
             {
                 Authenticate();
 
-                Thread TJoin = new Thread(JoinThread);
-                TJoin.Start();
+                Thread @join = new Thread(JoinThread);
+                @join.Start();
 
-                StreamReader Reader = new StreamReader(Socket.GetStream());
-                while (bRunning)
+                StreamReader reader = new StreamReader(_socket.GetStream());
+                while (_bRunning)
                 {
-                    string Line = Reader.ReadLine();
-                    if (Line != null)
+                    string line = reader.ReadLine();
+                    if (line != null)
                     {
-                        Console.WriteLine(Host + ": << " + Line);
+                        Console.WriteLine(_host + ": << " + line);
 
-                        Match Parts = MessageParser.Match(Line);
+                        Match parts = _messageParser.Match(line);
 
-                        int ResponseCode = 0;
-                        try { ResponseCode = Convert.ToInt32(Parts.Groups[2].Value); }
+                        int responseCode = 0;
+                        try { responseCode = Convert.ToInt32(parts.Groups[2].Value); }
                         catch { }
 
-                        EntUser Sender = new EntUser(Parts.Groups[1].Value);
+                        EntUser sender = new EntUser(parts.Groups[1].Value);
 
-                        if (ResponseCode > 0)
+                        if (responseCode > 0)
                         {
-                            ResponseMessage RawMessage = new ResponseMessage(this, ResponseCode, Parts.Groups[3].Value);
-                            IRC.Eventsink.GetInstance().OnIrcServerResponse(RawMessage);
+                            ResponseMessage rawMessage = new ResponseMessage(this, responseCode, parts.Groups[3].Value);
+                            IRC.Eventsink.GetInstance().OnIrcServerResponse(rawMessage);
                         }
-                        else if (Parts.Groups[2].Value == "JOIN")
+                        else if (parts.Groups[2].Value == "JOIN")
                         {
-                            EntChannel Recipient = new EntChannel(Parts.Groups[4].Value);
+                            EntChannel recipient = new EntChannel(parts.Groups[4].Value);
 
                             // Dispatch JOIN event
-                            IRC.Eventsink.GetInstance().OnIrcJoin(new JoinMessage(this, Sender, Recipient));
+                            IRC.Eventsink.GetInstance().OnIrcJoin(new JoinMessage(this, sender, recipient));
                         }
-                        else if (Parts.Groups[2].Value == "KICK")
+                        else if (parts.Groups[2].Value == "KICK")
                         {
-                            string ChannelRecipient = Parts.Groups[3].Value;
-                            EntChannel Channel = new EntChannel(ChannelRecipient.Split(' ')[0]);
-                            EntUser Recipient = new EntUser(ChannelRecipient.Split(' ')[1]);
+                            string channelRecipient = parts.Groups[3].Value;
+                            EntChannel channel = new EntChannel(channelRecipient.Split(' ')[0]);
+                            EntUser recipient = new EntUser(channelRecipient.Split(' ')[1]);
 
                             // Dispatch KICK event
-                            IRC.Eventsink.GetInstance().OnIrcKick(new KickMessage(this, Sender, Recipient, Channel, Parts.Groups[4].Value));
+                            IRC.Eventsink.GetInstance().OnIrcKick(new KickMessage(this, sender, recipient, channel, parts.Groups[4].Value));
                         }
-                        else if (Parts.Groups[2].Value == "PART")
+                        else if (parts.Groups[2].Value == "PART")
                         {
-                            EntChannel Channel = new EntChannel(Parts.Groups[3].Value);
+                            EntChannel channel = new EntChannel(parts.Groups[3].Value);
 
                             // Dispatch PART event
-                            IRC.Eventsink.GetInstance().OnIrcPart(new PartMessage(this, Sender, Channel, Parts.Groups[4].Value));
+                            IRC.Eventsink.GetInstance().OnIrcPart(new PartMessage(this, sender, channel, parts.Groups[4].Value));
                         }
-                        else if (Parts.Groups[2].Value == "PRIVMSG")
+                        else if (parts.Groups[2].Value == "PRIVMSG")
                         {
-                            IEntity Recipient;
-                            if (Parts.Groups[3].Value.StartsWith("#"))
+                            IEntity recipient;
+                            if (parts.Groups[3].Value.StartsWith("#"))
                             {
-                                Recipient = new EntChannel(Parts.Groups[3].Value);
+                                recipient = new EntChannel(parts.Groups[3].Value);
                             }
                             else
                             {
-                                Recipient = new EntUser(Parts.Groups[3].Value);
+                                recipient = new EntUser(parts.Groups[3].Value);
                             }
 
                             // Dispatch PRIVMSG event
-                            IRC.Eventsink.GetInstance().OnIrcMessage(new PrivateMessage(this, Sender, Recipient, Parts.Groups[4].Value));
+                            IRC.Eventsink.GetInstance().OnIrcMessage(new PrivateMessage(this, sender, recipient, parts.Groups[4].Value));
 
-                            if (IsCommandCharacter(Parts.Groups[4].Value[0]))
+                            if (IsCommandCharacter(parts.Groups[4].Value[0]))
                             {
                                 // Dispatch command event
-                                string CommandString = Parts.Groups[4].Value.Split(' ')[0];
-                                string Command = CommandString.Substring(1);
+                                string commandString = parts.Groups[4].Value.Split(' ')[0];
+                                string command = commandString.Substring(1);
 
-                                string ArgumentString = Parts.Groups[4].Value.Substring(CommandString.Length);
-                                List<string> Arguments = ParseArguments(ArgumentString);
+                                string argumentString = parts.Groups[4].Value.Substring(commandString.Length);
+                                List<string> arguments = ParseArguments(argumentString);
 
-                                IRC.Eventsink.GetInstance().OnIrcCommand(new CommandMessage(this, Sender, Recipient, Command, Arguments));
+                                IRC.Eventsink.GetInstance().OnIrcCommand(new CommandMessage(this, sender, recipient, command, arguments));
                             }
 
                         }
-                        else if (Parts.Groups[0].Value.StartsWith("PING"))
+                        else if (parts.Groups[0].Value.StartsWith("PING"))
                         {
-                            WriteLine(Parts.Groups[0].Value.Replace("PING", "PONG"));
+                            WriteLine(parts.Groups[0].Value.Replace("PING", "PONG"));
                         }
                     }
                 }
             }
         }
 
-        public bool IsCommandCharacter(char C)
+        public bool IsCommandCharacter(char c)
         {
-            return (C == SettingsLoader.GetInstance().m_Settings.CommandCharacter);
+            return (c == SettingsLoader.GetInstance().MSettings.CommandCharacter);
         }
 
-        public List<string> ParseArguments(string ArgumentString)
+        public List<string> ParseArguments(string argumentString)
         {
-            List<string> Arguments = new List<string>();
-            ArgumentString = ArgumentString.Trim();
+            List<string> arguments = new List<string>();
+            argumentString = argumentString.Trim();
 
-            string SingleArgument = "";
+            string singleArgument = "";
             bool bInQuotes = false;
-            foreach (char C in ArgumentString)
+            foreach (char c in argumentString)
             {
-                if (C == '\'')
+                if (c == '\'')
                 {
                     bInQuotes = !bInQuotes;
                 }
 
-                if (C == ' ')
+                if (c == ' ')
                 {
                     if (bInQuotes)
                     {
-                        SingleArgument += C.ToString();
+                        singleArgument += c.ToString();
                     }
                     else
                     {
-                        Arguments.Add(SingleArgument);
-                        SingleArgument = "";
+                        arguments.Add(singleArgument);
+                        singleArgument = "";
                     }
                 }
                 else
                 {
-                    SingleArgument += C.ToString();
+                    singleArgument += c.ToString();
                 }
             }
 
-            if (ArgumentString.Length > 0)
+            if (argumentString.Length > 0)
             {
-                Arguments.Add(ArgumentString);
+                arguments.Add(argumentString);
             }
 
-            return Arguments;
+            return arguments;
         }
 
         public void WriteLine(string text)
         {
-            if (Socket.Connected && bRunning)
+            if (_socket.Connected && _bRunning)
             {
-                Console.WriteLine(Host + ": >> " + text);
+                Console.WriteLine(_host + ": >> " + text);
 
-                StreamWriter Writer = new StreamWriter(Socket.GetStream());
-                Writer.WriteLine(text);
-                Writer.Flush();
+                StreamWriter writer = new StreamWriter(_socket.GetStream());
+                writer.WriteLine(text);
+                writer.Flush();
             }
         }
 
-        public void PrivateMessage(IEntity Recipient, string text)
+        public void PrivateMessage(IEntity recipient, string text)
         {
-            string MessageHeader = "PRIVMSG " + Recipient.GetName() + " :";
+            string messageHeader = "PRIVMSG " + recipient.GetName() + " :";
 
-            if ((MessageHeader.Length + text.Length) <= MAX_MESSAGE_LENGTH)
+            if ((messageHeader.Length + text.Length) <= MaxMessageLength)
             {
-                WriteLine(MessageHeader + text);
+                WriteLine(messageHeader + text);
             }
             else
             {
                 int nOffset = 0;
                 while (text.Length > 0)
                 {
-                    string Part = text.Substring(nOffset, (MAX_MESSAGE_LENGTH - MessageHeader.Length));
+                    string part = text.Substring(nOffset, (MaxMessageLength - messageHeader.Length));
 
-                    WriteLine(MessageHeader + Part);
+                    WriteLine(messageHeader + part);
 
-                    nOffset += (MAX_MESSAGE_LENGTH - MessageHeader.Length);
+                    nOffset += (MaxMessageLength - messageHeader.Length);
                 }
             }
         }
 
         private void Authenticate()
         {
-            WriteLine("NICK " + Nickname);
-            WriteLine("USER " + Username + " 0 * :" + Realname);
+            WriteLine("NICK " + _nickname);
+            WriteLine("USER " + _username + " 0 * :" + _realname);
         }
 
         public void Connect()
         {
-            Socket = new TcpClient();
+            _socket = new TcpClient();
 
             try
             {
-                Socket.Connect(Host, Port);
-                if (Socket.Connected)
+                _socket.Connect(_host, _port);
+                if (_socket.Connected)
                 {
-                    bRunning = true;
-                    TReader = new Thread(ReadThread);
-                    TReader.Start();
+                    _bRunning = true;
+                    _reader = new Thread(ReadThread);
+                    _reader.Start();
                 }
             }
             catch (Exception ex)
@@ -245,7 +245,7 @@ namespace Shinkei.IRC
                 try
                 {
                     Console.WriteLine(ex.Message);
-                    Socket.Close();
+                    _socket.Close();
                 }
                 catch { }
                 Disconnect();
@@ -254,8 +254,8 @@ namespace Shinkei.IRC
 
         public void Disconnect()
         {
-            bRunning = false;
-            TReader.Abort();
+            _bRunning = false;
+            _reader.Abort();
         }
 
         public void Reconnect()

@@ -11,7 +11,7 @@ namespace Shinkei
 {
     public class JsonHelper
     {
-        private const string INDENT_STRING = "    ";
+        private const string IndentString = "    ";
         public static string FormatJson(string str)
         {
             var indent = 0;
@@ -28,7 +28,7 @@ namespace Shinkei
                         if (!quoted)
                         {
                             sb.AppendLine();
-                            Enumerable.Range(0, ++indent).ForEach(item => sb.Append(INDENT_STRING));
+                            Enumerable.Range(0, ++indent).ForEach(item => sb.Append(IndentString));
                         }
                         break;
                     case '}':
@@ -36,7 +36,7 @@ namespace Shinkei
                         if (!quoted)
                         {
                             sb.AppendLine();
-                            Enumerable.Range(0, --indent).ForEach(item => sb.Append(INDENT_STRING));
+                            Enumerable.Range(0, --indent).ForEach(item => sb.Append(IndentString));
                         }
                         sb.Append(ch);
                         break;
@@ -54,7 +54,7 @@ namespace Shinkei
                         if (!quoted)
                         {
                             sb.AppendLine();
-                            Enumerable.Range(0, indent).ForEach(item => sb.Append(INDENT_STRING));
+                            Enumerable.Range(0, indent).ForEach(item => sb.Append(IndentString));
                         }
                         break;
                     case ':':
@@ -72,21 +72,21 @@ namespace Shinkei
 
         public static T Deserialize<T>(string path)
         {
-            DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(T));
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
 
-            FileStream SettingsFile = File.Open(path, FileMode.Open);
-            T Settings = (T)Serializer.ReadObject(SettingsFile);
-            SettingsFile.Close();
+            FileStream settingsFile = File.Open(path, FileMode.Open);
+            T settings = (T)serializer.ReadObject(settingsFile);
+            settingsFile.Close();
 
-            return Settings;
+            return settings;
         }
 
         public static void Serialize<T>(object _object, string path)
         {
             FileStream newFile = File.Create(path);
 
-            DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(T));
-            Serializer.WriteObject(newFile, _object);
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+            serializer.WriteObject(newFile, _object);
             newFile.Close();
 
             string reformat = File.ReadAllText(path);

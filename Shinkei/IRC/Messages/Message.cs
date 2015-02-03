@@ -22,11 +22,11 @@ namespace Shinkei.IRC.Messages
             get { return _Recipient; }
         }
 
-        public Message(Server _Server, IEntity _Sender, IEntity _Recipient)
+        public Message(Server server, IEntity sender, IEntity recipient)
         {
-            this._ServerInstance = _Server;
-            this._Sender = _Sender;
-            this._Recipient = _Recipient;
+            this._ServerInstance = server;
+            this._Sender = sender;
+            this._Recipient = recipient;
         }
     }
 }

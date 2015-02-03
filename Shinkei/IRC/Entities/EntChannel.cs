@@ -3,18 +3,18 @@ namespace Shinkei.IRC.Entities
 {
     public class EntChannel : IEntity
     {
-        private string _Name;
+        private string _name;
         public string Name
         { 
             get
             {
-                return _Name;
+                return _name;
             }
         }
 
-        public EntChannel (string Name)
+        public EntChannel (string name)
         {
-            this._Name = Name;
+            this._name = name;
         }
 
         public string GetName()

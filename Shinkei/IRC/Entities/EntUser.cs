@@ -4,48 +4,48 @@ namespace Shinkei.IRC.Entities
 {
     public class EntUser : IEntity
     {
-        private string _Username;
+        private string _username;
         public string Username
         { 
             get
             {
-                return _Username;
+                return _username;
             }
         }
 
-        private string _Host;
+        private string _host;
         public string Host
         { 
             get
             {
-                return _Host;
+                return _host;
             }
         }
 
-        private string _Nickname;
+        private string _nickname;
         public string Nickname
         { 
             get
             {
-                return _Nickname;
+                return _nickname;
             }
         }
 
-        public EntUser (string Name)
+        public EntUser (string name)
         {
-            if (Name.Contains('@'))
+            if (name.Contains('@'))
             {
-                string Nickparts = Name.Split('@')[0];
-                if (Nickparts.Contains('!'))
+                string nickparts = name.Split('@')[0];
+                if (nickparts.Contains('!'))
                 {
-                    _Nickname = Nickparts.Split('!')[0];
-                    _Username = Nickparts.Split('!')[1];
+                    _nickname = nickparts.Split('!')[0];
+                    _username = nickparts.Split('!')[1];
                 }
-                _Host = Name.Split('@')[1];
+                _host = name.Split('@')[1];
             }
             else
             {
-                _Nickname = Name;
+                _nickname = name;
             }
         }
 

@@ -14,35 +14,35 @@ namespace Shinkei
     {
         bool IsEnabled();
 
-        void RegisterEvents(IRC.Eventsink Eventdata);
+        void RegisterEvents(IRC.Eventsink eventdata);
         List<CommandDescription> GetCommands();
     }
 
     public class CommandDescription
     {
-        private string _Command;
+        private string _command;
         public string Command
         {
-            get { return _Command; }
+            get { return _command; }
         }
 
-        private string _Usage;
+        private string _usage;
         public string Usage
         {
-            get { return _Usage; }
+            get { return _usage; }
         }
 
-        private string _Description;
+        private string _description;
         public string Description
         {
-            get { return _Description; }
+            get { return _description; }
         }
 
-        public CommandDescription(string _Command, string _Usage, string _Description)
+        public CommandDescription(string command, string usage, string description)
         {
-            this._Command = _Command;
-            this._Usage = _Usage;
-            this._Description = _Description;
+            this._command = command;
+            this._usage = usage;
+            this._description = description;
         }
     }
 
