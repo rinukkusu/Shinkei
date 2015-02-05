@@ -32,7 +32,7 @@ public class HelpPlugin : IPlugin
         _commands = new List<CommandDescription>();
         _commands.Add(new CommandDescription("help", "help [command]", "Retrieves the description and usage information of commands."));
         _commands.Add(new CommandDescription("listplugins", "listplugins", "Lists all plugins and their description."));
-
+        _commands.Add(new CommandDescription("listservers", "listservers", "Lists all servers"));
         eventdata.OnIrcCommand += new Eventsink.IrcCommandDelegate(this.IrcCommandHandler);
     }
 
@@ -102,8 +102,17 @@ public class HelpPlugin : IPlugin
                 }
                 break;
             }
-            default:
+            case "listservers":
+            {
+                foreach(Server server in SettingsLoader.GetInstance().Servers)
+                {
+                    data.ServerInstance.PrivateMessage(data.Sender, "Connected servers:");
+                    string serverInfo = String.Format("  {0} - {1}:{2}",
+                        server.Identifier, server.Host, server.Port);
+                    data.ServerInstance.PrivateMessage(data.Sender, serverInfo);
+                }
                 break;
+            }
         }
     }
 
