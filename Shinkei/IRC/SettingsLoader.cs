@@ -36,6 +36,9 @@ namespace Shinkei.IRC
                 public int Port;
 
                 [DataMemberAttribute]
+                public String Identifier;
+
+                [DataMemberAttribute]
                 public List<ChannelSettings> Channels;
             }
 
@@ -55,7 +58,7 @@ namespace Shinkei.IRC
 
         string _mPath;
         public Settings MSettings;
-        public List<Server> MServers;
+        public List<Server> Servers;
 
         private static SettingsLoader _instance = new SettingsLoader("config.json");
         public static SettingsLoader GetInstance()
@@ -89,6 +92,7 @@ namespace Shinkei.IRC
                 newServer.Nickname = newSettings.Nickname;
                 newServer.Username = newSettings.Username;
                 newServer.Realname = newSettings.Realname;
+                newServer.Identifier = "lolnein";
                 newServer.Channels = new List<Settings.ServerSettings.ChannelSettings>();
 
                 Settings.ServerSettings.ChannelSettings newChannel = new Settings.ServerSettings.ChannelSettings();
@@ -120,20 +124,30 @@ namespace Shinkei.IRC
 
         public void EnforceSettings()
         {
-            if (MServers != null)
+            if (Servers != null)
             {
-                foreach (Server s in MServers)
+                foreach (Server s in Servers)
                 {
                     s.Disconnect();
                 }
 
-                MServers.Clear();
+                Servers.Clear();
+            }
+            else
+            {
+                Servers = new List<Server>();
             }
 
+            int i = 0;
             foreach (Settings.ServerSettings servSettings in MSettings.Servers)
             {
+                if (servSettings.Identifier == null)
+                {
+                    servSettings.Identifier = "server_" + i;
+                }
                 Server newServer = new Server(servSettings.Hostname, 
-                                              servSettings.Port, 
+                                              servSettings.Port,
+                                              servSettings.Identifier,
                                               servSettings.Nickname, 
                                               servSettings.Username, 
                                               servSettings.Realname);
@@ -148,6 +162,8 @@ namespace Shinkei.IRC
                 }
 
                 newServer.Connect();
+                Servers.Add(newServer);
+                i++;
             }
         }
     }

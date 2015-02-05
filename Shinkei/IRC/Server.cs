@@ -4,6 +4,7 @@ using Shinkei.IRC.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -14,30 +15,38 @@ namespace Shinkei.IRC
     {
         public const int MaxMessageLength = 512;
 
-        Regex _messageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
+        readonly Regex _messageParser = new Regex("^(?:[:](\\S+) )?(\\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
 
         public SettingsLoader.Settings.ServerSettings LocalSettings; // just for reference
         public Dictionary<string, Channel> Channels;
-        string _host;
-        int _port;
+        
+        public readonly string Host;
+        public readonly int Port;
 
-        string _nickname;
-        string _username;
-        string _realname;
-        string _nickservPassword;
+        public readonly string Nickname;
+        public readonly string Username;
+        public readonly string Realname;
+        public readonly string NickservPassword;
+        public string Identifier;
 
         Thread _reader;
         TcpClient _socket;
         bool _bRunning;
 
-        public Server(string host, int port, string nickname, string username = "shinkei", string realname = "Shinkei Bot")
+        public static Server GetServer(string identifier)
         {
-            _host = host;
-            _port = port;
-            _nickname = nickname;
-            _username = username;
-            _realname = realname;
+            return SettingsLoader.GetInstance().Servers.FirstOrDefault(server => server.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
+        }
 
+        public Server(string host, int port, string serverIdentifier, string nickname, string username = "shinkei", string realname = "Shinkei Bot", string nickservPassword = "")
+        {
+            Host = host;
+            Port = port;
+            Nickname = nickname;
+            Username = username;
+            Realname = realname;
+            Identifier = serverIdentifier;
+            NickservPassword = nickservPassword;
             Channels = new Dictionary<string, Channel>();
         }
 
@@ -66,7 +75,7 @@ namespace Shinkei.IRC
                     string line = reader.ReadLine();
                     if (line != null)
                     {
-                        Console.WriteLine(_host + ": << " + line);
+                        Console.WriteLine(Identifier + ": << " + line);
 
                         Match parts = _messageParser.Match(line);
 
@@ -152,7 +161,7 @@ namespace Shinkei.IRC
         {
             if (_socket.Connected && _bRunning)
             {
-                Console.WriteLine(_host + ": >> " + text);
+                Console.WriteLine(Identifier + ": >> " + text);
 
                 StreamWriter writer = new StreamWriter(_socket.GetStream());
                 writer.WriteLine(text);
@@ -184,8 +193,8 @@ namespace Shinkei.IRC
 
         private void Authenticate()
         {
-            WriteLine("NICK " + _nickname);
-            WriteLine("USER " + _username + " 0 * :" + _realname);
+            WriteLine("NICK " + Nickname);
+            WriteLine("USER " + Username + " 0 * :" + Realname);
         }
 
         public void Connect()
@@ -194,7 +203,7 @@ namespace Shinkei.IRC
 
             try
             {
-                _socket.Connect(_host, _port);
+                _socket.Connect(Host, Port);
                 if (_socket.Connected)
                 {
                     _bRunning = true;
@@ -213,6 +222,7 @@ namespace Shinkei.IRC
                 Disconnect();
             }
         }
+
 
         public void Disconnect()
         {
