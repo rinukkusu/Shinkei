@@ -1,5 +1,5 @@
-﻿using Shinkei.IRC.Messages;
-using System;
+﻿using System;
+using Shinkei.IRC.Messages;
 
 namespace Shinkei.IRC
 {
@@ -10,13 +10,11 @@ namespace Shinkei.IRC
         public delegate void ConsoleCommandDelegate(ConsoleCommandMessage data);
         public delegate void IrcServerResponseDelegate(ResponseMessage data);
         public delegate void IrcMessageDelegate(PrivateMessage data);
-        public delegate void IrcCommandDelegate(CommandMessage data);
         public delegate void IrcJoinDelegate(JoinMessage data);
         public delegate void IrcKickDelegate(KickMessage data);
         public delegate void IrcPartDelegate(PartMessage data);
 
         public delegate void ConsoleQueuedCommandDelegate(ConsoleCommandMessage data);
-        public delegate void IrcQueuedCommandDelegate(CommandMessage data);
         public delegate void IrcQueuedJoinDelegate(JoinMessage data);
         public delegate void IrcQueuedKickDelegate(KickMessage data);
         public delegate void IrcQueuedPartDelegate(PartMessage data);
@@ -28,13 +26,11 @@ namespace Shinkei.IRC
         public ConsoleCommandDelegate OnConsoleCommand;
         public IrcServerResponseDelegate OnIrcServerResponse;
         public IrcMessageDelegate OnIrcMessage;
-        public IrcCommandDelegate OnIrcCommand;
         public IrcJoinDelegate OnIrcJoin;
         public IrcKickDelegate OnIrcKick;
         public IrcPartDelegate OnIrcPart;
 
         public ConsoleQueuedCommandDelegate OnConsoleQueuedCommand;
-        public IrcQueuedCommandDelegate OnIrcQueuedCommand;
         public IrcQueuedJoinDelegate OnIrcQueuedJoin;
         public IrcQueuedKickDelegate OnIrcQueuedKick;
         public IrcQueuedPartDelegate OnIrcQueuedPart;
@@ -59,12 +55,6 @@ namespace Shinkei.IRC
             Console.WriteLine("Eventsink.IrcMessageHandler");
         }
 
-        private void IrcCommandHandler(CommandMessage data)
-        {
-            Console.WriteLine("Eventsink.IrcCommandHandler");
-            OnIrcQueuedCommand(data);
-        }
-
         private void IrcJoinHandler(JoinMessage data)
         {
             Console.WriteLine("Eventsink.IrcJoinHandler");
@@ -87,11 +77,6 @@ namespace Shinkei.IRC
         private void ConsoleQueuedCommandHandler(ConsoleCommandMessage data)
         {
             Console.WriteLine("Eventsink.ConsoleQueuedCommandHandler");
-        }
-
-        private void IrcQueuedCommandHandler(CommandMessage data)
-        {
-            Console.WriteLine("Eventsink.IrcQueuedCommandHandler");
         }
 
         private void IrcQueuedJoinHandler(JoinMessage data)
@@ -119,19 +104,17 @@ namespace Shinkei.IRC
 
         private Eventsink()
         {
-            OnConsoleCommand = new ConsoleCommandDelegate(ConsoleCommandHandler);
-            OnIrcServerResponse = new IrcServerResponseDelegate(IrcServerResponseHandler);
-            OnIrcMessage = new IrcMessageDelegate(IrcMessageHandler);
-            OnIrcCommand = new IrcCommandDelegate(IrcCommandHandler);
-            OnIrcJoin = new IrcJoinDelegate(IrcJoinHandler);
-            OnIrcKick = new IrcKickDelegate(IrcKickHandler);
-            OnIrcPart = new IrcPartDelegate(IrcPartHandler);
+            OnConsoleCommand = ConsoleCommandHandler;
+            OnIrcServerResponse = IrcServerResponseHandler;
+            OnIrcMessage = IrcMessageHandler;
+            OnIrcJoin = IrcJoinHandler;
+            OnIrcKick = IrcKickHandler;
+            OnIrcPart = IrcPartHandler;
             
-            OnConsoleQueuedCommand = new ConsoleQueuedCommandDelegate(ConsoleQueuedCommandHandler);
-            OnIrcQueuedCommand = new IrcQueuedCommandDelegate(IrcQueuedCommandHandler);
-            OnIrcQueuedJoin = new IrcQueuedJoinDelegate(IrcQueuedJoinHandler);
-            OnIrcQueuedKick = new IrcQueuedKickDelegate(IrcQueuedKickHandler);
-            OnIrcQueuedPart = new IrcQueuedPartDelegate(IrcQueuedPartHandler);
+            OnConsoleQueuedCommand = ConsoleQueuedCommandHandler;
+            OnIrcQueuedJoin = IrcQueuedJoinHandler;
+            OnIrcQueuedKick = IrcQueuedKickHandler;
+            OnIrcQueuedPart = IrcQueuedPartHandler;
         }
     }
 }

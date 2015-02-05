@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\HelpCommandExecutor.cs" />
+    <Compile Include="Commands\ListPluginsCommandExecutor.cs" />
+    <Compile Include="Commands\ListServersCommandExecutor.cs" />
     <Compile Include="HelpPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\JoinCommandExecutor.cs" />
+    <Compile Include="Commands\PartCommandExecutor.cs" />
     <Compile Include="ControlPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

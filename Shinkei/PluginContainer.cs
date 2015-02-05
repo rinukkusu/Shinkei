@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
+using Shinkei.API;
 
 namespace Shinkei
 {
@@ -12,7 +13,7 @@ namespace Shinkei
         private CompositionContainer _mContainer;
 
         [ImportMany]
-        public IEnumerable<Lazy<IPlugin, IPluginData>> Plugins;
+        public IEnumerable<Lazy<Plugin, IPluginData>> Plugins;
 
         private static PluginContainer _instance = new PluginContainer("./plugins");
         public static PluginContainer GetInstance()
@@ -44,20 +45,6 @@ namespace Shinkei
             {
                 Console.WriteLine(compositionException.ToString());
             }
-        }
-
-        public List<CommandDescription> GetAllCommands()
-        {
-            List<CommandDescription> allCommands = new List<CommandDescription>();
-
-            foreach (Lazy<IPlugin, IPluginData> plugin in this.Plugins)
-            {
-                allCommands.AddRange(plugin.Value.GetCommands());
-            }
-
-            allCommands.Sort(new CommandComparer());
-
-            return allCommands;
         }
     }
 }

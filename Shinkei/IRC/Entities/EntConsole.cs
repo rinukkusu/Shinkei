@@ -1,21 +1,23 @@
-﻿namespace Shinkei.IRC.Entities
+﻿using Shinkei.API.Commands;
+
+namespace Shinkei.IRC.Entities
 {
-    class EntConsole : IEntity
+    class EntConsole : EntUser
     {
         private static EntConsole _instance;
         public static EntConsole GetInstance()
         {
-            if (_instance == null)
-            {
-                _instance = new EntConsole();
-            }
-
-            return _instance;
+            return _instance ?? (_instance = new EntConsole("Console"));
         }
 
-        public string GetName()
+        public EntConsole(string name) : base(name)
         {
-            return "Console";
+            _permission = CommandPermission.CONSOLE;
+        }
+
+        public override bool HasPermission(CommandPermission permission)
+        {
+            return true;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Shinkei.API;
 using Shinkei.IRC;
 using Shinkei.IRC.Messages;
 
@@ -37,14 +38,13 @@ namespace Shinkei
 
         private static void StartShinkei()
         {
-            IRC.Eventsink myEventsink = IRC.Eventsink.GetInstance();
 
             PluginContainer myPluginContainer = PluginContainer.GetInstance();
             myPluginContainer.LoadPlugins();
 
-            foreach (Lazy<IPlugin, IPluginData> plugin in myPluginContainer.Plugins)
+            foreach (Lazy<Plugin, IPluginData> plugin in myPluginContainer.Plugins)
             {
-                plugin.Value.RegisterEvents(myEventsink);
+                plugin.Value.OnEnable();
             }
 
             //myEventsink.OnIrcMessage(new IRC.Message());

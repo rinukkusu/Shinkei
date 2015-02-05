@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Shinkei.API.Commands;
 
 namespace Shinkei.IRC.Entities
 {
@@ -31,10 +32,13 @@ namespace Shinkei.IRC.Entities
             }
         }
 
+        protected CommandPermission _permission;
+
         public EntUser (string name)
         {
             if (name.Contains('@'))
             {
+                _permission = CommandPermission.OP;
                 string nickparts = name.Split('@')[0];
                 if (nickparts.Contains('!'))
                 {
@@ -45,13 +49,21 @@ namespace Shinkei.IRC.Entities
             }
             else
             {
+                _permission = CommandPermission.NONE;
                 _nickname = name;
             }
+            //Todo: implement whitelist and voice permission
         }
 
         public string GetName()
         {
-            return this.Nickname;
+            return Nickname;
+        }
+        
+
+        public virtual bool HasPermission(CommandPermission permission)
+        {
+            return (_permission & permission) != 0;
         }
     }
 }

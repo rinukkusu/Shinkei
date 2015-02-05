@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Shinkei.IRC.Commands;
 
 namespace Shinkei.IRC
 {
@@ -137,7 +138,7 @@ namespace Shinkei.IRC
                                 string argumentString = parts.Groups[4].Value.Substring(commandString.Length);
                                 List<string> arguments = Util.ParseArguments(argumentString);
 
-                                IRC.Eventsink.GetInstance().OnIrcCommand(new CommandMessage(this, sender, recipient, command, arguments));
+                                CommandHandler.GetInstance().HandleCommand(new CommandMessage(this, sender, recipient, command, arguments));
                             }
 
                         }
@@ -154,9 +155,7 @@ namespace Shinkei.IRC
         {
             return (c == SettingsLoader.GetInstance().MSettings.CommandCharacter);
         }
-
-
-
+        
         public void WriteLine(string text)
         {
             if (_socket.Connected && _bRunning)

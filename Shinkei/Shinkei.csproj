@@ -58,7 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Commands\Command.cs" />
+    <Compile Include="API\Commands\ICommandExecutor.cs" />
     <Compile Include="IRC\Channel.cs" />
+    <Compile Include="IRC\Commands\CommandHandler.cs" />
     <Compile Include="IRC\Entities\EntChannel.cs" />
     <Compile Include="IRC\Client.cs" />
     <Compile Include="IRC\Entities\EntConsole.cs" />
@@ -72,10 +75,11 @@
     <Compile Include="IRC\Messages\JoinMessage.cs" />
     <Compile Include="IRC\Messages\KickMessage.cs" />
     <Compile Include="IRC\Messages\Message.cs" />
-    <Compile Include="IPlugin.cs" />
+    <Compile Include="API\IPlugin.cs" />
     <Compile Include="IRC\Messages\PartMessage.cs" />
     <Compile Include="IRC\Messages\PrivateMessage.cs" />
     <Compile Include="IRC\Messages\ResponseMessage.cs" />
+    <Compile Include="API\Commands\CommandPermission.cs" />
     <Compile Include="IRC\ResponseCodes.cs" />
     <Compile Include="IRC\Server.cs" />
     <Compile Include="IRC\SettingsLoader.cs" />
