@@ -12,7 +12,7 @@ namespace Shinkei.IRC.Entities
 
         public EntConsole(string name) : base(name)
         {
-            _permission = CommandPermission.CONSOLE;
+            Permission = CommandPermission.CONSOLE;
         }
 
         public override bool HasPermission(CommandPermission permission)

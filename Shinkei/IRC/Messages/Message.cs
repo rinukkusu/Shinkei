@@ -4,29 +4,29 @@ namespace Shinkei.IRC.Messages
 {
     public class Message
     {
-        protected Server _ServerInstance;
+        private Server _serverInstance;
         public Server ServerInstance
         {
-            get { return _ServerInstance; }
+            get { return _serverInstance; }
         }
 
-        protected IEntity _Sender;
+        private IEntity _sender;
         public IEntity Sender
         {
-            get { return _Sender; }
+            get { return _sender; }
         }
 
-        protected IEntity _Recipient;
+        private IEntity _recipient;
         public virtual IEntity Recipient
         {
-            get { return _Recipient; }
+            get { return _recipient; }
         }
 
         public Message(Server server, IEntity sender, IEntity recipient)
         {
-            this._ServerInstance = server;
-            this._Sender = sender;
-            this._Recipient = recipient;
+            _serverInstance = server;
+            _sender = sender;
+            _recipient = recipient;
         }
     }
 }

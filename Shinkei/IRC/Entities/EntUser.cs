@@ -5,7 +5,7 @@ namespace Shinkei.IRC.Entities
 {
     public class EntUser : IEntity
     {
-        private string _username;
+        private readonly string _username;
         public string Username
         { 
             get
@@ -14,7 +14,7 @@ namespace Shinkei.IRC.Entities
             }
         }
 
-        private string _host;
+        private readonly string _host;
         public string Host
         { 
             get
@@ -23,7 +23,7 @@ namespace Shinkei.IRC.Entities
             }
         }
 
-        private string _nickname;
+        private readonly string _nickname;
         public string Nickname
         { 
             get
@@ -32,13 +32,13 @@ namespace Shinkei.IRC.Entities
             }
         }
 
-        protected CommandPermission _permission;
+        protected CommandPermission Permission;
 
         public EntUser (string name)
         {
             if (name.Contains('@'))
             {
-                _permission = CommandPermission.OP;
+                Permission = CommandPermission.OP;
                 string nickparts = name.Split('@')[0];
                 if (nickparts.Contains('!'))
                 {
@@ -49,7 +49,7 @@ namespace Shinkei.IRC.Entities
             }
             else
             {
-                _permission = CommandPermission.NONE;
+                Permission = CommandPermission.NONE;
                 _nickname = name;
             }
             //Todo: implement whitelist and voice permission
@@ -63,7 +63,7 @@ namespace Shinkei.IRC.Entities
 
         public virtual bool HasPermission(CommandPermission permission)
         {
-            return (_permission & permission) != 0;
+            return (Permission & permission) != 0;
         }
     }
 }

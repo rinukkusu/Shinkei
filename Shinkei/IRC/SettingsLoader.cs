@@ -2,68 +2,67 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 
 namespace Shinkei.IRC
 {
     public class SettingsLoader
     {
-        [DataContractAttribute]
+        [DataContract]
         public class Settings
         {
-            [DataContractAttribute]
+            [DataContract]
             public class ServerSettings
             {
-                [DataContractAttribute]
+                [DataContract]
                 public class ChannelSettings
                 {
-                    [DataMemberAttribute]
+                    [DataMember]
                     public string Channel;
-                    [DataMemberAttribute]
+                    [DataMember]
                     public string Key;
                 }
 
-                [DataMemberAttribute]
+                [DataMember]
                 public string Nickname;
-                [DataMemberAttribute]
+                [DataMember]
                 public string Username;
-                [DataMemberAttribute]
+                [DataMember]
                 public string Realname;
 
-                [DataMemberAttribute]
+                [DataMember]
                 public string Hostname;
-                [DataMemberAttribute]
+                [DataMember]
                 public int Port;
 
-                [DataMemberAttribute]
+                [DataMember]
                 public String Identifier;
 
-                [DataMemberAttribute]
+                [DataMember]
                 public List<ChannelSettings> Channels;
             }
 
-            [DataMemberAttribute]
+            [DataMember]
             public string Nickname;
-            [DataMemberAttribute]
+            [DataMember]
             public string Username;
-            [DataMemberAttribute]
+            [DataMember]
             public string Realname;
 
-            [DataMemberAttribute]
+            [DataMember]
             public char CommandCharacter = '+';
 
-            [DataMemberAttribute]
+            [DataMember]
             public List<ServerSettings> Servers;
         }
 
-        string _mPath;
+        readonly string _mPath;
         public Settings MSettings;
         public List<Server> Servers;
 
-        private static SettingsLoader _instance = new SettingsLoader("config.json");
+        private static readonly SettingsLoader Instance = new SettingsLoader("config.json");
         public static SettingsLoader GetInstance()
         {
-            return _instance;
+            return Instance;
         }
 
         private SettingsLoader(string path)

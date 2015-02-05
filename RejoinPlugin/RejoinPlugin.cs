@@ -2,7 +2,6 @@
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using System.Threading;
 using Shinkei;
 using Shinkei.API;
@@ -29,20 +28,20 @@ namespace RejoinPlugin
 
         public override void OnEnable()
         {
-            Eventsink.GetInstance().OnIrcQueuedKick += new Eventsink.IrcQueuedKickDelegate(this.IrcKickHandler);
+            Eventsink.GetInstance().OnIrcQueuedKick += IrcKickHandler;
         }
 
         public void IrcKickHandler(KickMessage messageData)
         {
             Console.WriteLine("RejoinPlugin.IrcKickHandler");
 
-            Thread.Sleep(RejoinPlugin.MSettings.WaitUntilRejoin);
+            Thread.Sleep(MSettings.WaitUntilRejoin);
             messageData.ServerInstance.Channels[messageData.Channel.Name].Join();
         }
 
         public static Settings LoadSettings()
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Settings));
+            //DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Settings));
 
             string path = "plugins/RejoinPlugin.json";
             Settings newSettings;

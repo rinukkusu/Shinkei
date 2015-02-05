@@ -1,11 +1,13 @@
-﻿using Shinkei.IRC.Entities;
-using System;
+﻿using System;
+using System.Threading;
+using Shinkei.IRC.Entities;
+using Shinkei.IRC.Messages;
 
 namespace Shinkei.IRC
 {
     public class Channel
     {
-        Server _server;
+        readonly Server _server;
 
         private bool _inChannel;
         public bool InChannel
@@ -16,7 +18,7 @@ namespace Shinkei.IRC
             }
         }
 
-        private string _name;
+        private readonly string _name;
         public string Name
         { 
             get
@@ -36,23 +38,23 @@ namespace Shinkei.IRC
 
         public Channel(Server server, string name, string key = "")
         {
-            this._server = server;
-            this._name = name;
-            this._key = key;
+            _server = server;
+            _name = name;
+            _key = key;
 
-            Eventsink.GetInstance().OnIrcJoin += new Eventsink.IrcJoinDelegate(OnIrcJoin);
-            Eventsink.GetInstance().OnIrcKick += new Eventsink.IrcKickDelegate(OnIrcKick);
-            Eventsink.GetInstance().OnIrcPart += new Eventsink.IrcPartDelegate(OnIrcPart);
+            Eventsink.GetInstance().OnIrcJoin += OnIrcJoin;
+            Eventsink.GetInstance().OnIrcKick += OnIrcKick;
+            Eventsink.GetInstance().OnIrcPart += OnIrcPart;
         }
 
-        private void OnIrcJoin(Messages.JoinMessage data)
+        private void OnIrcJoin(JoinMessage data)
         {
             Console.WriteLine("Channel.OnIrcJoin");
 
             EntUser msgUser = (EntUser)data.Sender;
             EntChannel msgChannel = (EntChannel)data.Recipient;
 
-            if (msgChannel.Name == this.Name)
+            if (msgChannel.Name == Name)
             {
                 if (msgUser.Nickname == data.ServerInstance.LocalSettings.Nickname) {
                     _inChannel = true;
@@ -63,15 +65,15 @@ namespace Shinkei.IRC
             }
         }
 
-        private void OnIrcKick(Messages.KickMessage data)
+        private void OnIrcKick(KickMessage data)
         {
             Console.WriteLine("Channel.OnIrcKick");
 
-            EntUser msgKicker = (EntUser)data.Sender;
+            //EntUser msgKicker = (EntUser)data.Sender;
             EntUser msgKickedOne = (EntUser)data.Recipient;
-            EntChannel msgChannel = (EntChannel)data.Channel;
+            EntChannel msgChannel = data.Channel;
 
-            if (msgChannel.Name == this.Name)
+            if (msgChannel.Name == Name)
             {
                 if (msgKickedOne.Nickname == data.ServerInstance.LocalSettings.Nickname)
                 {
@@ -83,14 +85,14 @@ namespace Shinkei.IRC
             }
         }
 
-        private void OnIrcPart(Messages.PartMessage data)
+        private void OnIrcPart(PartMessage data)
         {
             Console.WriteLine("Channel.OnIrcPart");
 
             EntUser msgUser = (EntUser)data.Sender;
             EntChannel msgChannel = (EntChannel)data.Recipient;
 
-            if (msgChannel.Name == this.Name)
+            if (msgChannel.Name == Name)
             {
                 if (msgUser.Nickname == data.ServerInstance.LocalSettings.Nickname)
                 {
@@ -118,7 +120,7 @@ namespace Shinkei.IRC
 
                 while ((counter > 0) && (!_inChannel))
                 {
-                    System.Threading.Thread.Sleep(interval);
+                    Thread.Sleep(interval);
                     counter--;
                 }
             }
@@ -137,7 +139,7 @@ namespace Shinkei.IRC
 
                 while ((counter > 0) && (_inChannel))
                 {
-                    System.Threading.Thread.Sleep(interval);
+                    Thread.Sleep(interval);
                     counter--;
                 }
             }

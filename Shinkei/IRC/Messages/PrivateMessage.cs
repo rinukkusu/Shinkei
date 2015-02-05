@@ -4,7 +4,7 @@ namespace Shinkei.IRC.Messages
 {
     public class PrivateMessage : Message
     {
-        private string _text;
+        private readonly string _text;
         public string Text
         {
             get { return _text; }
@@ -13,7 +13,7 @@ namespace Shinkei.IRC.Messages
         public PrivateMessage(Server server, IEntity sender, IEntity recipient, string text)
             : base(server, sender, recipient)
         {
-            this._text = text;
+            _text = text;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Shinkei;
 using Shinkei.API.Commands;
 using Shinkei.IRC;
 using Shinkei.IRC.Commands;

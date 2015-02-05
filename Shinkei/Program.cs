@@ -12,7 +12,7 @@ namespace Shinkei
     {
         private static Boolean _stop;
 
-        static void Main(string[] args)
+        static void Main()
         {
             Thread @shinkeiThread = new Thread(StartShinkei);
             @shinkeiThread.Start();
@@ -49,7 +49,7 @@ namespace Shinkei
 
             //myEventsink.OnIrcMessage(new IRC.Message());
 
-            IRC.SettingsLoader mySettings = IRC.SettingsLoader.GetInstance();
+            SettingsLoader mySettings = SettingsLoader.GetInstance();
             mySettings.Load();
 
             mySettings.EnforceSettings();

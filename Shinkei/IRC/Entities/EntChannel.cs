@@ -3,7 +3,7 @@ namespace Shinkei.IRC.Entities
 {
     public class EntChannel : IEntity
     {
-        private string _name;
+        private readonly string _name;
         public string Name
         { 
             get
@@ -14,12 +14,12 @@ namespace Shinkei.IRC.Entities
 
         public EntChannel (string name)
         {
-            this._name = name;
+            _name = name;
         }
 
         public string GetName()
         {
-            return this.Name;
+            return Name;
         }
     }
 }

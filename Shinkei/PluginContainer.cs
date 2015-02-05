@@ -9,16 +9,16 @@ namespace Shinkei
 {
     public class PluginContainer
     {
-        private string _mPath;
+        private readonly string _mPath;
         private CompositionContainer _mContainer;
 
         [ImportMany]
         public IEnumerable<Lazy<Plugin, IPluginData>> Plugins;
 
-        private static PluginContainer _instance = new PluginContainer("./plugins");
+        private static readonly PluginContainer Instance = new PluginContainer("./plugins");
         public static PluginContainer GetInstance()
         {
-            return _instance;
+            return Instance;
         }
 
         private PluginContainer(string path = "./plugins")
@@ -39,7 +39,7 @@ namespace Shinkei
 
             try
             {
-                this._mContainer.ComposeParts(this);
+                _mContainer.ComposeParts(this);
             }
             catch (CompositionException compositionException)
             {

@@ -2,25 +2,25 @@
 {
     public class Command
     {
-        private string _commandName;
+        private readonly string _commandName;
         public string CommandName
         {
             get { return _commandName; }
         }
 
-        private CommandPermission _permission;
+        private readonly CommandPermission _permission;
 
         public CommandPermission Permission
         {
             get { return _permission; }
         }
-        private string _usage;
+        private readonly string _usage;
         public string Usage
         {
             get { return _usage; }
         }
 
-        private string _description;
+        private readonly string _description;
 
         public ICommandExecutor Executor;
 

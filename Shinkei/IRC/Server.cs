@@ -1,7 +1,4 @@
-﻿using Shinkei.IRC.Entities;
-using Shinkei.IRC.Messages;
-using Shinkei.IRC.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +6,8 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Shinkei.IRC.Commands;
+using Shinkei.IRC.Entities;
+using Shinkei.IRC.Messages;
 
 namespace Shinkei.IRC
 {
@@ -89,14 +88,14 @@ namespace Shinkei.IRC
                         if (responseCode > 0)
                         {
                             ResponseMessage rawMessage = new ResponseMessage(this, responseCode, parts.Groups[3].Value);
-                            IRC.Eventsink.GetInstance().OnIrcServerResponse(rawMessage);
+                            Eventsink.GetInstance().OnIrcServerResponse(rawMessage);
                         }
                         else if (parts.Groups[2].Value == "JOIN")
                         {
                             EntChannel recipient = new EntChannel(parts.Groups[4].Value);
 
                             // Dispatch JOIN event
-                            IRC.Eventsink.GetInstance().OnIrcJoin(new JoinMessage(this, sender, recipient));
+                            Eventsink.GetInstance().OnIrcJoin(new JoinMessage(this, sender, recipient));
                         }
                         else if (parts.Groups[2].Value == "KICK")
                         {
@@ -105,14 +104,14 @@ namespace Shinkei.IRC
                             EntUser recipient = new EntUser(channelRecipient.Split(' ')[1]);
 
                             // Dispatch KICK event
-                            IRC.Eventsink.GetInstance().OnIrcKick(new KickMessage(this, sender, recipient, channel, parts.Groups[4].Value));
+                            Eventsink.GetInstance().OnIrcKick(new KickMessage(this, sender, recipient, channel, parts.Groups[4].Value));
                         }
                         else if (parts.Groups[2].Value == "PART")
                         {
                             EntChannel channel = new EntChannel(parts.Groups[3].Value);
 
                             // Dispatch PART event
-                            IRC.Eventsink.GetInstance().OnIrcPart(new PartMessage(this, sender, channel, parts.Groups[4].Value));
+                            Eventsink.GetInstance().OnIrcPart(new PartMessage(this, sender, channel, parts.Groups[4].Value));
                         }
                         else if (parts.Groups[2].Value == "PRIVMSG")
                         {
@@ -127,7 +126,7 @@ namespace Shinkei.IRC
                             }
 
                             // Dispatch PRIVMSG event
-                            IRC.Eventsink.GetInstance().OnIrcMessage(new PrivateMessage(this, sender, recipient, parts.Groups[4].Value));
+                            Eventsink.GetInstance().OnIrcMessage(new PrivateMessage(this, sender, recipient, parts.Groups[4].Value));
 
                             if (IsCommandCharacter(parts.Groups[4].Value[0]))
                             {

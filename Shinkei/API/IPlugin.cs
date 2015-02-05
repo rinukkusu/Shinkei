@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Shinkei.API.Commands;
-using Shinkei.IRC;
 
 namespace Shinkei.API
 {
@@ -84,7 +83,7 @@ namespace Shinkei.API
             // If the strings are of equal length, 
             // sort them with ordinary string comparison. 
             // 
-            return x.CommandName.CompareTo(y.CommandName);
+            return String.Compare(x.CommandName, y.CommandName, StringComparison.Ordinal);
         }
     }
 

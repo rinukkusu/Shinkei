@@ -2,7 +2,6 @@
 using ControlPlugin.Commands;
 using Shinkei.API;
 using Shinkei.API.Commands;
-using Shinkei.IRC;
 using Shinkei.IRC.Commands;
 
 namespace ControlPlugin

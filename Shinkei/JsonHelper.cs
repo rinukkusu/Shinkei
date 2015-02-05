@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Runtime.Serialization;
+using System.Linq;
 using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace Shinkei
 {
@@ -90,7 +88,7 @@ namespace Shinkei
             newFile.Close();
 
             string reformat = File.ReadAllText(path);
-            File.WriteAllText(path, JsonHelper.FormatJson(reformat));
+            File.WriteAllText(path, FormatJson(reformat));
         }
     }
 

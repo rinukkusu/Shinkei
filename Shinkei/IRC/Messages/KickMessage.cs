@@ -4,13 +4,13 @@ namespace Shinkei.IRC.Messages
 {
     public class KickMessage : Message
     {
-        private EntChannel _channel;
+        private readonly EntChannel _channel;
         public EntChannel Channel
         {
             get { return _channel; }
         }
 
-        private string _text;
+        private readonly string _text;
         public string Text
         {
             get { return _text; }
@@ -19,8 +19,8 @@ namespace Shinkei.IRC.Messages
         public KickMessage(Server server, EntUser sender, EntUser recipient, EntChannel channel, string text)
             : base(server, sender, recipient)
         {
-            this._text = text;
-            this._channel = channel;
+            _text = text;
+            _channel = channel;
         }
     }
 }
