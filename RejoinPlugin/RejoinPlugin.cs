@@ -5,8 +5,8 @@ using System.Runtime.Serialization;
 using System.Threading;
 using Shinkei;
 using Shinkei.API;
-using Shinkei.IRC;
-using Shinkei.IRC.Messages;
+using Shinkei.API.Events;
+using Shinkei.IRC.Events;
 
 namespace RejoinPlugin
 {
@@ -15,7 +15,7 @@ namespace RejoinPlugin
     [ExportMetadata("Version", "0.1")]
     [ExportMetadata("Author", "rinukkusu")]
     [ExportMetadata("Description", "Automatically performs a rejoin after being kicked from a channel.")]
-    public class RejoinPlugin : Plugin
+    public class RejoinPlugin : Plugin, IListener
     {
         [DataContract]
         public class Settings
@@ -28,15 +28,16 @@ namespace RejoinPlugin
 
         public override void OnEnable()
         {
-            Eventsink.GetInstance().OnIrcQueuedKick += IrcKickHandler;
+            EventManager.GetInstance().RegisterEvents(this, this);
         }
 
-        public void IrcKickHandler(KickMessage messageData)
+        [Shinkei.IRC.Events.EventHandler]
+        public void IrcKickHandler(IrcKickEvent evnt)
         {
             Console.WriteLine("RejoinPlugin.IrcKickHandler");
 
             Thread.Sleep(MSettings.WaitUntilRejoin);
-            messageData.ServerInstance.Channels[messageData.Channel.Name].Join();
+            evnt.ServerInstance.Channels[evnt.Channel.Name].Join();
         }
 
         public static Settings LoadSettings()

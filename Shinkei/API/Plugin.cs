@@ -14,9 +14,28 @@ namespace Shinkei.API
 
     public abstract class Plugin
     {
+        private IPluginData _data;
+        private bool _enabled = true;
+
+        public IPluginData Metadata
+        {
+            get { return _data; }
+
+            //Dirty
+            set
+            {
+                if (_data != null)
+                {
+                    throw new InvalidOperationException("Metadata is readonly");
+                }
+
+                _data = value;
+            }
+        }
+
         public bool IsEnabled()
         {
-            return true;
+            return _enabled;
         }
 
         public void Disable()
@@ -25,7 +44,8 @@ namespace Shinkei.API
             {
                 return;
             }
-
+            //_enabled = false;
+            //OnDisable();
             throw new NotImplementedException();
         }
 
@@ -35,11 +55,17 @@ namespace Shinkei.API
             {
                 return;
             }
-
+            //_enabled = true;
+            //OnEnable();
             throw new NotImplementedException();
         }
 
         public virtual void OnEnable()
+        {
+            
+        }
+
+        public virtual void OnDisable()
         {
             
         }

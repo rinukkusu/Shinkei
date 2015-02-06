@@ -12,7 +12,7 @@ namespace HelpPlugin.Commands
         public bool Execute(Command command, EntUser executor, CommandMessage data)
         {
             data.ServerInstance.PrivateMessage(data.Sender, "Loaded plugins:");
-            foreach (Lazy<Plugin, IPluginData> plugin in PluginContainer.GetInstance().Plugins)
+            foreach (Plugin plugin in PluginContainer.GetInstance().Plugins)
             {
                 string pluginInfo = String.Format("  {0} v{1} ({2}) - {3}",
                     plugin.Metadata.Name,
