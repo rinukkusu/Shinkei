@@ -1,4 +1,4 @@
-Shinkei
+Shinkei [![Build Status](https://travis-ci.org/rinukkusu/Shinkei.svg?branch=master)](https://travis-ci.org/rinukkusu/Shinkei)
 =======
 
 an IRC bot written in C# with a massive plugin system.
