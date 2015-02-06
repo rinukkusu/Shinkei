@@ -79,7 +79,7 @@
     <Compile Include="IRC\Events\IrcServerResponseEvent.cs" />
     <Compile Include="IRC\Exceptions\ConnectionException.cs" />
     <Compile Include="IRC\Exceptions\ConnectionRefusedException.cs" />
-    <Compile Include="IRC\Exceptions\Reportable.cs" />
+    <Compile Include="IRC\Exceptions\IReportable.cs" />
     <Compile Include="IRC\Commands\CommandMessage.cs" />
     <Compile Include="IRC\Entities\IEntity.cs" />
     <Compile Include="API\Plugin.cs" />
