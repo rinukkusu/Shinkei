@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Shinkei.API;
+using Shinkei.API.Events;
 using Shinkei.IRC;
-using Shinkei.IRC.Messages;
+using Shinkei.IRC.Events;
 
 namespace Shinkei
 {
@@ -26,7 +27,8 @@ namespace Shinkei
                     List<string> arguments = line.Split(' ').ToList();
                     arguments.RemoveAt(0);
 
-                    Eventsink.GetInstance().OnConsoleCommand.Invoke(new ConsoleCommandMessage(command, arguments));
+                    ConsoleCommandEvent evnt = new ConsoleCommandEvent(command, arguments);
+                    EventManager.GetInstance().CallEvent(evnt);
                 }
             }
         }
@@ -42,9 +44,9 @@ namespace Shinkei
             PluginContainer myPluginContainer = PluginContainer.GetInstance();
             myPluginContainer.LoadPlugins();
 
-            foreach (Lazy<Plugin, IPluginData> plugin in myPluginContainer.Plugins)
+            foreach (Plugin plugin in myPluginContainer.Plugins)
             {
-                plugin.Value.OnEnable();
+                plugin.OnEnable();
             }
 
             //myEventsink.OnIrcMessage(new IRC.Message());

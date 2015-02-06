@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\EnableCommandExecutor.cs" />
     <Compile Include="Commands\JoinCommandExecutor.cs" />
     <Compile Include="Commands\PartCommandExecutor.cs" />
     <Compile Include="ControlPlugin.cs" />
