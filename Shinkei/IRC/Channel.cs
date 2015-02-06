@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading;
+using Shinkei.API.Events;
 using Shinkei.IRC.Entities;
-using Shinkei.IRC.Messages;
+using Shinkei.IRC.Events;
 
 namespace Shinkei.IRC
 {
-    public class Channel
+    public class Channel : IListener
     {
         readonly Server _server;
 
@@ -42,65 +43,58 @@ namespace Shinkei.IRC
             _name = name;
             _key = key;
 
-            Eventsink.GetInstance().OnIrcJoin += OnIrcJoin;
-            Eventsink.GetInstance().OnIrcKick += OnIrcKick;
-            Eventsink.GetInstance().OnIrcPart += OnIrcPart;
+            EventManager.GetInstance().RegisterEvents(this, ShinkeiPlugin.GetInstance());
         }
 
-        private void OnIrcJoin(JoinMessage data)
+        [Events.EventHandler(Priority = EventPriority.MONITOR)]
+        private void OnIrcJoin(IrcJoinEvent evnt)
         {
             Console.WriteLine("Channel.OnIrcJoin");
 
-            EntUser msgUser = (EntUser)data.Sender;
-            EntChannel msgChannel = (EntChannel)data.Recipient;
+            EntUser msgUser = (EntUser)evnt.Sender;
+            EntChannel msgChannel = (EntChannel)evnt.Recipient;
 
             if (msgChannel.Name == Name)
             {
-                if (msgUser.Nickname == data.ServerInstance.LocalSettings.Nickname) {
+                if (msgUser.Nickname == evnt.ServerInstance.LocalSettings.Nickname)
+                {
                     _inChannel = true;
                 }
-
-                // dispatch queued event
-                Eventsink.GetInstance().OnIrcQueuedJoin(data);
             }
         }
 
-        private void OnIrcKick(KickMessage data)
+        [Events.EventHandler(Priority = EventPriority.MONITOR)]
+        private void OnIrcKick(IrcKickEvent evnt)
         {
             Console.WriteLine("Channel.OnIrcKick");
 
             //EntUser msgKicker = (EntUser)data.Sender;
-            EntUser msgKickedOne = (EntUser)data.Recipient;
-            EntChannel msgChannel = data.Channel;
+            EntUser msgKickedOne = (EntUser)evnt.Recipient;
+            EntChannel msgChannel = evnt.Channel;
 
             if (msgChannel.Name == Name)
             {
-                if (msgKickedOne.Nickname == data.ServerInstance.LocalSettings.Nickname)
+                if (msgKickedOne.Nickname == evnt.ServerInstance.LocalSettings.Nickname)
                 {
                     _inChannel = false;
                 }
-
-                // dispatch queued event
-                Eventsink.GetInstance().OnIrcQueuedKick(data);
             }
         }
 
-        private void OnIrcPart(PartMessage data)
+        [Events.EventHandler(Priority = EventPriority.MONITOR)]
+        private void OnIrcPart(IrcPartEvent evnt)
         {
             Console.WriteLine("Channel.OnIrcPart");
 
-            EntUser msgUser = (EntUser)data.Sender;
-            EntChannel msgChannel = (EntChannel)data.Recipient;
+            EntUser msgUser = (EntUser)evnt.Sender;
+            EntChannel msgChannel = (EntChannel)evnt.Recipient;
 
             if (msgChannel.Name == Name)
             {
-                if (msgUser.Nickname == data.ServerInstance.LocalSettings.Nickname)
+                if (msgUser.Nickname == evnt.ServerInstance.LocalSettings.Nickname)
                 {
                     _inChannel = false;
                 }
-
-                // dispatch queued event
-                Eventsink.GetInstance().OnIrcQueuedPart(data);
             }
         }
 

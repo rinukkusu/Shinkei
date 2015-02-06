@@ -5,8 +5,10 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Shinkei.API.Events;
 using Shinkei.IRC.Commands;
 using Shinkei.IRC.Entities;
+using Shinkei.IRC.Events;
 using Shinkei.IRC.Messages;
 
 namespace Shinkei.IRC
@@ -62,90 +64,78 @@ namespace Shinkei.IRC
 
         private void ReadThread()
         {
-            if (_socket.Connected) 
+            if (!_socket.Connected) return;
+            Authenticate();
+
+            Thread @join = new Thread(JoinThread);
+            @join.Start();
+
+            StreamReader reader = new StreamReader(_socket.GetStream());
+            while (_bRunning)
             {
-                Authenticate();
+                string line = reader.ReadLine();
+                if (line == null) continue;
+                Console.WriteLine(Identifier + ": << " + line);
 
-                Thread @join = new Thread(JoinThread);
-                @join.Start();
+                Match parts = _messageParser.Match(line);
 
-                StreamReader reader = new StreamReader(_socket.GetStream());
-                while (_bRunning)
+                int responseCode = 0;
+                try { responseCode = Convert.ToInt32(parts.Groups[2].Value); }
+                catch { }
+
+                EntUser sender = new EntUser(parts.Groups[1].Value);
+
+                if (responseCode > 0)
                 {
-                    string line = reader.ReadLine();
-                    if (line != null)
+                    EventManager.GetInstance().CallEvent(new IrcServerResponseEvent(this, responseCode, parts.Groups[3].Value));
+                }
+                else if (parts.Groups[2].Value == "JOIN")
+                {
+                    EntChannel recipient = new EntChannel(parts.Groups[4].Value);
+                    EventManager.GetInstance().CallEvent(new IrcJoinEvent(this, sender, recipient));
+                }
+                else if (parts.Groups[2].Value == "KICK")
+                {
+                    string channelRecipient = parts.Groups[3].Value;
+                    EntChannel channel = new EntChannel(channelRecipient.Split(' ')[0]);
+                    EntUser recipient = new EntUser(channelRecipient.Split(' ')[1]);
+                    EventManager.GetInstance().CallEvent(new IrcKickEvent(this, sender, recipient, channel, parts.Groups[4].Value));
+                }
+                else if (parts.Groups[2].Value == "PART")
+                {
+                    EntChannel channel = new EntChannel(parts.Groups[3].Value);
+                    EventManager.GetInstance().CallEvent(new IrcPartEvent(this, sender, channel, parts.Groups[4].Value));
+                }
+                else if (parts.Groups[2].Value == "PRIVMSG")
+                {
+                    IEntity recipient;
+                    if (parts.Groups[3].Value.StartsWith("#"))
                     {
-                        Console.WriteLine(Identifier + ": << " + line);
-
-                        Match parts = _messageParser.Match(line);
-
-                        int responseCode = 0;
-                        try { responseCode = Convert.ToInt32(parts.Groups[2].Value); }
-                        catch { }
-
-                        EntUser sender = new EntUser(parts.Groups[1].Value);
-
-                        if (responseCode > 0)
-                        {
-                            ResponseMessage rawMessage = new ResponseMessage(this, responseCode, parts.Groups[3].Value);
-                            Eventsink.GetInstance().OnIrcServerResponse(rawMessage);
-                        }
-                        else if (parts.Groups[2].Value == "JOIN")
-                        {
-                            EntChannel recipient = new EntChannel(parts.Groups[4].Value);
-
-                            // Dispatch JOIN event
-                            Eventsink.GetInstance().OnIrcJoin(new JoinMessage(this, sender, recipient));
-                        }
-                        else if (parts.Groups[2].Value == "KICK")
-                        {
-                            string channelRecipient = parts.Groups[3].Value;
-                            EntChannel channel = new EntChannel(channelRecipient.Split(' ')[0]);
-                            EntUser recipient = new EntUser(channelRecipient.Split(' ')[1]);
-
-                            // Dispatch KICK event
-                            Eventsink.GetInstance().OnIrcKick(new KickMessage(this, sender, recipient, channel, parts.Groups[4].Value));
-                        }
-                        else if (parts.Groups[2].Value == "PART")
-                        {
-                            EntChannel channel = new EntChannel(parts.Groups[3].Value);
-
-                            // Dispatch PART event
-                            Eventsink.GetInstance().OnIrcPart(new PartMessage(this, sender, channel, parts.Groups[4].Value));
-                        }
-                        else if (parts.Groups[2].Value == "PRIVMSG")
-                        {
-                            IEntity recipient;
-                            if (parts.Groups[3].Value.StartsWith("#"))
-                            {
-                                recipient = new EntChannel(parts.Groups[3].Value);
-                            }
-                            else
-                            {
-                                recipient = new EntUser(parts.Groups[3].Value);
-                            }
-
-                            // Dispatch PRIVMSG event
-                            Eventsink.GetInstance().OnIrcMessage(new PrivateMessage(this, sender, recipient, parts.Groups[4].Value));
-
-                            if (IsCommandCharacter(parts.Groups[4].Value[0]))
-                            {
-                                // Dispatch command event
-                                string commandString = parts.Groups[4].Value.Split(' ')[0];
-                                string command = commandString.Substring(1);
-
-                                string argumentString = parts.Groups[4].Value.Substring(commandString.Length);
-                                List<string> arguments = Util.ParseArguments(argumentString);
-
-                                CommandHandler.GetInstance().HandleCommand(new CommandMessage(this, sender, recipient, command, arguments));
-                            }
-
-                        }
-                        else if (parts.Groups[0].Value.StartsWith("PING"))
-                        {
-                            WriteLine(parts.Groups[0].Value.Replace("PING", "PONG"));
-                        }
+                        recipient = new EntChannel(parts.Groups[3].Value);
                     }
+                    else
+                    {
+                        recipient = new EntUser(parts.Groups[3].Value);
+                    }
+
+                    EventManager.GetInstance().CallEvent(new IrcMessageEvent(this, sender, recipient, parts.Groups[4].Value));
+
+                    if (IsCommandCharacter(parts.Groups[4].Value[0]))
+                    {
+                        // Dispatch command
+                        string commandString = parts.Groups[4].Value.Split(' ')[0];
+                        string command = commandString.Substring(1);
+
+                        string argumentString = parts.Groups[4].Value.Substring(commandString.Length);
+                        List<string> arguments = Util.ParseArguments(argumentString);
+
+                        CommandHandler.GetInstance().HandleCommand(new CommandMessage(this, sender, recipient, command, arguments));
+                    }
+
+                }
+                else if (parts.Groups[0].Value.StartsWith("PING"))
+                {
+                    WriteLine(parts.Groups[0].Value.Replace("PING", "PONG"));
                 }
             }
         }
