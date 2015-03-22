@@ -83,6 +83,7 @@
     <Compile Include="IRC\Commands\CommandMessage.cs" />
     <Compile Include="IRC\Entities\IEntity.cs" />
     <Compile Include="API\Plugin.cs" />
+    <Compile Include="IRC\FormatCodes.cs" />
     <Compile Include="IRC\Messages\ResponseMessage.cs" />
     <Compile Include="API\Commands\CommandPermission.cs" />
     <Compile Include="IRC\ResponseCodes.cs" />
