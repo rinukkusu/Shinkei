@@ -93,7 +93,15 @@ namespace SandraPlugin
                         Feed currentFeed = (Feed) serializer.Deserialize(reader);
                         reader.Close();
 
-                        Feed lastFeed = _feeds[repo];
+                        Feed lastFeed;
+                        try
+                        {
+                            lastFeed = _feeds[repo];
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            lastFeed = null;
+                        }
 
                         if (lastFeed != null)
                         {
@@ -238,7 +246,7 @@ namespace SandraPlugin
                     Repos = new List<string>()
                 };
 
-                JsonHelper.Serialize<SettingsLoader.Settings>(newSettings, SETTINGS_PATH);
+                JsonHelper.Serialize<Settings>(newSettings, SETTINGS_PATH);
             }
             else
             {
@@ -257,7 +265,7 @@ namespace SandraPlugin
                 Repos = _repos
             };
 
-            JsonHelper.Serialize<SettingsLoader.Settings>(settings, SETTINGS_PATH);
+            JsonHelper.Serialize<Settings>(settings, SETTINGS_PATH);
         }
 
         public bool DeleteRepo(String  repo)
@@ -275,12 +283,23 @@ namespace SandraPlugin
                 return false;
             }
 
+            /*
             if (!srv.Channels.ContainsKey(channel))
             {
                 return false;
             }
+            */
 
-            List<String> channels = _commitChannels[server] ?? new List<String>();
+
+            List<String> channels;
+            try
+            {
+                channels = _commitChannels[server];
+            }
+            catch (KeyNotFoundException)
+            {
+                channels = new List<string>();
+            }
 
             channels.Add(channel);
             if (_commitChannels.ContainsKey(server))
