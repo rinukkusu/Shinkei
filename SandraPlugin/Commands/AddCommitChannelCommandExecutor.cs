@@ -25,7 +25,16 @@ namespace SandraPlugin.Commands
 
             String server = data.Arguments[0];
             String channel = data.Arguments[1];
+
+            if (!channel.StartsWith("#")) channel = "#" + channel;
+            if (_plugin.CommitChannels.ContainsKey(server) && _plugin.CommitChannels[server].Contains(channel))
+            {
+                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.RED + "Channel wurde schon hinzugefügt!");
+                return true;
+            } 
+
             bool success = _plugin.AddChannel(server, channel);
+
 
             if (success)
             {

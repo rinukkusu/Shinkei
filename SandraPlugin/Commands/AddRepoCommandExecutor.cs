@@ -24,6 +24,13 @@ namespace SandraPlugin.Commands
             var answerRcpt = data.Recipient.GetType() == typeof(EntUser) ? data.Sender : data.Recipient;
 
             String repo = data.Arguments[0];
+
+            if (_plugin.Repos.Contains(repo))
+            {
+                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.RED + "Repository wurde schon hinzugefügt.");
+                return true;
+            }
+            
             bool success = _plugin.AddRepo(repo);
 
             if (success)

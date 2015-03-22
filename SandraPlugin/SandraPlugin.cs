@@ -40,6 +40,10 @@ namespace SandraPlugin
 
         private Dictionary<String, List<String>> _commitChannels;
 
+        public Dictionary<String, List<String>> CommitChannels
+        {
+            get { return _commitChannels; }
+        }
         private bool _listen;
 
         [DataContract]
@@ -63,8 +67,8 @@ namespace SandraPlugin
             CommandHandler.GetInstance().RegisterCommand(new Command("addrepo", "addrepo <username>/<repo>",
                  "Adds a github reporsitory and announces for new commits.", new AddRepoCommandExecutor(this),  CommandPermission.WHITELIST), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("calc", "calc <query>", "Executes a Wolfram Alpha query", new CalcCommandExecutor()), this);
-            CommandHandler.GetInstance().RegisterCommand(new Command("listrepo", "listrepo",
-     "Shows all saved repos.", new ListReposCommandExecutor()), this);
+            CommandHandler.GetInstance().RegisterCommand(new Command("listrepos", "listrepo",
+     "Shows all saved repos.", new ListReposCommandExecutor(this)), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("m", "m <keyword>", "Outputs a markov-generated sentence", new MarkovCommandExecutor()), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("removerepo", "removerepo <username>/<repo>",
                              "Removes a repo which was added previously.", new RemoveRepoCommandExecutor(this), CommandPermission.WHITELIST), this);
