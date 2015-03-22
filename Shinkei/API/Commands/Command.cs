@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Shinkei.API.Commands
 {
@@ -33,9 +34,9 @@ namespace Shinkei.API.Commands
 
         public Command(string commandName, string usage, string description, ICommandExecutor executor, CommandPermission permission = CommandPermission.NONE)
         {
-            if (_commandName.Contains("_"))
+            if (commandName.Contains("_") || commandName.Contains(" "))
             {
-                throw new ArgumentException("Command names may not contain spaces!");
+                throw new ArgumentException("Invalid command name!");
             }
             _commandName = commandName;
             _usage = usage;
