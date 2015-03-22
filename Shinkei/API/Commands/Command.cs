@@ -1,4 +1,6 @@
-﻿namespace Shinkei.API.Commands
+﻿using System;
+
+namespace Shinkei.API.Commands
 {
     public class Command
     {
@@ -31,6 +33,10 @@
 
         public Command(string commandName, string usage, string description, ICommandExecutor executor, CommandPermission permission = CommandPermission.NONE)
         {
+            if (_commandName.Contains("_"))
+            {
+                throw new ArgumentException("Command names may not contain spaces!");
+            }
             _commandName = commandName;
             _usage = usage;
             _description = description;
