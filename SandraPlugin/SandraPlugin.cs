@@ -32,6 +32,12 @@ namespace SandraPlugin
     {
         private Dictionary<string, Feed> _feeds;
         private List<String> _repos;
+
+        public List<String> Repos
+        {
+            get { return _repos; }
+        } 
+
         private Dictionary<String, List<String>> _commitChannels;
 
         private bool _listen;
