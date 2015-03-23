@@ -83,41 +83,45 @@ namespace Shinkei.IRC
                 try { responseCode = Convert.ToInt32(parts.Groups[2].Value); }
                 catch { }
 
-                EntUser sender = new EntUser(parts.Groups[1].Value);
-
                 if (responseCode > 0)
                 {
                     EventManager.GetInstance().CallEvent(new IrcServerResponseEvent(this, responseCode, parts.Groups[3].Value));
                 }
                 else if (parts.Groups[2].Value == "JOIN")
                 {
-                    EntChannel recipient = new EntChannel(parts.Groups[4].Value);
+                    EntChannel recipient = new EntChannel(this, parts.Groups[4].Value);
+                    EntUser sender = new EntUser(this, recipient, parts.Groups[1].Value);
                     EventManager.GetInstance().CallEvent(new IrcJoinEvent(this, sender, recipient));
                 }
                 else if (parts.Groups[2].Value == "KICK")
                 {
                     string channelRecipient = parts.Groups[3].Value;
-                    EntChannel channel = new EntChannel(channelRecipient.Split(' ')[0]);
-                    EntUser recipient = new EntUser(channelRecipient.Split(' ')[1]);
+                    EntChannel channel = new EntChannel(this, channelRecipient.Split(' ')[0]);
+                    EntUser sender = new EntUser(this, channel, parts.Groups[1].Value);
+                    EntUser recipient = new EntUser(this, channel, channelRecipient.Split(' ')[1]);
                     EventManager.GetInstance().CallEvent(new IrcKickEvent(this, sender, recipient, channel, parts.Groups[4].Value));
                 }
                 else if (parts.Groups[2].Value == "PART")
                 {
-                    EntChannel channel = new EntChannel(parts.Groups[3].Value);
+                    EntChannel channel = new EntChannel(this, parts.Groups[3].Value);
+                    EntUser sender = new EntUser(this, channel, parts.Groups[1].Value);
                     EventManager.GetInstance().CallEvent(new IrcPartEvent(this, sender, channel, parts.Groups[4].Value));
                 }
                 else if (parts.Groups[2].Value == "PRIVMSG")
                 {
-                    IEntity recipient;
+                    ServerEntity recipient;
+                    EntChannel channel = null;
                     if (parts.Groups[3].Value.StartsWith("#"))
                     {
-                        recipient = new EntChannel(parts.Groups[3].Value);
+                        recipient = new EntChannel(this, parts.Groups[3].Value);
+                        channel = (EntChannel) recipient;
                     }
                     else
                     {
-                        recipient = new EntUser(parts.Groups[3].Value);
+                        recipient = new EntUser(this, null, parts.Groups[3].Value);
                     }
 
+                    EntUser sender = new EntUser(this, channel, parts.Groups[1].Value);
                     EventManager.GetInstance().CallEvent(new IrcMessageEvent(this, sender, recipient, parts.Groups[4].Value));
 
                     if (IsCommandCharacter(parts.Groups[4].Value[0]))
@@ -157,9 +161,8 @@ namespace Shinkei.IRC
             }
         }
 
-        public void PrivateMessage(IEntity recipient, string text)
+        private void SendMessage(String messageHeader, String text)
         {
-            string messageHeader = "PRIVMSG " + recipient.GetName() + " :";
 
             if ((messageHeader.Length + text.Length) <= MaxMessageLength)
             {
@@ -177,6 +180,12 @@ namespace Shinkei.IRC
                     nOffset += (MaxMessageLength - messageHeader.Length);
                 }
             }
+        }
+
+        public void PrivateMessage(ServerEntity recipient, string text)
+        {
+            string messageHeader = "PRIVMSG " + recipient.GetName() + " :";
+            SendMessage(messageHeader, text);
         }
 
         private void Authenticate()
@@ -222,6 +231,12 @@ namespace Shinkei.IRC
         {
             Disconnect();
             Connect();
+        }
+
+        public void Notice(ServerEntity recipient, string text)
+        {
+            string messageHeader = "NOTICE " + recipient.GetName() + " :";
+            SendMessage(messageHeader, text);
         }
     }
 }

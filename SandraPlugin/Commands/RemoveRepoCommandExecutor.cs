@@ -21,19 +21,17 @@ namespace SandraPlugin.Commands
                 return false; 
             }
 
-            var answerRcpt = data.Recipient.GetType() == typeof(EntUser) ? data.Sender : data.Recipient;
-
             String repo = data.Arguments[0];
             bool success = _plugin.DeleteRepo(repo);
 
             if (success)
             {
-                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.GREEN + "Repository erfolgreich entfernt.");
+                data.SendResponse(ColorCode.GREEN + "Repository erfolgreich entfernt.");
                 _plugin.SaveSettings();
                 return true;
             }
 
-            data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.RED + "Unbekannte Reporsitory: " + repo);
+            data.SendResponse(ColorCode.RED + "Unbekannte Reporsitory: " + repo);
             return true;
         }
     }

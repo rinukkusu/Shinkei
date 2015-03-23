@@ -15,24 +15,13 @@ namespace ControlPlugin.Commands
             }
             string channel = data.Arguments[0];
 
-            if (data.ServerInstance.Channels.Keys.Contains(channel))
+            if (data.Server.Channels.Keys.Contains(channel))
             {
-                bool partSucceeded = data.ServerInstance.Channels[channel].Part();
+                bool partSucceeded = data.Server.Channels[channel].Part();
 
                 if (!partSucceeded)
                 {
-                    IEntity answerRcpt;
-                    if (data.Recipient.GetType() == typeof (EntUser))
-                    {
-                        answerRcpt = data.Sender;
-                    }
-                    else
-                    {
-                        answerRcpt = data.Recipient;
-                    }
-
-                    data.ServerInstance.PrivateMessage(answerRcpt,
-                        data.Sender.GetName() + ": Couldn't part channel.");
+                    data.SendResponse("Couldn't part channel.");
                 }
             }
 

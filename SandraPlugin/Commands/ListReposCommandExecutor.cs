@@ -17,11 +17,10 @@ namespace SandraPlugin.Commands
 
         public bool Execute(Command command, EntUser executor, CommandMessage data)
         {
-            var answerRcpt = data.Recipient.GetType() == typeof(EntUser) ? data.Sender : data.Recipient;
-
             if (_plugin.Repos.Count == 0)
             {
-                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.RED + "Keine Reporsitories vorhanden.");
+                data.SendResponse(ColorCode.RED + "Keine Repositorys vorhanden.");
+                return true;
             }
 
             String s = "";
@@ -36,7 +35,7 @@ namespace SandraPlugin.Commands
                 s += ", " + repo;
             }
 
-            data.ServerInstance.PrivateMessage(answerRcpt, s);
+            data.SendResponse(s);
             return true;
         }
     }

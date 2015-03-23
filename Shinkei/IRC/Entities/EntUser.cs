@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Shinkei.API.Commands;
 
 namespace Shinkei.IRC.Entities
 {
-    public class EntUser : IEntity
+    public class EntUser : ServerEntity
     {
         private readonly string _username;
         public string Username
@@ -34,7 +35,7 @@ namespace Shinkei.IRC.Entities
 
         protected CommandPermission Permission;
 
-        public EntUser (string name)
+        public EntUser (Server server, EntChannel channel, string name) : base(server)
         {
             if (name.Contains('@'))
             {
@@ -55,11 +56,10 @@ namespace Shinkei.IRC.Entities
             //Todo: implement whitelist and voice permission
         }
 
-        public string GetName()
+        public override string GetName()
         {
             return Nickname;
         }
-        
 
         public virtual bool HasPermission(CommandPermission permission)
         {

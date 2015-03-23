@@ -51,20 +51,20 @@ namespace Shinkei.IRC.Commands
 
             if (cmd == null || cmd.Executor == null)
             {
-                data.ServerInstance.PrivateMessage(data.Sender, "Unknown command: " + data.Command);
+                data.Sender.SendMessage("Unknown command: " + data.Command);
                 return;
             }
 
             if (!executor.HasPermission(cmd.Permission))
             {
-                data.ServerInstance.PrivateMessage(data.Sender, "You dont have enough permission to do that");
+                data.Sender.SendMessage("You dont have enough permission to do that");
                 return;
             }
 
             if (!cmd.Executor.Execute(cmd, executor, data))
             {
                 String usage = "Usage: " + SettingsLoader.GetInstance().MSettings.CommandCharacter + cmd.Usage;
-                data.ServerInstance.PrivateMessage(data.Sender, usage);
+                data.Sender.SendMessage(usage);
             }
         }
     }

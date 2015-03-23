@@ -21,13 +21,11 @@ namespace SandraPlugin.Commands
                 return false; 
             }
 
-            var answerRcpt = data.Recipient.GetType() == typeof(EntUser) ? data.Sender : data.Recipient;
-
             String repo = data.Arguments[0];
 
             if (_plugin.Repos.Contains(repo))
             {
-                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.RED + "Repository wurde schon hinzugefügt.");
+                data.SendResponse(ColorCode.RED + "Repository wurde schon hinzugefügt.");
                 return true;
             }
             
@@ -35,12 +33,12 @@ namespace SandraPlugin.Commands
 
             if (success)
             {
-                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.GREEN + "Repository erfolgreich hinzugefügt.");
+                data.SendResponse(ColorCode.GREEN + "Repository erfolgreich hinzugefügt.");
                 _plugin.SaveSettings();
                 return true;
             }
 
-            data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.RED + "Ungültige Reporsitory: " + repo);
+            data.SendResponse(ColorCode.RED + "Ungültige Reporsitory: " + repo);
             return true;
         }
     }

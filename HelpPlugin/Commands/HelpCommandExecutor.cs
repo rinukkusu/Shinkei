@@ -22,25 +22,15 @@ namespace HelpPlugin.Commands
 
                 if (command != null)
                 {
-                    IEntity answerRcpt;
-                    if (data.Recipient.GetType() == typeof(EntUser))
-                    {
-                        answerRcpt = data.Sender;
-                    }
-                    else
-                    {
-                        answerRcpt = data.Recipient;
-                    }
-
                     commandInfo = String.Format("Usage: {0}{1}",
                                                 SettingsLoader.GetInstance().MSettings.CommandCharacter,
                                                 command.Usage);
 
-                    data.ServerInstance.PrivateMessage(answerRcpt, commandInfo);
+                    data.SendResponse(commandInfo);
                 }
                 else
                 {
-                    data.ServerInstance.PrivateMessage(data.Sender, "Command '" + reqCommand + "' not found.");
+                    data.SendResponse("Command '" + reqCommand + "' not found.");
                 }
             }
             else
@@ -55,7 +45,7 @@ namespace HelpPlugin.Commands
                     commandInfo += command.CommandName;
                 }
 
-                data.ServerInstance.PrivateMessage(data.Sender, "Available commands: " + commandInfo);
+                data.SendResponse("Available commands: " + commandInfo);
             }
             return true;
         }

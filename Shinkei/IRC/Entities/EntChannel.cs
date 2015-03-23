@@ -1,9 +1,10 @@
 ﻿
 namespace Shinkei.IRC.Entities
 {
-    public class EntChannel : IEntity
+    public class EntChannel : ServerEntity
     {
         private readonly string _name;
+        
         public string Name
         { 
             get
@@ -12,12 +13,12 @@ namespace Shinkei.IRC.Entities
             }
         }
 
-        public EntChannel (string name)
+        public EntChannel (Server server, string name) : base(server)
         {
             _name = name;
         }
 
-        public string GetName()
+        public override string GetName()
         {
             return Name;
         }

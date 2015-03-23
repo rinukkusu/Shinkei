@@ -1,4 +1,5 @@
-﻿using Shinkei.API.Commands;
+﻿using System;
+using Shinkei.API.Commands;
 
 namespace Shinkei.IRC.Entities
 {
@@ -7,12 +8,17 @@ namespace Shinkei.IRC.Entities
         private static EntConsole _instance;
         public static EntConsole GetInstance()
         {
-            return _instance ?? (_instance = new EntConsole("Console"));
+            return _instance ?? (_instance = new EntConsole());
         }
 
-        public EntConsole(string name) : base(name)
+        private EntConsole() : base(null, null, "Console")
         {
             Permission = CommandPermission.CONSOLE;
+        }
+
+        public override void SendMessage(String s)
+        {
+            Console.WriteLine(s);
         }
 
         public override bool HasPermission(CommandPermission permission)

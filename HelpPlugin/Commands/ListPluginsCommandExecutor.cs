@@ -11,7 +11,7 @@ namespace HelpPlugin.Commands
     {
         public bool Execute(Command command, EntUser executor, CommandMessage data)
         {
-            data.ServerInstance.PrivateMessage(data.Sender, "Loaded plugins:");
+            data.Sender.SendMessage("Loaded plugins:");
             foreach (Plugin plugin in PluginContainer.GetInstance().Plugins)
             {
                 string pluginInfo = String.Format("  {0} v{1} ({2}) - {3}",
@@ -19,7 +19,7 @@ namespace HelpPlugin.Commands
                     plugin.Metadata.Version,
                     plugin.Metadata.Author,
                     plugin.Metadata.Description);
-                data.ServerInstance.PrivateMessage(data.Sender, pluginInfo);
+                data.SendResponseNotice(pluginInfo);
             }
 
             return true;

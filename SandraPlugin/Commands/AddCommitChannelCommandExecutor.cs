@@ -21,15 +21,13 @@ namespace SandraPlugin.Commands
                 return false; 
             }
 
-            var answerRcpt = data.Recipient.GetType() == typeof(EntUser) ? data.Sender : data.Recipient;
-
             String server = data.Arguments[0];
             String channel = data.Arguments[1];
 
             if (!channel.StartsWith("#")) channel = "#" + channel;
             if (_plugin.CommitChannels.ContainsKey(server) && _plugin.CommitChannels[server].Contains(channel))
             {
-                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ": " + ColorCode.RED + "Channel wurde schon hinzugefügt!");
+                data.SendResponse(ColorCode.RED + "Channel wurde schon hinzugefügt!");
                 return true;
             } 
 
@@ -38,12 +36,12 @@ namespace SandraPlugin.Commands
 
             if (success)
             {
-                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ": " + ColorCode.GREEN + "Channel erfolgreich hinzugefügt.");
+                data.SendResponse(ColorCode.GREEN + "Channel erfolgreich hinzugefügt.");
                 _plugin.SaveSettings();
                 return true;
             }
 
-            data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ": " + ColorCode.RED + "Ungültiger Server oder Channel");
+            data.SendResponse(ColorCode.RED + "Ungültiger Server oder Channel");
             return true;
         }
     }

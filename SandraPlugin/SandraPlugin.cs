@@ -171,15 +171,15 @@ namespace SandraPlugin
                     {
                         String org = repo.Split('/')[0];
                         String repoName = repo.Split('/')[1];
-                        EntChannel channel = new EntChannel(channelName);
-                        server.PrivateMessage(channel,
+                        EntChannel channel = new EntChannel(server, channelName);
+                        channel.SendMessage(
                             "Neue commits (" + ColorCode.CYAN + commits.Count + ColorCode.NORMAL + ") in "
                             + ColorCode.PURPLE + org + ColorCode.NORMAL + "/" + ColorCode.MAGENTA + repoName + ColorCode.NORMAL + ": ");
                         foreach (Entry commit in commits[repo])
                         {
                             String commitId = commit.Id.Substring(0, 6);
-                            server.PrivateMessage(channel, "    " + ColorCode.LIGHT_GRAY + "[" + ColorCode.DARK_GREEN + "#" + ColorCode.GREEN + commitId + ColorCode.LIGHT_GRAY + "] " + ColorCode.NORMAL + ColorCode.BOLD + commit.Author.Name + ColorCode.NORMAL + ": " + commit.Title);
-                            server.PrivateMessage(channel, "        " + MakeGitIoLink(commit.Link.Href));
+                            channel.SendMessage("    " + ColorCode.LIGHT_GRAY + "[" + ColorCode.DARK_GREEN + "#" + ColorCode.GREEN + commitId + ColorCode.LIGHT_GRAY + "] " + ColorCode.NORMAL + ColorCode.BOLD + commit.Author.Name + ColorCode.NORMAL + ": " + commit.Title);
+                            channel.SendMessage("        " + MakeGitIoLink(commit.Link.Href));
                         }
                     }
                 }

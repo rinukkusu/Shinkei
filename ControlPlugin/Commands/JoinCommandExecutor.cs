@@ -24,34 +24,24 @@ namespace ControlPlugin.Commands
 
             Channel newChannel;
 
-            if (data.ServerInstance.Channels.Keys.Contains(channel))
+            if (data.Server.Channels.Keys.Contains(channel))
             {
-                newChannel = data.ServerInstance.Channels[channel];
+                newChannel = data.Server.Channels[channel];
             }
             else
             {
-                newChannel = new Channel(data.ServerInstance, channel, key);
+                newChannel = new Channel(data.Server, channel, key);
             }
 
             bool joinSucceeded = newChannel.Join();
 
             if (joinSucceeded)
             {
-                data.ServerInstance.Channels.Add(channel, newChannel);
+                data.Server.Channels.Add(channel, newChannel);
             }
             else
             {
-                IEntity answerRcpt;
-                if (data.Recipient.GetType() == typeof (EntUser))
-                {
-                    answerRcpt = data.Sender;
-                }
-                else
-                {
-                    answerRcpt = data.Recipient;
-                }
-
-                data.ServerInstance.PrivateMessage(answerRcpt, data.Sender.GetName() + ": Couldn't join channel.");
+                data.SendResponse("Couldn't join channel.");
             }
 
             return true;

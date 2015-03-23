@@ -57,8 +57,6 @@ namespace Shinkei
                 lazy.Value.Metadata = lazy.Metadata;
                 Plugins.Add(lazy.Value);
             }
-
-            DebugListener.Init();
         }
     }
 }

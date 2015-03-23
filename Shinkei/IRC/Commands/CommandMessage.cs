@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Shinkei.IRC.Entities;
 
 namespace Shinkei.IRC.Messages
@@ -17,28 +18,53 @@ namespace Shinkei.IRC.Messages
             get { return _arguments; }
         }
 
-        private readonly IEntity _sender;
-        public IEntity Sender
+        private readonly ServerEntity _sender;
+        public ServerEntity Sender
         {
             get { return _sender; }
         }
 
-        private readonly IEntity _recipient;
-        public virtual IEntity Recipient
+        private readonly ServerEntity _recipient;
+        public virtual ServerEntity Recipient
         {
             get { return _recipient; }
         }
 
-        private readonly Server _serverInstance;
-        public Server ServerInstance
+        private readonly Server _server;
+        public Server Server
         {
-            get { return _serverInstance; }
+            get { return _server; }
         }
 
-
-        public CommandMessage(Server server, IEntity sender, IEntity recipient, string command, List<string> arguments)
+        public void SendResponse(String s)
         {
-            _serverInstance = server;
+            ServerEntity answerRcpt;
+            if (Recipient.GetType() != typeof (EntUser))
+            {
+                answerRcpt = Recipient;
+                s = Sender.GetName() + ": " + s;
+            }
+            else
+            {
+                answerRcpt = Sender;
+            }
+            answerRcpt.SendMessage(s);
+        }
+
+        public void SendResponseNotice(String s)
+        {
+            if (Sender.GetType() != typeof (EntUser))
+            {
+                SendResponse(s);
+                return;
+            }
+
+            Server.Notice(Sender, s);
+        }
+
+        public CommandMessage(Server server, ServerEntity sender, ServerEntity recipient, string command, List<string> arguments)
+        {
+            _server = server;
             _sender = sender;
             _recipient = recipient;
             _command = command;

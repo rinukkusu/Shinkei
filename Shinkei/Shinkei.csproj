@@ -62,7 +62,6 @@
     <Compile Include="API\Commands\ICommandExecutor.cs" />
     <Compile Include="IRC\Channel.cs" />
     <Compile Include="IRC\Commands\CommandHandler.cs" />
-    <Compile Include="IRC\DebugListener.cs" />
     <Compile Include="IRC\Entities\EntChannel.cs" />
     <Compile Include="IRC\Entities\EntConsole.cs" />
     <Compile Include="API\Events\Event.cs" />
@@ -71,6 +70,7 @@
     <Compile Include="API\Events\EventPriority.cs" />
     <Compile Include="API\Events\ICancellable.cs" />
     <Compile Include="API\Events\IListener.cs" />
+    <Compile Include="IRC\Entities\ServerEntity.cs" />
     <Compile Include="IRC\Events\ConsoleCommandEvent.cs" />
     <Compile Include="IRC\Events\IrcJoinEvent.cs" />
     <Compile Include="IRC\Events\IrcKickEvent.cs" />

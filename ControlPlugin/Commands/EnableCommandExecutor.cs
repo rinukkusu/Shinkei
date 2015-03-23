@@ -21,12 +21,12 @@ namespace ControlPlugin.Commands
             Plugin matchedPlugin = (from plugindata in PluginContainer.GetInstance().Plugins where plugindata.Metadata.Name.StartsWith(pluginName) select plugindata).FirstOrDefault();
             if (matchedPlugin == null)
             {
-                data.ServerInstance.PrivateMessage(data.Sender, "Plugin not found");
+                data.SendResponse("Plugin not found");
                 return true;
             }
             
             matchedPlugin.Enable();
-            data.ServerInstance.PrivateMessage(data.Sender, matchedPlugin.Metadata.Name + ": Enabled");
+            data.SendResponse(matchedPlugin.Metadata.Name + ": Enabled");
 
             return true;
         }

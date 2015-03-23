@@ -10,12 +10,12 @@ namespace HelpPlugin.Commands
     {
         public bool Execute(Command command, EntUser executor, CommandMessage data)
         {
-            data.ServerInstance.PrivateMessage(data.Sender, "Connected servers:");
+            data.Sender.SendMessage("Connected servers:");
             foreach (Server server in SettingsLoader.GetInstance().Servers)
             {
                 string serverInfo = String.Format("  {0} - {1}:{2}",
                     server.Identifier, server.Host, server.Port);
-                data.ServerInstance.PrivateMessage(data.Sender, serverInfo);
+                data.SendResponseNotice(serverInfo);
             }
             return true;
         }
