@@ -59,6 +59,8 @@ namespace SandraPlugin
 
         public override void OnEnable()
         {
+            _settingsPath = Path.Combine(DataDirectory, "SandraPlugin.json");
+
             LoadSettings();
             _feeds = new Dictionary<string, Feed>();
             _listen = true;
@@ -240,7 +242,7 @@ namespace SandraPlugin
             return true;
         }
 
-        private const string SETTINGS_PATH = "plugins/SandraPlugin.json";
+        private string _settingsPath;
         public void LoadSettings()
         {
             //DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Settings));
@@ -248,7 +250,7 @@ namespace SandraPlugin
 
             Settings newSettings;
 
-            if (!File.Exists(SETTINGS_PATH))
+            if (!File.Exists(_settingsPath))
             {
                 newSettings = new Settings
                 {
@@ -256,11 +258,11 @@ namespace SandraPlugin
                     Repos = new List<string>()
                 };
 
-                JsonHelper.Serialize<Settings>(newSettings, SETTINGS_PATH);
+                JsonHelper.Serialize<Settings>(newSettings, _settingsPath);
             }
             else
             {
-                newSettings = JsonHelper.Deserialize<Settings>(SETTINGS_PATH);
+                newSettings = JsonHelper.Deserialize<Settings>(_settingsPath);
             }
 
             _repos = newSettings.Repos;
@@ -275,7 +277,7 @@ namespace SandraPlugin
                 Repos = _repos
             };
 
-            JsonHelper.Serialize<Settings>(settings, SETTINGS_PATH);
+            JsonHelper.Serialize<Settings>(settings, _settingsPath);
         }
 
         public bool DeleteRepo(String  repo)

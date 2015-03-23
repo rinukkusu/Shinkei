@@ -47,7 +47,7 @@
     <Compile Include="Commands\ListReposCommandExecutor.cs" />
     <Compile Include="Commands\MarkovCommandExecutor.cs" />
     <Compile Include="Commands\RemoveRepoCommandExecutor.cs" />
-    <Compile Include="GitHub\Entry.cs" />
+    <Compile Include="GitHub\Feed.cs" />
     <Compile Include="SandraPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

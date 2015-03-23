@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Shinkei.API.Commands;
 
 namespace Shinkei.API
@@ -68,6 +69,20 @@ namespace Shinkei.API
         public virtual void OnDisable()
         {
             
+        }
+
+        public String DataDirectory
+        {
+            get
+            {
+                String directory = Path.Combine("plugins", Metadata.Name);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                return directory;
+            }
         }
     }
 

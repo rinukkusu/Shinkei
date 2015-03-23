@@ -23,11 +23,12 @@ namespace RejoinPlugin
             [DataMember]
             public int WaitUntilRejoin;
         }
-    
-        public static Settings MSettings = LoadSettings();
+
+        private Settings _settings;
 
         public override void OnEnable()
         {
+            _settings = LoadSettings();;
             EventManager.GetInstance().RegisterEvents(this, this);
         }
 
@@ -36,21 +37,18 @@ namespace RejoinPlugin
         {
             Console.WriteLine("RejoinPlugin.IrcKickHandler");
 
-            Thread.Sleep(MSettings.WaitUntilRejoin);
+            Thread.Sleep(_settings.WaitUntilRejoin);
             evnt.ServerInstance.Channels[evnt.Channel.Name].Join();
         }
 
-        public static Settings LoadSettings()
+        public Settings LoadSettings()
         {
-            //DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Settings));
-
-            string path = "plugins/RejoinPlugin.json";
+            string path = Path.Combine(DataDirectory, "RejoinPlugin.json");
             Settings newSettings;
 
             if (!File.Exists(path))
             {
-                newSettings = new Settings();
-                newSettings.WaitUntilRejoin = 2000;
+                newSettings = new Settings {WaitUntilRejoin = 2000};
 
                 JsonHelper.Serialize<Settings>(newSettings, path);
             }
