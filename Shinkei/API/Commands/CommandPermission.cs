@@ -2,13 +2,12 @@
 
 namespace Shinkei.API.Commands
 {
-    [Flags]
     public enum CommandPermission
     {
+        NONE = 0,
         VOICE = 1,
         WHITELIST = 2,
-        OP = 4,
-        CONSOLE = 8,
-        NONE = 0xFF
+        OP = 3,
+        CONSOLE = 4
     }
 }

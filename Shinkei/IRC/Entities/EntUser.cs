@@ -63,7 +63,11 @@ namespace Shinkei.IRC.Entities
 
         public virtual bool HasPermission(CommandPermission permission)
         {
-            return (Permission & permission) != 0;
+            if (Permission == CommandPermission.NONE)
+            {
+                return false;
+            }
+            return Permission >= permission;
         }
     }
 }
