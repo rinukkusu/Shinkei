@@ -29,7 +29,7 @@ namespace SandraPlugin.Commands
             if (!channel.StartsWith("#")) channel = "#" + channel;
             if (_plugin.CommitChannels.ContainsKey(server) && _plugin.CommitChannels[server].Contains(channel))
             {
-                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.RED + "Channel wurde schon hinzugefügt!");
+                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ": " + ColorCode.RED + "Channel wurde schon hinzugefügt!");
                 return true;
             } 
 
@@ -38,12 +38,12 @@ namespace SandraPlugin.Commands
 
             if (success)
             {
-                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.GREEN + "Channel erfolgreich hinzugefügt.");
+                data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ": " + ColorCode.GREEN + "Channel erfolgreich hinzugefügt.");
                 _plugin.SaveSettings();
                 return true;
             }
 
-            data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ColorCode.RED + "Ungültiger Server oder Channel");
+            data.ServerInstance.PrivateMessage(answerRcpt, executor.GetName() + ": " + ColorCode.RED + "Ungültiger Server oder Channel");
             return true;
         }
     }

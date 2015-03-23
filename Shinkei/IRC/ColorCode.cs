@@ -1,7 +1,17 @@
-﻿namespace Shinkei.IRC
+﻿using System;
+
+namespace Shinkei.IRC
 {
     public class ColorCode
     {
+        public static string COLOR = Char.ConvertFromUtf32(3);
+        public static string NORMAL = Char.ConvertFromUtf32(15);
+        public static string BOLD = Char.ConvertFromUtf32(2);
+        public static string ITALIC = Char.ConvertFromUtf32(9);
+        public static string STRIKETROUGH = Char.ConvertFromUtf32(19);
+        public static string UNDERLINE = Char.ConvertFromUtf32(21);
+        public static string UNDERLINE_ALT = Char.ConvertFromUtf32(31);
+        public static string REVERSE = Char.ConvertFromUtf32(22);
         public static string WHITE = COLOR + "00";
         public static string BLACK = COLOR + "01";
         public static string DARK_BLUE = COLOR + "02";
@@ -18,13 +28,5 @@
         public static string MAGENTA = COLOR + "13";
         public static string DARK_GRAY = COLOR + "14";
         public static string LIGHT_GRAY = COLOR + "15";
-        public static char COLOR = (char)3;
-        public static char NORMAL = (char)15;
-        public static char BOLD = (char)2;
-        public static char ITALIC = (char)9;
-        public static char STRIKETROUGH = (char)19;
-        public static char UNDERLINE = (char)21;
-        public static char UNDERLINE_ALT = (char)31;
-        public static char REVERSE = (char)22;
     }
 }

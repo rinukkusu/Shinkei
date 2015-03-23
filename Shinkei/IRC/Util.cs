@@ -47,9 +47,9 @@ namespace Shinkei.IRC
                 }
             }
 
-            if (argumentString.Length > 0)
+            if (singleArgument.Length > 0)
             {
-                arguments.Add(argumentString);
+                arguments.Add(singleArgument);
             }
 
             return arguments;
