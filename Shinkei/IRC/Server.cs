@@ -184,6 +184,11 @@ namespace Shinkei.IRC
 
         public void PrivateMessage(ServerEntity recipient, string text)
         {
+            if (recipient is EntConsole)
+            {
+                recipient.SendMessage(text);
+                return;
+            }
             string messageHeader = "PRIVMSG " + recipient.GetName() + " :";
             SendMessage(messageHeader, text);
         }
@@ -235,6 +240,11 @@ namespace Shinkei.IRC
 
         public void Notice(ServerEntity recipient, string text)
         {
+            if (recipient is EntConsole)
+            {
+                recipient.SendMessage(text);
+                return;
+            }
             string messageHeader = "NOTICE " + recipient.GetName() + " :";
             SendMessage(messageHeader, text);
         }
