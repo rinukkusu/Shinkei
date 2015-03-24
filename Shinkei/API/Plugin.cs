@@ -45,9 +45,9 @@ namespace Shinkei.API
             {
                 return;
             }
-            //_enabled = false;
-            //OnDisable();
-            throw new NotImplementedException();
+            Console.WriteLine("[" + Metadata.Name + "] Disabling...");
+            _enabled = false;
+            OnDisable();
         }
 
         public void Enable()
@@ -56,9 +56,9 @@ namespace Shinkei.API
             {
                 return;
             }
-            //_enabled = true;
-            //OnEnable();
-            throw new NotImplementedException();
+            Console.WriteLine("[" + Metadata.Name + "] Enabling...");
+            _enabled = true;
+            OnEnable();
         }
 
         public virtual void OnEnable()

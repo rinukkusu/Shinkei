@@ -46,7 +46,7 @@ namespace Shinkei
 
             foreach (Plugin plugin in myPluginContainer.Plugins)
             {
-                plugin.OnEnable();
+                plugin.Enable();
             }
 
             //myEventsink.OnIrcMessage(new IRC.Message());
