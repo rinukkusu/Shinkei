@@ -229,7 +229,7 @@ namespace SandraPlugin
                 response = (HttpWebResponse) e.Response;
             }
 
-            if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.Accepted && response.StatusCode != HttpStatusCode.Created)
+            if (response == null || response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.Accepted && response.StatusCode != HttpStatusCode.Created)
             {
                 return false;
             }
