@@ -85,7 +85,6 @@ namespace SandraPlugin
         {
             while (_listen)
             {
-                Console.WriteLine("OnCheck");
                 Dictionary<String, List<Entry>> commits = new Dictionary<string, List<Entry>>();
                 if (_repos.Count > 0)
                 {
@@ -133,8 +132,6 @@ namespace SandraPlugin
                             _feeds.Add(repo, lastFeed);
                             continue;
                         }
-
-                        Console.WriteLine(repo + ": no new commits");
 
                         _feeds.Add(repo, currentFeed);
                     }
@@ -218,7 +215,6 @@ namespace SandraPlugin
         {
             if (!Regex.IsMatch(repo, REPO_PATTERN)) 
             {
-                Console.WriteLine("Failed: Pattern mismatch");
                 return false;
             }
 
@@ -230,7 +226,6 @@ namespace SandraPlugin
             }
             catch (WebException e)
             {
-                Console.WriteLine("Failed: " + e);
                 response = (HttpWebResponse) e.Response;
             }
 
