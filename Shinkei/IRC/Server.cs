@@ -37,7 +37,7 @@ namespace Shinkei.IRC
 
         public static Server GetServer(string identifier)
         {
-            return SettingsLoader.GetInstance().Servers.FirstOrDefault(server => server.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
+            return GetServers().FirstOrDefault(server => server.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public Server(string host, int port, string serverIdentifier, string nickname, string username = "shinkei", string realname = "Shinkei Bot", string nickservPassword = "")
@@ -226,13 +226,14 @@ namespace Shinkei.IRC
         }
 
 
-        public void Disconnect()
+        internal void Disconnect()
         {
             _bRunning = false;
             _reader.Abort();
+            _socket.Close();
         }
 
-        public void Reconnect()
+        internal void Reconnect()
         {
             Disconnect();
             Connect();
@@ -247,6 +248,30 @@ namespace Shinkei.IRC
             }
             string messageHeader = "NOTICE " + recipient.GetName() + " :";
             SendMessage(messageHeader, text);
+        }
+
+        public static List<Server> GetServers()
+        {
+            return SettingsLoader.GetInstance().Servers;
+        }
+
+        public void Quit()
+        {
+            Quit(null);
+        }
+
+        public void Quit(String quitmessage)
+        {
+            if (quitmessage != null && quitmessage.Trim() != "")
+            {
+                quitmessage = " :" + quitmessage.Trim();
+            }
+            else
+            {
+                quitmessage = "";
+            }
+            WriteLine("QUIT" + quitmessage);
+            Disconnect();
         }
     }
 }

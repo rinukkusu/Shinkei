@@ -43,6 +43,7 @@
     <Compile Include="Commands\EnableCommandExecutor.cs" />
     <Compile Include="Commands\JoinCommandExecutor.cs" />
     <Compile Include="Commands\PartCommandExecutor.cs" />
+    <Compile Include="Commands\QuitCommand.cs" />
     <Compile Include="ControlPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

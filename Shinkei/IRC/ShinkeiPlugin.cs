@@ -22,7 +22,7 @@ namespace Shinkei.IRC
     {
         public string Name
         {
-            get { return "Shinkei"; }
+            get { return "ShinkeiCore"; }
         }
 
         public string Version

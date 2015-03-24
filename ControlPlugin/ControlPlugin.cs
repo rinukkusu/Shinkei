@@ -15,9 +15,10 @@ namespace ControlPlugin
     {
         public override void OnEnable()
         {
-            CommandPermission perm = CommandPermission.WHITELIST | CommandPermission.OP;
+            const CommandPermission perm = CommandPermission.OP;
             CommandHandler.GetInstance().RegisterCommand(new Command("join", "join <channel> <key>", "Lets the bot join a channel with an optional channel key.", new JoinCommandExecutor(), perm), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("part", "part <channel>", "Lets the bot leave a channel.", new PartCommandExecutor(), perm), this);
+            CommandHandler.GetInstance().RegisterCommand(new Command("quit", "quit [reason]", "Quits the bot.", new QuitCommand(), perm), this);
         }
     }
 }

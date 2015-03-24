@@ -16,7 +16,7 @@ namespace Shinkei.API
     public abstract class Plugin
     {
         private IPluginData _data;
-        private bool _enabled = true;
+        private bool _enabled = false;
 
         public IPluginData Metadata
         {
@@ -45,7 +45,7 @@ namespace Shinkei.API
             {
                 return;
             }
-            Console.WriteLine("[" + Metadata.Name + "] Disabling...");
+            Console.WriteLine("[" + Metadata.Name + "-Plugin] Disabling...");
             _enabled = false;
             OnDisable();
         }
@@ -56,7 +56,7 @@ namespace Shinkei.API
             {
                 return;
             }
-            Console.WriteLine("[" + Metadata.Name + "] Enabling...");
+            Console.WriteLine("[" + Metadata.Name + "-Plugin] Enabling...");
             _enabled = true;
             OnEnable();
         }
