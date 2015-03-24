@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Xml;
 using System.Xml.Serialization;
 using SandraPlugin.Commands;
 using SandraPlugin.GitHub;
@@ -84,6 +85,7 @@ namespace SandraPlugin
         {
             while (_listen)
             {
+                Console.WriteLine("OnCheck");
                 Dictionary<String, List<Entry>> commits = new Dictionary<string, List<Entry>>();
                 if (_repos.Count > 0)
                 {
@@ -91,19 +93,14 @@ namespace SandraPlugin
                     {
                         String feedUrl = @"https://github.com/" + repo + @"/commits/master.atom";
                         var webRequest = WebRequest.Create(feedUrl);
-
-                        var content = webRequest.GetResponse().GetResponseStream();
-                        if (content == null)
+                        var responseStream = webRequest.GetResponse().GetResponseStream();
+                        if (responseStream == null)
                         {
                             continue;
                         }
-
-                        StreamReader reader = new StreamReader(content);
-
-                        XmlSerializer serializer = new XmlSerializer(typeof (Feed));
-
-                        Feed currentFeed = (Feed) serializer.Deserialize(reader);
-                        reader.Close();
+                        var streamReader = new StreamReader(responseStream);
+                        var serializer = new XmlSerializer(typeof(Feed));
+                        Feed currentFeed = (Feed)serializer.Deserialize(streamReader);
 
                         Feed lastFeed;
                         try
@@ -127,15 +124,17 @@ namespace SandraPlugin
 
                             List<Entry> newCommits = (from commit in lastFeed.Entries 
                                                         let commitTime = ToDateTime(commit.Updated) 
-                                                        where commitTime > currentFeedTime 
+                                                        where commitTime >= lastFeedTime 
                                                         select commit).ToList();
 
                             
                             commits.Add(repo, newCommits);
                             _feeds.Remove(repo);
                             _feeds.Add(repo, lastFeed);
-                            return;
+                            continue;
                         }
+
+                        Console.WriteLine(repo + ": no new commits");
 
                         _feeds.Add(repo, currentFeed);
                     }
@@ -146,7 +145,7 @@ namespace SandraPlugin
                     }
                 }
 
-                Thread.Sleep(1000*60*3);
+                Thread.Sleep(1000*60);
             }
         }
 
@@ -175,12 +174,12 @@ namespace SandraPlugin
                         String repoName = repo.Split('/')[1];
                         EntChannel channel = new EntChannel(server, channelName);
                         channel.SendMessage(
-                            "Neue commits (" + ColorCode.CYAN + commits.Count + ColorCode.NORMAL + ") in "
+                            "Neue Commits (" + ColorCode.CYAN + commits.Count + ColorCode.NORMAL + ") in "
                             + ColorCode.PURPLE + org + ColorCode.NORMAL + "/" + ColorCode.MAGENTA + repoName + ColorCode.NORMAL + ": ");
                         foreach (Entry commit in commits[repo])
                         {
-                            String commitId = commit.Id.Substring(0, 6);
-                            channel.SendMessage("    " + ColorCode.LIGHT_GRAY + "[" + ColorCode.DARK_GREEN + "#" + ColorCode.GREEN + commitId + ColorCode.LIGHT_GRAY + "] " + ColorCode.NORMAL + ColorCode.BOLD + commit.Author.Name + ColorCode.NORMAL + ": " + commit.Title);
+                            String commitId = commit.Id.Split('/')[1].Substring(0, 6);
+                            channel.SendMessage("    " + ColorCode.LIGHT_GRAY + "[" + ColorCode.DARK_GREEN + "#" + ColorCode.GREEN + commitId + ColorCode.LIGHT_GRAY + "] " + ColorCode.NORMAL + ColorCode.BOLD + commit.Author.Name + ColorCode.NORMAL + ": " + commit.Title.Trim());
                             channel.SendMessage("        " + MakeGitIoLink(commit.Link.Href));
                         }
                     }
@@ -211,14 +210,15 @@ namespace SandraPlugin
  
         public static DateTime ToDateTime(String s)
         {
-            return DateTime.ParseExact(s, @"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz", System.Globalization.CultureInfo.InvariantCulture);
+            return DateTime.Parse(s);
         }
 
-        public const String REPO_PATTERN = @"\s([a-zA-z0-9-_.]+\/[a-zA-Z0-9-_.]+)$/";
+        public const String REPO_PATTERN = "([a-zA-z0-9-_.]+\\/[a-zA-Z0-9-_.]+)";
         public bool AddRepo(String repo)
         {
             if (!Regex.IsMatch(repo, REPO_PATTERN)) 
             {
+                Console.WriteLine("Failed: Pattern mismatch");
                 return false;
             }
 
@@ -230,6 +230,7 @@ namespace SandraPlugin
             }
             catch (WebException e)
             {
+                Console.WriteLine("Failed: " + e);
                 response = (HttpWebResponse) e.Response;
             }
 
