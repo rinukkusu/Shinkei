@@ -28,7 +28,7 @@ namespace Shinkei.API.Events
             Type type = listener.GetType();
             foreach (MethodInfo method in type.GetMethods())
             {
-                bool isEventMethod = method.GetCustomAttributes().OfType<EventHandler>().Any();
+                bool isEventMethod = method.GetCustomAttributes(false).OfType<EventHandler>().Any();
 
                 if (!isEventMethod)
                 {
@@ -89,7 +89,7 @@ namespace Shinkei.API.Events
 
             methods.Sort(EventComprarer.Compare);
 
-            foreach (MethodInfo info in from info in methods let handler = info.GetCustomAttributes().OfType<EventHandler>().FirstOrDefault() where handler != null where !(evnt is ICancellable) || !((ICancellable)evnt).IsCancelled() || handler.IgnoreCancelled select info)
+            foreach (MethodInfo info in from info in methods let handler = info.GetCustomAttributes(false).OfType<EventHandler>().FirstOrDefault() where handler != null where !(evnt is ICancellable) || !((ICancellable)evnt).IsCancelled() || handler.IgnoreCancelled select info)
             {
                 IListener instance;
                 try
@@ -125,8 +125,8 @@ namespace Shinkei.API.Events
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public static int Compare(MethodInfo a, MethodInfo b)
         {
-            EventPriority priorityA = a.GetCustomAttributes().OfType<EventHandler>().FirstOrDefault().Priority;
-            EventPriority priorityB = b.GetCustomAttributes().OfType<EventHandler>().FirstOrDefault().Priority;
+            EventPriority priorityA = a.GetCustomAttributes(false).OfType<EventHandler>().FirstOrDefault().Priority;
+            EventPriority priorityB = b.GetCustomAttributes(false).OfType<EventHandler>().FirstOrDefault().Priority;
 
             if (priorityA > priorityB)
             {
