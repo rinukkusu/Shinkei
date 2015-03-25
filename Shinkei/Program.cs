@@ -6,6 +6,7 @@ using Shinkei.API;
 using Shinkei.API.Events;
 using Shinkei.IRC;
 using Shinkei.IRC.Events;
+using System.Reflection;
 
 namespace Shinkei
 {
@@ -104,6 +105,17 @@ namespace Shinkei
             catch (Exception e)
             {
                 Console.WriteLine("Couldn't load plugins: " + e.Message);
+
+                if (e is System.Reflection.ReflectionTypeLoadException)
+                {
+                    var typeLoadException = e as ReflectionTypeLoadException;
+                    var loaderExceptions = typeLoadException.LoaderExceptions;
+
+                    foreach (var loaderException in loaderExceptions)
+                    {
+                        Console.WriteLine("  >>" + loaderException.Message);
+                    }
+                }
             }
             foreach (Plugin plugin in myPluginContainer.Plugins)
             {

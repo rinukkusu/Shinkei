@@ -33,15 +33,6 @@
     <Reference Include="mysql.data">
       <HintPath>lib\mysql.data.dll</HintPath>
     </Reference>
-    <Reference Include="mysql.data.entity">
-      <HintPath>lib\mysql.data.entity.dll</HintPath>
-    </Reference>
-    <Reference Include="mysql.data.entity.EF6">
-      <HintPath>lib\mysql.data.entity.EF6.dll</HintPath>
-    </Reference>
-    <Reference Include="mysql.web">
-      <HintPath>lib\mysql.web.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -72,6 +63,17 @@
       <Name>Shinkei</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="mysql.data.entity.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="mysql.data.entity.EF6.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="mysql.web.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

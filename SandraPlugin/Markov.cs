@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace SandraPlugin
 {
@@ -21,7 +20,7 @@ namespace SandraPlugin
 
         public void AddSentence(string text)
         {
-            List<string> words = text.Split(' ').ToList();
+            List<string> words = new List<string>(text.Split(' '));
             words.RemoveAll(string.IsNullOrWhiteSpace);
 
             for (int i = 0; i <= words.Count - 1; i++)
