@@ -94,6 +94,8 @@
     <Compile Include="JsonHelper.cs" />
     <Compile Include="PluginContainer.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Program.Unix.cs" />
+    <Compile Include="Program.Windows.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Shinkei.API;
 using Shinkei.API.Events;
@@ -10,59 +9,32 @@ using Shinkei.IRC.Events;
 
 namespace Shinkei
 {
-    class Program
+    partial class Program
     {
-        [DllImport("Kernel32")]
-        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
-
-        private delegate bool EventHandler(CtrlType sig);
-        static EventHandler _handler;
-
-        enum CtrlType
-        {
-            CTRL_C_EVENT = 0,
-            CTRL_BREAK_EVENT = 1,
-            CTRL_CLOSE_EVENT = 2,
-            CTRL_LOGOFF_EVENT = 5,
-            CTRL_SHUTDOWN_EVENT = 6
-        }
-
-        private static bool Handler(CtrlType sig)
-        {
-            List<Server> servers;
-            try
-            {
-                servers = Server.GetServers();
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            foreach (Server server in servers)
-            {
-                try
-                {
-                    server.Quit();
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-            return false;
-        }
-
-
         private static Boolean _stop;
-
+        private static Program _instance;
         static void Main()
         {
+           _instance = new Program();
+        }
+
+        public Program GetInstance()
+        {
+            return _instance;
+        }
+
+        public Program()
+        {
+            if (IsWindows())
+            {
+                MainWindows();
+            }
+            else if (IsUnix())
+            {
+                MainUnix();
+            }
             Thread @shinkeiThread = new Thread(StartShinkei);
             @shinkeiThread.Start();
-
-            _handler += Handler;
-            SetConsoleCtrlHandler(_handler, true);
 
             while (!_stop)
             {
@@ -79,17 +51,60 @@ namespace Shinkei
             }
         }
 
-        public static void Stop()
+        public static bool IsWindows()
         {
-            _stop = true;
+            int p = (int) Environment.OSVersion.Platform;
+            return p == (int) PlatformID.Win32NT || p == (int) PlatformID.Win32S || p == (int) PlatformID.Win32Windows;
         }
 
-        private static void StartShinkei()
+        public static bool IsUnix()
         {
+            return Type.GetType("Mono.Runtime") != null;
+        }
 
+        public void Stop()
+        {
+            _stop = true;
+            _instance = null;
+            OnClose();
+        }
+
+        private void OnClose()
+        {
+            List<Server> servers;
+            try
+            {
+                servers = Server.GetServers();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            foreach (Server server in servers)
+            {
+                try
+                {
+                    server.Quit();
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+
+        private void StartShinkei()
+        {
             PluginContainer myPluginContainer = PluginContainer.GetInstance();
-            myPluginContainer.LoadPlugins();
-
+            try
+            {
+                myPluginContainer.LoadPlugins();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("" + e);
+            }
             foreach (Plugin plugin in myPluginContainer.Plugins)
             {
                 plugin.Enable();

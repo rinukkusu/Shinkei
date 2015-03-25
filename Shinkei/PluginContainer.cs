@@ -19,13 +19,13 @@ namespace Shinkei
 
         public List<Plugin> Plugins = new List<Plugin>(); 
 
-        private static readonly PluginContainer Instance = new PluginContainer("./plugins");
+        private static readonly PluginContainer Instance = new PluginContainer("plugins");
         public static PluginContainer GetInstance()
         {
             return Instance;
         }
 
-        private PluginContainer(string path = "./plugins")
+        private PluginContainer(string path = "plugins")
         {
             _mPath = path;
         }
