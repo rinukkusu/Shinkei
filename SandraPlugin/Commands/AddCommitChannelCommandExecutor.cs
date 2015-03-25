@@ -16,16 +16,16 @@ namespace SandraPlugin.Commands
 
         public bool Execute(Command command, EntUser executor, CommandMessage data)
         {
-            if (data.Arguments.Count != 2)
+            if (data.Arguments.Count != 1)
             {
                 return false; 
             }
 
-            String server = data.Arguments[0];
-            String channel = data.Arguments[1];
+            String server = data.Server.Identifier;
+            String channel = data.Arguments[0];
 
             if (!channel.StartsWith("#")) channel = "#" + channel;
-            if (_plugin.CommitChannels.ContainsKey(server) && _plugin.CommitChannels[server].Contains(channel))
+            if (_plugin.Settings.CommitChannels.ContainsKey(server) && _plugin.Settings.CommitChannels[server].Contains(channel))
             {
                 data.SendResponse(ColorCode.RED + "Channel wurde schon hinzugefügt!");
                 return true;

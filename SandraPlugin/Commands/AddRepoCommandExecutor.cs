@@ -35,7 +35,7 @@ namespace SandraPlugin.Commands
 
             repo = orgname + "/" + reponame;
 
-            if (_plugin.Repos.Contains(repo))
+            if (_plugin.Settings.Repos.Contains(repo))
             {
                 data.SendResponse(ColorCode.RED + "Repository wurde schon hinzugefügt.");
                 return true;

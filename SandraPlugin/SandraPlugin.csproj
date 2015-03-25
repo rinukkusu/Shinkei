@@ -30,6 +30,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mysql.data">
+      <HintPath>lib\mysql.data.dll</HintPath>
+    </Reference>
+    <Reference Include="mysql.data.entity">
+      <HintPath>lib\mysql.data.entity.dll</HintPath>
+    </Reference>
+    <Reference Include="mysql.data.entity.EF6">
+      <HintPath>lib\mysql.data.entity.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="mysql.web">
+      <HintPath>lib\mysql.web.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -45,9 +57,12 @@
     <Compile Include="Commands\AddRepoCommandExecutor.cs" />
     <Compile Include="Commands\CalcCommandExecutor.cs" />
     <Compile Include="Commands\ListReposCommandExecutor.cs" />
+    <Compile Include="Commands\MarkovBlockCommandExecutor.cs" />
     <Compile Include="Commands\MarkovCommandExecutor.cs" />
+    <Compile Include="Commands\MarkovUnblockCommandExecutor.cs" />
     <Compile Include="Commands\RemoveRepoCommandExecutor.cs" />
     <Compile Include="GitHub\Feed.cs" />
+    <Compile Include="Markov.cs" />
     <Compile Include="SandraPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

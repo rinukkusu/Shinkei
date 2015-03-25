@@ -17,14 +17,14 @@ namespace SandraPlugin.Commands
 
         public bool Execute(Command command, EntUser executor, CommandMessage data)
         {
-            if (_plugin.Repos.Count == 0)
+            if (_plugin.Settings.Repos.Count == 0)
             {
                 data.SendResponse(ColorCode.RED + "Keine Repositorys vorhanden.");
                 return true;
             }
 
             String s = "";
-            foreach (String repo in _plugin.Repos)
+            foreach (String repo in _plugin.Settings.Repos)
             {
                 if (s.Equals(""))
                 {
