@@ -42,13 +42,6 @@ namespace Shinkei.IRC
             }
 
             [DataMember]
-            public string Nickname;
-            [DataMember]
-            public string Username;
-            [DataMember]
-            public string Realname;
-
-            [DataMember]
             public char CommandCharacter = '+';
 
             [DataMember]
@@ -80,17 +73,14 @@ namespace Shinkei.IRC
             if (!File.Exists(_mPath))
             {
                 Settings newSettings = new Settings();
-                newSettings.Nickname = "Shinkei_" + (new Random()).Next(1000,9999);
-                newSettings.Username = "shinkei";
-                newSettings.Realname = "Shinkei Bot";
                 newSettings.Servers = new List<Settings.ServerSettings>();
                 
                 Settings.ServerSettings newServer = new Settings.ServerSettings();
                 newServer.Hostname = "irc.lolnein.de";
                 newServer.Port = 6667;
-                newServer.Nickname = newSettings.Nickname;
-                newServer.Username = newSettings.Username;
-                newServer.Realname = newSettings.Realname;
+                newServer.Nickname = "Shinkei_" + (new Random()).Next(1000, 9999);
+                newServer.Username = "shinkei"; ;
+                newServer.Realname = "Shinkei Bot"; ;
                 newServer.Identifier = "lolnein";
                 newServer.Channels = new List<Settings.ServerSettings.ChannelSettings>();
 

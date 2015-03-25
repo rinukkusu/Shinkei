@@ -103,7 +103,7 @@ namespace Shinkei
             }
             catch (Exception e)
             {
-                Console.WriteLine("" + e);
+                Console.WriteLine("Couldn't load plugins: " + e.Message);
             }
             foreach (Plugin plugin in myPluginContainer.Plugins)
             {
