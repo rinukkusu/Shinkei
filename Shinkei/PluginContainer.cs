@@ -38,7 +38,7 @@ namespace Shinkei
             }
 
             var catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new DirectoryCatalog(_mPath));
+            catalog.Catalogs.Add(new DirectoryCatalog(_mPath, "*Plugin.dll"));
             _mContainer = new CompositionContainer(catalog);
 
             try
