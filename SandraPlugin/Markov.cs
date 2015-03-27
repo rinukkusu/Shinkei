@@ -27,7 +27,7 @@ namespace SandraPlugin
                 _conn.Close();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -177,7 +177,7 @@ namespace SandraPlugin
             }
             else
             {
-                text = "Error: Ungültiges Startwort";
+                return null;
             }
 
             return text;

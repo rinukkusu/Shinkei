@@ -40,6 +40,11 @@ namespace SandraPlugin
             get { return _settings;  }
         }
 
+        public Markov Markov
+        {
+            get { return _markov; }
+        }
+
         [DataContract]
         public class SandraSettings
         {
@@ -93,7 +98,7 @@ namespace SandraPlugin
             CommandHandler.GetInstance().RegisterCommand(new Command("calc", "calc <query>", "Executes a Wolfram Alpha query", new CalcCommandExecutor()), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("listrepos", "listrepo",
      "Shows all saved repos.", new ListReposCommandExecutor(this)), this);
-            CommandHandler.GetInstance().RegisterCommand(new Command("m", "m <keyword>", "Outputs a markov-generated sentence", new MarkovCommandExecutor()), this);
+            CommandHandler.GetInstance().RegisterCommand(new Command("m", "m <keyword>", "Outputs a markov-generated sentence", new MarkovCommandExecutor(this)), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("removerepo", "removerepo <username>/<repo>",
                              "Removes a repo which was added previously.", new RemoveRepoCommandExecutor(this), CommandPermission.WHITELIST), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("addcommitchannel", "addcommitchannel #<channel>",
@@ -289,18 +294,13 @@ namespace SandraPlugin
                 return false;
             }
 
-            HttpWebResponse response;
             try
             {
-                HttpWebRequest request = WebRequest.CreateHttp(@"https://github.com/" + repo);
-                response = (HttpWebResponse) request.GetResponse();
+                var response = WebRequest.Create(@"https://github.com/" + repo).GetResponse().GetResponseStream();
+                if(response == null)
+                    throw new Exception();
             }
-            catch (WebException e)
-            {
-                response = (HttpWebResponse) e.Response;
-            }
-
-            if (response == null || response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.Accepted && response.StatusCode != HttpStatusCode.Created)
+            catch (Exception)
             {
                 return false;
             }
