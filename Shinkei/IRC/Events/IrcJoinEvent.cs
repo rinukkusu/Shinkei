@@ -1,4 +1,5 @@
-﻿using Shinkei.IRC.Entities;
+﻿using Shinkei.API.Entities;
+using Shinkei.IRC.Entities;
 
 namespace Shinkei.IRC.Events
 {

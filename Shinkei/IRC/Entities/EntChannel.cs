@@ -1,4 +1,6 @@
 ﻿
+using Shinkei.API.Entities;
+
 namespace Shinkei.IRC.Entities
 {
     public class EntChannel : ServerEntity

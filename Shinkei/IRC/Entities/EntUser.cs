@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Shinkei.API.Commands;
+using Shinkei.API.Entities;
 
 namespace Shinkei.IRC.Entities
 {

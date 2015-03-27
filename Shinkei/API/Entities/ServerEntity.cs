@@ -1,4 +1,6 @@
-﻿namespace Shinkei.IRC.Entities
+﻿using Shinkei.IRC;
+
+namespace Shinkei.API.Entities
 {
     public abstract class ServerEntity : IEntity
     {

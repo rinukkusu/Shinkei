@@ -70,7 +70,7 @@
     <Compile Include="API\Events\EventPriority.cs" />
     <Compile Include="API\Events\ICancellable.cs" />
     <Compile Include="API\Events\IListener.cs" />
-    <Compile Include="IRC\Entities\ServerEntity.cs" />
+    <Compile Include="API\Entities\ServerEntity.cs" />
     <Compile Include="IRC\Events\ConsoleCommandEvent.cs" />
     <Compile Include="IRC\Events\IrcJoinEvent.cs" />
     <Compile Include="IRC\Events\IrcKickEvent.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="IRC\Exceptions\ConnectionRefusedException.cs" />
     <Compile Include="IRC\Exceptions\IReportable.cs" />
     <Compile Include="IRC\Commands\CommandMessage.cs" />
-    <Compile Include="IRC\Entities\IEntity.cs" />
+    <Compile Include="API\Entities\IEntity.cs" />
     <Compile Include="API\Plugin.cs" />
     <Compile Include="IRC\ColorCode.cs" />
     <Compile Include="IRC\Messages\ResponseMessage.cs" />

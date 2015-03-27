@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Shinkei.API.Entities;
 using Shinkei.API.Events;
 using Shinkei.IRC.Commands;
 using Shinkei.IRC.Entities;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Shinkei.API.Entities;
 using Shinkei.IRC.Entities;
 
 namespace Shinkei.IRC.Messages
