@@ -38,7 +38,7 @@ namespace Shinkei.API.Events
                 ParameterInfo[] methodArgs = method.GetParameters();
                 if (methodArgs.Length != 1)
                 {
-                    //Listener methods should have only one method
+                    //Listener methods should have only one argument
                     continue;
                 }
 
