@@ -69,7 +69,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(SolutionDir)bin\$(ConfigurationName)\libs"
-xcopy "$(ProjectDir)lib\mysql.data.dll" "$(SolutionDir)bin\$(ConfigurationName)\libs"</PostBuildEvent>
+ xcopy "$(ProjectDir)lib\mysql.data.dll" "$(SolutionDir)bin\$(ConfigurationName)\libs" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
