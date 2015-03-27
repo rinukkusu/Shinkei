@@ -124,7 +124,11 @@ namespace SandraPlugin
             {
                 throw new InvalidOperationException("Markov is not enabled");
             }
-            return !_settings.MarkovBlocked.Contains(name);
+
+            if (!_markov.DatabaseAvailable())
+                return false;
+
+            return (_settings.MarkovBlocked != null) ? !_settings.MarkovBlocked.Contains(name) : true;
         }
 
         public void MarkovBlock(String name)

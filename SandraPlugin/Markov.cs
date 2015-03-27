@@ -19,6 +19,20 @@ namespace SandraPlugin
 
         }
 
+        public bool DatabaseAvailable()
+        {
+            try
+            {
+                _conn.Open();
+                _conn.Close();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         public void AddSentence(string text)
         {
             List<string> words = new List<string>(text.Split(' '));
