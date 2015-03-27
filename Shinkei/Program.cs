@@ -26,6 +26,9 @@ namespace Shinkei
 
         public Program()
         {
+			AppDomain currentDomain = AppDomain.CurrentDomain;
+			currentDomain.AssemblyResolve += new ResolveEventHandler(MyResolveEventHandler);
+
             if (IsWindows())
             {
                 MainWindows();
@@ -127,5 +130,46 @@ namespace Shinkei
 
             mySettings.EnforceSettings();
         }
+
+		private Assembly MyResolveEventHandler (object sender, ResolveEventArgs args)
+		{
+			//This handler is called only when the common language runtime tries to bind to the assembly and fails.
+			Assembly MyAssembly;
+			string strTempAssmbPath = "";
+			
+			//Build the path of the assembly from where it has to be loaded.
+			string baseFolder = Assembly.GetExecutingAssembly ().Location;
+			baseFolder = baseFolder.Substring (0, baseFolder.LastIndexOf (System.IO.Path.DirectorySeparatorChar));
+
+			//If resolving for a plugin, remove the "plugins" folder, too
+			string[] lastFolder = baseFolder.Split (System.IO.Path.DirectorySeparatorChar);
+			if (lastFolder [lastFolder.Length - 1] == "plugins") 
+			{
+				baseFolder = baseFolder.Substring (0, baseFolder.LastIndexOf (System.IO.Path.DirectorySeparatorChar));
+			}
+
+			//Now assemble the paths
+			try {
+				string normalizedName = args.Name.Substring (0, args.Name.IndexOf (","));
+				if (normalizedName.ToLower ().Contains ("plugin")) 
+				{
+					strTempAssmbPath = System.IO.Path.Combine (baseFolder, "plugins", normalizedName + ".dll");
+				} 
+				else 
+				{
+					strTempAssmbPath = System.IO.Path.Combine (baseFolder, "libs", normalizedName + ".dll");
+				}
+			}
+			catch (Exception exi)
+			{
+				Console.WriteLine (exi.Message);
+			}
+
+			//Load the assembly from the specified path. 					
+			MyAssembly = Assembly.LoadFrom(strTempAssmbPath);
+			
+			//Return the loaded assembly.
+			return MyAssembly;
+		}
     }
 }
