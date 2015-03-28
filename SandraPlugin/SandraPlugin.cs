@@ -70,8 +70,18 @@ namespace SandraPlugin
             public string MarkovPassword;
         }
 
+        public static bool Validator(Object sender, 
+                                System.Security.Cryptography.X509Certificates.X509Certificate certificate, 
+                                System.Security.Cryptography.X509Certificates.X509Chain chain,
+                                System.Net.Security.SslPolicyErrors xxlPolicyErrors)
+        {
+            return true;
+        }
+
         public override void OnEnable()
         {
+            ServicePointManager.ServerCertificateValidationCallback = Validator;
+
             _settingsPath = Path.Combine(DataDirectory, "SandraPlugin.json");
 
             _settings = LoadSettings();
