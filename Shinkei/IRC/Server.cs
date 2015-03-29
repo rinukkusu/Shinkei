@@ -154,7 +154,11 @@ namespace Shinkei.IRC
         {
             if (_socket.Connected && _bRunning)
             {
-                Console.WriteLine(Identifier + ": >> " + text);
+                Console.Write(Identifier + ": ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(">>");
+                Console.ResetColor();
+                Console.Write(" " + text + "\r\n");
 
                 StreamWriter writer = new StreamWriter(_socket.GetStream());
                 writer.WriteLine(text);
