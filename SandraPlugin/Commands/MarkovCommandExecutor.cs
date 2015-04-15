@@ -22,23 +22,25 @@ namespace SandraPlugin.Commands
                 return false;
             }
 
-            if (data.Arguments.Count > 1)
+            if (_plugin.IsMarkovEnabled(executor.GetName()))
             {
-                goto failed;
+                String sentence = default(String);
+                if (data.Arguments.Count == 1)
+                {
+                    String keyword = data.Arguments[0];
+                    sentence = _plugin.Markov.GetSentence(keyword);
+                }
+
+                if (String.IsNullOrWhiteSpace(sentence))
+                {
+                    data.SendResponse(ColorCode.RED + "Error: Ungültiges Startwort");
+                }
+                else
+                {
+                    data.SendResponse(sentence);
+                }
             }
 
-            String keyword = data.Arguments[0];
-            String sentence = _plugin.Markov.GetSentence(keyword);
-            if (sentence == null || sentence.Trim() == "")
-            {
-                goto failed;
-            }
-
-            data.SendResponse(sentence);
-            return true;
-            
-         failed:
-            data.SendResponse(ColorCode.RED + "Error: Ungültiges Startwort");
             return true;
         }
     }
