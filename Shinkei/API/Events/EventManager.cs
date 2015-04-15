@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Shinkei.IRC.Events;
 using EventHandler = Shinkei.IRC.Events.EventHandler;
+using System.Threading;
 
 namespace Shinkei.API.Events
 {
@@ -115,7 +116,19 @@ namespace Shinkei.API.Events
                     return;
                 }
 
-                info.Invoke(instance, BindingFlags.InvokeMethod, null, new Object[] { evnt }, CultureInfo.CurrentCulture);
+                if (evnt.IsAsync)
+                {
+                    ThreadPool.QueueUserWorkItem(
+                        delegate
+                        {
+                            info.Invoke(instance, BindingFlags.InvokeMethod, null, new Object[] { evnt }, CultureInfo.CurrentCulture);
+                        }
+                    );
+                }
+                else 
+                {
+                    info.Invoke(instance, BindingFlags.InvokeMethod, null, new Object[] { evnt }, CultureInfo.CurrentCulture);
+                }
             }
         }
     }

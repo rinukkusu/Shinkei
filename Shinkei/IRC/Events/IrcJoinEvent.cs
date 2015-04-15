@@ -23,7 +23,7 @@ namespace Shinkei.IRC.Events
             get { return _recipient; }
         }
 
-        public IrcJoinEvent(Server server, IEntity sender, IEntity recipient)
+        public IrcJoinEvent(Server server, IEntity sender, IEntity recipient) : base(true)
         {
             _serverInstance = server;
             _sender = sender;
