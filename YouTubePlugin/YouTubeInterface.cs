@@ -114,11 +114,45 @@ namespace YouTubePlugin
             formattedInfo = formattedInfo.Replace("%link%", String.Format(@"https://youtu.be/{0}", VideoInfo.Id));
             formattedInfo = formattedInfo.Replace("%title%", VideoInfo.Snippet.Title);
             formattedInfo = formattedInfo.Replace("%category%", GetCategory(VideoInfo.Snippet.CategoryId));
-            formattedInfo = formattedInfo.Replace("%length%", VideoInfo.ContentDetails.Duration);
+            formattedInfo = formattedInfo.Replace("%length%", GetReadableTimespan(VideoInfo.ContentDetails.Duration));
             formattedInfo = formattedInfo.Replace("%views%", VideoInfo.Statistics.ViewCount.ToString());
             formattedInfo = formattedInfo.Replace("%rating%", GetRating(VideoInfo.Statistics.LikeCount, VideoInfo.Statistics.DislikeCount));
 
             return formattedInfo;
+        
+        
+        }
+
+        public string GetReadableTimespan(string timespan)
+        {
+            string returnString = timespan;
+
+            Regex reg = new Regex(@"PT((\d+)H)?((\d+)M)?((\d+)S)?");
+            if (reg.IsMatch(timespan))
+            {
+                MatchCollection matches = reg.Matches(timespan);
+                if (matches.Count > 0)
+                {
+                    string hours = matches[0].Groups[2].Captures.Count > 0 ? matches[0].Groups[2].Captures[0].Value : "";
+                    string minutes = matches[0].Groups[4].Captures.Count > 0 ? matches[0].Groups[4].Captures[0].Value : "";
+                    string seconds = matches[0].Groups[6].Captures.Count > 0 ? matches[0].Groups[6].Captures[0].Value : "";
+
+                    if (!String.IsNullOrWhiteSpace(hours))
+                    {
+                        returnString = String.Format("{0}h {1}m {2}s", hours, minutes, seconds);
+                    }
+                    else if (!String.IsNullOrWhiteSpace(minutes))
+                    {
+                        returnString = String.Format("{0}m {1}s", minutes, seconds);
+                    }
+                    else if (!String.IsNullOrWhiteSpace(seconds))
+                    {
+                        returnString = String.Format("{1}s", seconds);
+                    }
+                }
+            }
+
+            return returnString;
         }
 
         public string GetRating(ulong? likeCount, ulong? dislikeCount)
