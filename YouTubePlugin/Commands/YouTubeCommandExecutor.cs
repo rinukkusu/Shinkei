@@ -35,7 +35,11 @@ namespace YouTubePlugin.Commands
 
             if (videos.Count() > 0)
             {
-                data.SendResponse(String.Format("%i videos found:", videos.Count()));
+                if (videos.Count() > 1)
+                {
+                    data.SendResponse(String.Format("%i videos found:", videos.Count()));
+                }
+                
                 foreach (var video in videos)
                 {
                     data.SendResponse(_interface.FormatResponse(video));
