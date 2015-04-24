@@ -46,7 +46,7 @@ namespace YouTubePlugin
                 Id = matches[0].Groups[1].Captures[0].Value;
             }
 
-            var videoListRequest = _service.Videos.List("snippet,contentDetails");
+            var videoListRequest = _service.Videos.List("snippet,contentDetails,statistics");
             videoListRequest.Id = Id;
             VideoListResponse response = videoListRequest.Execute();
 
@@ -64,7 +64,7 @@ namespace YouTubePlugin
         {
             List<Video> returnList = new List<Video>();
 
-            var searchListRequest = _service.Search.List("snippet,contentDetails,statistics");
+            var searchListRequest = _service.Search.List("snippet");
             searchListRequest.Q = keywords;
             searchListRequest.MaxResults = 50;
 
@@ -111,11 +111,11 @@ namespace YouTubePlugin
         {
             string formattedInfo = _plugininstance.Settings.SearchResultFormat;
 
-            formattedInfo = formattedInfo.Replace("%link%", String.Format(@"https://youtu.be/%s", VideoInfo.Id));
+            formattedInfo = formattedInfo.Replace("%link%", String.Format(@"https://youtu.be/{0}", VideoInfo.Id));
             formattedInfo = formattedInfo.Replace("%title%", VideoInfo.Snippet.Title);
             formattedInfo = formattedInfo.Replace("%category%", GetCategory(VideoInfo.Snippet.CategoryId));
-            formattedInfo = formattedInfo.Replace("%length%", VideoInfo.Snippet.Title);
-            formattedInfo = formattedInfo.Replace("%views%", VideoInfo.Snippet.Title);
+            formattedInfo = formattedInfo.Replace("%length%", VideoInfo.ContentDetails.Duration);
+            formattedInfo = formattedInfo.Replace("%views%", VideoInfo.Statistics.ViewCount.ToString());
             formattedInfo = formattedInfo.Replace("%rating%", GetRating(VideoInfo.Statistics.LikeCount, VideoInfo.Statistics.DislikeCount));
 
             return formattedInfo;
@@ -123,8 +123,8 @@ namespace YouTubePlugin
 
         public string GetRating(ulong? likeCount, ulong? dislikeCount)
         {
-            ulong localLikeCount = likeCount.HasValue ? likeCount.Value : 0;
-            ulong localDislikeCount = dislikeCount.HasValue ? dislikeCount.Value : 0;
+            double localLikeCount = likeCount.HasValue ? likeCount.Value : 0;
+            double localDislikeCount = dislikeCount.HasValue ? dislikeCount.Value : 0;
 
             if ((localLikeCount == 0) && (localDislikeCount == 0))
             {
@@ -137,7 +137,7 @@ namespace YouTubePlugin
             }
 
             double rating = ((localLikeCount - localDislikeCount) / localLikeCount);
-            return String.Format("%i%%", rating * 100);
+            return String.Format("{0}%", (int)(rating * 100));
         }
     }
 }
