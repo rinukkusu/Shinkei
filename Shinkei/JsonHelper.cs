@@ -90,6 +90,46 @@ namespace Shinkei
             string reformat = File.ReadAllText(path);
             File.WriteAllText(path, FormatJson(reformat));
         }
+
+        public static T DeserializeFromString<T>(string JsonText)
+        {
+            try
+            {
+                JsonText = JsonText.Replace("\0", "");
+                DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(T));
+
+                MemoryStream MemStream = new MemoryStream(Encoding.UTF8.GetBytes(JsonText));
+                T myObject = (T)Serializer.ReadObject(MemStream);
+
+                return myObject;
+            }
+            catch (Exception ex)
+            {
+                return default(T);
+            }
+        }
+
+        public static string SerializeToString<T>(object _object)
+        {
+            try
+            {
+                DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(T));
+
+                MemoryStream MemStream = new MemoryStream();
+                Serializer.WriteObject(MemStream, _object);
+
+                MemStream.Seek(0, SeekOrigin.Begin);
+
+                StreamReader MemReader = new StreamReader(MemStream);
+                string JsonText = MemReader.ReadToEnd();
+
+                return JsonText;
+            }
+            catch (Exception ex)
+            {
+                return string.Empty;
+            }
+        }
     }
 
     static class Extensions
