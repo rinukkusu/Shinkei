@@ -23,7 +23,7 @@ namespace goo.gl_ShortenerPlugin
     [ExportMetadata("Name", "goo.gl Shortener")]
     [ExportMetadata("Version", "0.1")]
     [ExportMetadata("Author", "rinukkusu")]
-    [ExportMetadata("Description", "Shortens links via the goo.gl API.")]
+    [ExportMetadata("Description", "Shortens links via the goo.gl API and displays the title of the page.")]
     public class goo_gl_ShortenerPlugin : Plugin, IListener
     {
         [DataContract]
@@ -56,7 +56,7 @@ namespace goo.gl_ShortenerPlugin
                 {
                     if (evnt.Text.Contains("http") || evnt.Text.Contains("www"))
                     {
-                        Regex reg_link = new Regex(@"((https?):\/\/(www\.)?[a-z0-9\.:].*?(?=\s))");
+                        Regex reg_link = new Regex(@"((https?:\/\/|www\.|https?:\/\/www\.)[a-z0-9\.:].*?(?=\s))");
                         if (reg_link.IsMatch(evnt.Text) || !evnt.Text.Contains(" "))
                         {
 
@@ -82,7 +82,7 @@ namespace goo.gl_ShortenerPlugin
                                     ServerEntity answerRcpt;
                                     answerRcpt = (ServerEntity)evnt.Recipient;
 
-                                    string returnString = String.Format("{0} - {1}", shortUrl, title);
+                                    string returnString = String.Format(ColorCode.BOLD + "{0}" + ColorCode.NORMAL + " - {1}", shortUrl, title);
                                     answerRcpt.SendMessage(returnString);
                                 }
                             }
