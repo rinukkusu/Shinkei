@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{1D9F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "goo.gl-ShortenerPlugin", "goo.gl-ShortenerPlugin\goo.gl-ShortenerPlugin.csproj", "{FB837EAC-5B48-4DE5-B7A2-CF694751A08D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomAnswerPlugin", "RandomAnswerPlugin\RandomAnswerPlugin.csproj", "{A156160E-1C4D-42D5-ABC2-AAEAB64EA06C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{FB837EAC-5B48-4DE5-B7A2-CF694751A08D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB837EAC-5B48-4DE5-B7A2-CF694751A08D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB837EAC-5B48-4DE5-B7A2-CF694751A08D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A156160E-1C4D-42D5-ABC2-AAEAB64EA06C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A156160E-1C4D-42D5-ABC2-AAEAB64EA06C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A156160E-1C4D-42D5-ABC2-AAEAB64EA06C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A156160E-1C4D-42D5-ABC2-AAEAB64EA06C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +68,6 @@ Global
 		{115901DF-5FF0-462C-884E-4E0DD6B42250} = {1D9F3FDD-34E2-4B97-85A1-BE4AE0031444}
 		{F247D289-95F8-410C-B5DD-C8C16C8C019E} = {1D9F3FDD-34E2-4B97-85A1-BE4AE0031444}
 		{FB837EAC-5B48-4DE5-B7A2-CF694751A08D} = {1D9F3FDD-34E2-4B97-85A1-BE4AE0031444}
+		{A156160E-1C4D-42D5-ABC2-AAEAB64EA06C} = {1D9F3FDD-34E2-4B97-85A1-BE4AE0031444}
 	EndGlobalSection
 EndGlobal
