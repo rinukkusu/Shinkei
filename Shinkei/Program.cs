@@ -57,8 +57,33 @@ namespace Shinkei
 
         public static bool IsWindows()
         {
-            int p = (int) Environment.OSVersion.Platform;
-            return p == (int) PlatformID.Win32NT || p == (int) PlatformID.Win32S || p == (int) PlatformID.Win32Windows;
+            if (IsMono())
+            {
+                return false;
+            }
+
+            OperatingSystem os = Environment.OSVersion;
+            PlatformID pid = os.Platform;
+            switch (pid)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.WinCE:
+                    return true;
+                    break;
+                case PlatformID.Unix:
+                    //Unix
+                    break;
+                case PlatformID.MacOSX:
+                    //Mac OSX
+                    break;
+                default:
+                    ///????
+                    break;
+            }
+
+            return false;
         }
 
         public static bool IsUnix()
@@ -107,7 +132,7 @@ namespace Shinkei
             }
             catch (Exception e)
             {
-                Console.WriteLine("Couldn't load plugins: " + e.Message);
+                Console.WriteLine("Couldn't load plugins: " + e);
 
                 if (e is System.Reflection.ReflectionTypeLoadException)
                 {
@@ -156,7 +181,7 @@ namespace Shinkei
                 } 
                 else 
                 {
-                    strTempAssmbPath = System.IO.Path.Combine (baseFolder, "libs", normalizedName + ".dll");
+                    strTempAssmbPath = System.IO.Path.Combine (baseFolder, "lib", normalizedName + ".dll");
                 }
             }
             catch (Exception exi)
@@ -169,6 +194,11 @@ namespace Shinkei
             
             //Return the loaded assembly.
             return MyAssembly;
+        }
+
+        public static bool IsMono()
+        {
+            return Type.GetType("Mono.Runtime") != null;
         }
     }
 }

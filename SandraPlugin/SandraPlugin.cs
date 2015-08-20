@@ -20,6 +20,7 @@ using Shinkei.IRC.Commands;
 using Shinkei.IRC.Entities;
 using Shinkei.IRC.Events;
 using System.Reflection;
+using WolframAlphaNET;
 
 namespace SandraPlugin
 {
@@ -27,23 +28,17 @@ namespace SandraPlugin
     [ExportMetadata("Name", "Sandra")]
     [ExportMetadata("Version", "0.1")]
     [ExportMetadata("Author", "Trojaner")]
-    [ExportMetadata("Description", "A bot with some useful functions.")]
+    [ExportMetadata("Description", "A bot with some useful developer functions.")]
     public class SandraPlugin: Plugin, IListener
     {
         private Dictionary<string, Feed> _feeds;
-        private Markov _markov;
         private bool _listen;
-        private SandraSettings _settings;
 
-        public SandraSettings Settings
-        {
-            get { return _settings;  }
-        }
+        public WolframAlpha WolframAlphaClient { get; private set; }
 
-        public Markov Markov
-        {
-            get { return _markov; }
-        }
+        public SandraSettings Settings { get; private set; }
+
+        public Markov Markov { get; private set; }
 
         [DataContract]
         public class SandraSettings
@@ -68,6 +63,9 @@ namespace SandraPlugin
 
             [DataMember]
             public string MarkovPassword;
+
+            [DataMember] 
+            public string WolframAppId;
         }
 
         public static bool Validator(Object sender, 
@@ -84,11 +82,14 @@ namespace SandraPlugin
 
             _settingsPath = Path.Combine(DataDirectory, "SandraPlugin.json");
 
-            _settings = LoadSettings();
+            Settings = LoadSettings();
+
+            WolframAlphaClient = !String.IsNullOrWhiteSpace(Settings.WolframAppId) ? new WolframAlpha(Settings.WolframAppId) : null;
+
             try
             {
-                _markov = new Markov(_settings.MarkovHost, _settings.MarkovDb, _settings.MarkovUser,
-                    _settings.MarkovPassword);
+                Markov = new Markov(Settings.MarkovHost, Settings.MarkovDb, Settings.MarkovUser,
+                    Settings.MarkovPassword);
                 CommandHandler.GetInstance().RegisterCommand(new Command("markovblock", "markovblock <name>",
 "Blacklists an user from markov.", new MarkovBlockCommandExecutor(this), CommandPermission.OP), this);
                 CommandHandler.GetInstance().RegisterCommand(new Command("markovunblock", "markovunblock <name>",
@@ -97,7 +98,7 @@ namespace SandraPlugin
             catch (Exception e)
             {
                 Console.WriteLine("Couldn't enable markov: " + e);
-                _markov = null;
+                Markov = null;
             }
             _feeds = new Dictionary<string, Feed>();
             _listen = true;
@@ -105,7 +106,7 @@ namespace SandraPlugin
             EventManager.GetInstance().RegisterEvents(this, this);
             CommandHandler.GetInstance().RegisterCommand(new Command("addrepo", "addrepo <username>/<repo>",
                  "Adds a github reporsitory and announces for new commits.", new AddRepoCommandExecutor(this),  CommandPermission.WHITELIST), this);
-            CommandHandler.GetInstance().RegisterCommand(new Command("calc", "calc <query>", "Executes a Wolfram Alpha query", new CalcCommandExecutor()), this);
+            CommandHandler.GetInstance().RegisterCommand(new Command("calc", "calc <query>", "Executes a Wolfram Alpha query", new CalcCommandExecutor(this)), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("listrepos", "listrepo",
      "Shows all saved repos.", new ListReposCommandExecutor(this)), this);
             CommandHandler.GetInstance().RegisterCommand(new Command("m", "m <keyword>", "Outputs a markov-generated sentence", new MarkovCommandExecutor(this)), this);
@@ -120,7 +121,7 @@ namespace SandraPlugin
         [Shinkei.IRC.Events.EventHandler]
         public void OnIrcMessage(IrcMessageEvent evnt)
         {
-            if (_markov == null)
+            if (Markov == null)
             {
                 return;
             }
@@ -129,40 +130,40 @@ namespace SandraPlugin
                 return;
             }
 
-            _markov.AddSentence(evnt.Text);
+            Markov.AddSentence(evnt.Text);
         }
 
 
         public bool IsMarkovEnabled(String name)
         {
-            if (_markov == null)
+            if (Markov == null)
             {
                 throw new InvalidOperationException("Markov is not enabled");
             }
 
-            if (!_markov.DatabaseAvailable())
+            if (!Markov.DatabaseAvailable())
                 return false;
 
-            return (_settings.MarkovBlocked != null) ? !_settings.MarkovBlocked.Contains(name) : true;
+            return (Settings.MarkovBlocked == null) || !Settings.MarkovBlocked.Contains(name);
         }
 
         public void MarkovBlock(String name)
         {
-            if (_markov == null)
+            if (Markov == null)
             {
                 throw new InvalidOperationException("Markov is not enabled");
             }
-            _settings.MarkovBlocked.Add(name);
+            Settings.MarkovBlocked.Add(name);
             SaveSettings();
         }
 
         public void MarkovUnblock(string name)
         {
-            if (_markov == null)
+            if (Markov == null)
             {
                 throw new InvalidOperationException("Markov is not enabled");
             }
-            _settings.MarkovBlocked.Remove(name);
+            Settings.MarkovBlocked.Remove(name);
             SaveSettings();
         }
 
@@ -171,9 +172,10 @@ namespace SandraPlugin
             while (_listen)
             {
                 Dictionary<String, List<Entry>> commits = new Dictionary<string, List<Entry>>();
-                if (_settings.Repos.Count > 0)
+                if (Settings.Repos.Count > 0)
                 {
-                    foreach (String repo in _settings.Repos)
+                    Console.WriteLine("OnCheck()");
+                    foreach (String repo in Settings.Repos)
                     {
                         String feedUrl = @"https://github.com/" + repo + @"/commits/master.atom";
                         var webRequest = WebRequest.Create(feedUrl);
@@ -206,15 +208,15 @@ namespace SandraPlugin
                                 continue;
                             }
 
-                            List<Entry> newCommits = (from commit in lastFeed.Entries 
+                            List<Entry> newCommits = (from commit in currentFeed.Entries 
                                                         let commitTime = ToDateTime(commit.Updated) 
-                                                        where commitTime >= lastFeedTime 
+                                                        where commitTime > lastFeedTime 
                                                         select commit).ToList();
 
                             
                             commits.Add(repo, newCommits);
                             _feeds.Remove(repo);
-                            _feeds.Add(repo, lastFeed);
+                            _feeds.Add(repo, currentFeed);
                             continue;
                         }
 
@@ -233,7 +235,7 @@ namespace SandraPlugin
 
         private void AnnounceCommits(Dictionary<String, List<Entry>> commits)
         {
-            Dictionary<string, List<string>> commitChannels = _settings.CommitChannels;
+            Dictionary<string, List<string>> commitChannels = Settings.CommitChannels;
             foreach (String serverIdentifier in commitChannels.Keys)
             {
                 Server server = Server.GetServer(serverIdentifier);
@@ -266,6 +268,8 @@ namespace SandraPlugin
                             channel.SendMessage("        " + MakeGitIoLink(commit.Link.Href));
                         }
                     }
+
+                    commits.Clear();
                 }
             }
         }
@@ -285,12 +289,21 @@ namespace SandraPlugin
                 HttpWebResponse resp = (HttpWebResponse) request.GetResponse();
                 return resp.GetResponseHeader("Location");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                if (e is NotImplementedException && Program.IsMono())
+                {
+                    Console.WriteLine(
+                        "Warning: Your mono runtime is outdated. Please update to a version newer than 14 march 2014");
+                }
+                else
+                {
+                    Console.WriteLine("Couldn't shorten link: " + link + ": " + e);
+                }
                 return link;
             }
         }
- 
+
         public static DateTime ToDateTime(String s)
         {
             return DateTime.Parse(s);
@@ -315,7 +328,7 @@ namespace SandraPlugin
                 return false;
             }
 
-            _settings.Repos.Add(repo);
+            Settings.Repos.Add(repo);
             return true;
         }
 
@@ -352,13 +365,13 @@ namespace SandraPlugin
 
         public void SaveSettings()
         {
-            JsonHelper.Serialize<SandraSettings>(_settings, _settingsPath);
+            JsonHelper.Serialize<SandraSettings>(Settings, _settingsPath);
         }
 
         public bool DeleteRepo(String  repo)
         {
-            if (!_settings.Repos.Contains(repo)) return false;
-            _settings.Repos.Remove(repo);
+            if (!Settings.Repos.Contains(repo)) return false;
+            Settings.Repos.Remove(repo);
             return true;
         }
 
@@ -381,7 +394,7 @@ namespace SandraPlugin
             List<String> channels;
             try
             {
-                channels = _settings.CommitChannels[server];
+                channels = Settings.CommitChannels[server];
             }
             catch (KeyNotFoundException)
             {
@@ -389,11 +402,11 @@ namespace SandraPlugin
             }
 
             channels.Add(channel);
-            if (_settings.CommitChannels.ContainsKey(server))
+            if (Settings.CommitChannels.ContainsKey(server))
             {
-                _settings.CommitChannels.Remove(server);
+                Settings.CommitChannels.Remove(server);
             }
-            _settings.CommitChannels.Add(server, channels);
+            Settings.CommitChannels.Add(server, channels);
 
             return true;
         }
