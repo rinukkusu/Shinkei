@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Shinkei.IRC;
+﻿using System.Runtime.InteropServices;
 
 namespace Shinkei
 {

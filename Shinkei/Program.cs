@@ -29,6 +29,8 @@ namespace Shinkei
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.AssemblyResolve += new ResolveEventHandler(MyResolveEventHandler);
 
+
+
             if (IsWindows())
             {
                 MainWindows();
@@ -43,15 +45,13 @@ namespace Shinkei
             while (!_stop)
             {
                 String line = Console.ReadLine();
-                if (!String.IsNullOrWhiteSpace(line))
-                {
-                    string command = line.Split(' ')[0];
-                    List<string> arguments = line.Split(' ').ToList();
-                    arguments.RemoveAt(0);
+                if (String.IsNullOrWhiteSpace(line)) continue;
+                string command = line.Split(' ')[0];
+                List<string> arguments = line.Split(' ').ToList();
+                arguments.RemoveAt(0);
 
-                    ConsoleCommandEvent evnt = new ConsoleCommandEvent(command, arguments);
-                    EventManager.GetInstance().CallEvent(evnt);
-                }
+                ConsoleCommandEvent evnt = new ConsoleCommandEvent(command, arguments);
+                EventManager.GetInstance().CallEvent(evnt);
             }
         }
 
@@ -91,14 +91,15 @@ namespace Shinkei
             return Type.GetType("Mono.Runtime") != null;
         }
 
-        public void Stop()
+        public void Stop(String reason = null)
         {
+            Console.WriteLine("Shutting down" + (reason == null ? "" : ": " + reason));
             _stop = true;
             _instance = null;
-            OnClose();
+            OnClose(reason);
         }
 
-        private void OnClose()
+        private void OnClose(String reason)
         {
             List<Server> servers;
             try
@@ -114,7 +115,7 @@ namespace Shinkei
             {
                 try
                 {
-                    server.Quit();
+                    server.Quit(reason);
                 }
                 catch (Exception)
                 {
