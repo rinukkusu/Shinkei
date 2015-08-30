@@ -57,6 +57,10 @@ namespace Shinkei.IRC
         {
             Thread.Sleep(5000);
 
+            // Login
+            EntUser user = new EntUser(this, null, "NickServ");
+            user.SendMessage("login " + NickservPassword);
+
             foreach (KeyValuePair<string, Channel> c in Channels)
             {
                 c.Value.Join();

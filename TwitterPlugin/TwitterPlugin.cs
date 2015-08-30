@@ -26,38 +26,54 @@ namespace TwitterPlugin
     public class TwitterPlugin : Plugin, IListener
     {
         public TwitterSettings Settings { get; private set; }
-        private TwitterContext ctx;
-        private IAuthorizer auth;
+        public TwitterContext ctx;
+        public PinAuthorizer auth;
 
-        private IAuthorizer DoXAuth(TwitterSettings.TwitterAccount acc)
+        public PinAuthorizer DoXAuth(string token, string secret)
         {
-            var auth = new SingleUserAuthorizer
+            Console.WriteLine("  New Authorizer ...");
+            PinAuthorizer auth = new PinAuthorizer();
+
+            Console.WriteLine("  New Credentials ...");
+            InMemoryCredentialStore CredentialStore = new InMemoryCredentialStore
             {
-                CredentialStore = new SingleUserInMemoryCredentialStore
-                {
-                    ConsumerKey = Settings.ConsumerKey,
-                    ConsumerSecret = Settings.ConsumerSecret,
-                    AccessToken = acc.AuthToken,
-                    AccessTokenSecret = acc.AuthSecret
-                }
+                ConsumerKey = Settings.ConsumerKey,
+                ConsumerSecret = Settings.ConsumerSecret,
+                OAuthToken = token,
+                OAuthTokenSecret = secret
             };
 
+            Console.WriteLine("  Setting Credentials in Authorizer ...");
+            auth.CredentialStore = CredentialStore;
+
+            Console.WriteLine("  returning Authorizer ...");
             return auth;
         }
 
-        public override async void OnEnable()
+        public override void OnEnable()
         {
             _settingsPath = Path.Combine(DataDirectory, "TwitterPlugin.json");
 
+            Console.WriteLine("Loading TwitterSettings ...");
             Settings = LoadSettings();
 
-            auth = DoXAuth(Settings.Accounts[0]);
-            await auth.AuthorizeAsync();
+            Console.WriteLine("Instantiating PinAuthorizer ...");
+            Console.WriteLine("-> Token: " + Settings.Accounts[0].OAuthToken);
+            Console.WriteLine("-> Secret: " + Settings.Accounts[0].OAuthSecret);
+            auth = DoXAuth(Settings.Accounts[0].OAuthToken, Settings.Accounts[0].OAuthSecret);
 
+            if (String.IsNullOrWhiteSpace(auth.CredentialStore.OAuthToken))
+            {
+                Console.WriteLine("Attempting Twitter Auth ...");
+                auth.AuthorizeAsync();
+            }
+
+            Console.WriteLine("Instantiating TwitterContext ...");
             ctx = new TwitterContext(auth);
 
+            Console.WriteLine("Registering TwitterCommands ...");
             EventManager.GetInstance().RegisterEvents(this, this);
-            CommandHandler.GetInstance().RegisterCommand(new Command("tweet", "tweet <text>", "Tweets with the given account.", new TwitterCommandExecutor(ctx)), this);
+            CommandHandler.GetInstance().RegisterCommand(new Command("tweet", "tweet <text>", "Tweets with the given account.", new TwitterCommandExecutor(this)), this);
         }
 
 
@@ -66,6 +82,7 @@ namespace TwitterPlugin
         {
             TwitterSettings newSettings;
 
+            Console.WriteLine("  Checking Settings existance ...");
             if (!File.Exists(_settingsPath))
             {
                 newSettings = new TwitterSettings
@@ -76,8 +93,8 @@ namespace TwitterPlugin
                 };
 
                 TwitterSettings.TwitterAccount acc = new TwitterSettings.TwitterAccount();
-                acc.AuthToken = "AUTH_TOKEN";
-                acc.AuthSecret = "AUTH_SECRET";
+                acc.OAuthToken = "AUTH_TOKEN";
+                acc.OAuthSecret = "AUTH_SECRET";
                 acc.Channels = new Dictionary<string,List<string>>();
                 List<string> channels = new List<string>();
                 channels.Add("CHANNEL_1");
@@ -89,9 +106,11 @@ namespace TwitterPlugin
             }
             else
             {
+                Console.WriteLine("  Deserializing Settings ...");
                 newSettings = JsonHelper.Deserialize<TwitterSettings>(_settingsPath);
             }
 
+            Console.WriteLine("  Returning Settings ...");
             return newSettings;
         }
 

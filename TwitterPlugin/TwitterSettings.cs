@@ -15,10 +15,10 @@ namespace TwitterPlugin
         public class TwitterAccount
         {
             [DataMember]
-            public string AuthToken;
+            public string OAuthToken;
 
             [DataMember]
-            public string AuthSecret;
+            public string OAuthSecret;
 
             [DataMember]
             public Dictionary<string, List<string>> Channels;
