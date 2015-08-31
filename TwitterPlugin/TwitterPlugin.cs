@@ -82,41 +82,38 @@ namespace TwitterPlugin
 
 		public void HighlightThread()
 		{
-			ulong LastId = 0;
-
 			string highlight = Settings.Accounts [0].Highlight;
 			string s = Settings.Accounts[0].Channels.Keys.ElementAt(0);
 			string c = Settings.Accounts[0].Channels[s][0];
 
-			EntChannel channel = new EntChannel(Server.GetServer(s), c);
+            System.Threading.Thread.Sleep(5000);
 
-			while (true) 
-			{
-				System.Threading.Thread.Sleep(5000);
+			//while (true) 
+			//{
+				
 
-				var searchResponse =
-					(from search in ctx.Search
-					 where search.Type == SearchType.Search &&
-					     search.Query == highlight &&
-						 search.SinceID == LastId
-					 select search).Single();
+                var searchResponse =
+                    (from stream in ctx.Streaming
+                     where stream.Type == StreamingType.Filter &&
+                         stream.Track == highlight
+                     select stream).StartAsync(async strm =>
+                     {
+                         if (!String.IsNullOrWhiteSpace(strm.Content))
+                         {
+                             EntChannel channel = new EntChannel(Server.GetServer(s), c);
 
-				if (searchResponse != null && searchResponse.Statuses != null)
-				{
-					if (LastId == 0) 
-					{
-						LastId = searchResponse.MaxID;
-					} 
-					else 
-					{
-						searchResponse.Statuses.ForEach (tweet =>
-							channel.SendMessage(ColorCode.BOLD + "Twitter: " + ColorCode.BOLD +
-								ColorCode.CYAN + "@" + tweet.User.Name + ColorCode.COLOR + "> " +
-								tweet.Text)
-						);
-					}
-				}
-			}
+                             try
+                             {
+                                 Tweet tweet = JsonHelper.DeserializeFromString<Tweet>(strm.Content);
+                                 channel.SendMessage(ColorCode.BOLD + "Twitter: " + ColorCode.BOLD +
+                                                    ColorCode.CYAN + "@" + tweet.user.screen_name + ColorCode.COLOR + "> " +
+                                                    tweet.text);
+                             }
+                             catch {}
+
+                         }
+                     });				
+			//}
 		}
 
         private string _settingsPath;

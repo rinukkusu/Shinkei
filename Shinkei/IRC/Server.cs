@@ -38,7 +38,14 @@ namespace Shinkei.IRC
 
         public static Server GetServer(string identifier)
         {
-            return GetServers().FirstOrDefault(server => server.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
+            try
+            {
+                return GetServers().FirstOrDefault(server => server.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public Server(string host, int port, string serverIdentifier, string nickname, string username = "shinkei", string realname = "Shinkei Bot", string nickservPassword = "")
