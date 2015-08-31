@@ -15,6 +15,7 @@ using Shinkei.IRC.Events;
 using LinqToTwitter;
 using System.IO;
 using TwitterPlugin.Commands;
+using System.Threading;
 
 namespace TwitterPlugin
 {
@@ -74,8 +75,49 @@ namespace TwitterPlugin
             Console.WriteLine("Registering TwitterCommands ...");
             EventManager.GetInstance().RegisterEvents(this, this);
             CommandHandler.GetInstance().RegisterCommand(new Command("tweet", "tweet <text>", "Tweets with the given account.", new TwitterCommandExecutor(this)), this);
+
+			Thread HighlightT = new Thread(HighlightThread);
+			HighlightT.Start ();
         }
 
+		public void HighlightThread()
+		{
+			ulong LastId = 0;
+
+			string highlight = Settings.Accounts [0].Highlight;
+			string s = Settings.Accounts[0].Channels.Keys.ElementAt(0);
+			string c = Settings.Accounts[0].Channels[s][0];
+
+			EntChannel channel = new EntChannel(Server.GetServer(s), c);
+
+			while (true) 
+			{
+				System.Threading.Thread.Sleep(5000);
+
+				var searchResponse =
+					(from search in ctx.Search
+					 where search.Type == SearchType.Search &&
+					     search.Query == highlight &&
+						 search.SinceID == LastId
+					 select search).Single();
+
+				if (searchResponse != null && searchResponse.Statuses != null)
+				{
+					if (LastId == 0) 
+					{
+						LastId = searchResponse.MaxID;
+					} 
+					else 
+					{
+						searchResponse.Statuses.ForEach (tweet =>
+							channel.SendMessage(ColorCode.BOLD + "Twitter: " + ColorCode.BOLD +
+								ColorCode.CYAN + "@" + tweet.User.Name + ColorCode.COLOR + "> " +
+								tweet.Text)
+						);
+					}
+				}
+			}
+		}
 
         private string _settingsPath;
         public TwitterSettings LoadSettings()

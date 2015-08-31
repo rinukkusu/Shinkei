@@ -22,6 +22,9 @@ namespace TwitterPlugin
 
             [DataMember]
             public Dictionary<string, List<string>> Channels;
+
+			[DataMember]
+			public string Highlight;
         }
 
         [DataMember]
