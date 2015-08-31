@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{ED4DF6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterPlugin", "TwitterPlugin\TwitterPlugin.csproj", "{F4236673-4491-4587-B93D-3FB526AF5DD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptPlugin", "ScriptPlugin\ScriptPlugin.csproj", "{76301562-FF64-4134-A0C2-8BF0BCEE78BC}"
+Endproject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{F4236673-4491-4587-B93D-3FB526AF5DD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4236673-4491-4587-B93D-3FB526AF5DD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4236673-4491-4587-B93D-3FB526AF5DD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76301562-FF64-4134-A0C2-8BF0BCEE78BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+ 		{76301562-FF64-4134-A0C2-8BF0BCEE78BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+ 		{76301562-FF64-4134-A0C2-8BF0BCEE78BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+ 		{76301562-FF64-4134-A0C2-8BF0BCEE78BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,5 +89,6 @@ Global
 		{FB837EAC-5B48-4DE5-B7A2-CF694751A08D} = {1D9F3FDD-34E2-4B97-85A1-BE4AE0031444}
 		{A156160E-1C4D-42D5-ABC2-AAEAB64EA06C} = {1D9F3FDD-34E2-4B97-85A1-BE4AE0031444}
 		{F4236673-4491-4587-B93D-3FB526AF5DD7} = {1D9F3FDD-34E2-4B97-85A1-BE4AE0031444}
+		{76301562-FF64-4134-A0C2-8BF0BCEE78BC} = {1D9F3FDD-34E2-4B97-85A1-BE4AE0031444}
 	EndGlobalSection
 EndGlobal
