@@ -94,8 +94,7 @@ namespace TwitterPlugin
 
                 var searchResponse =
                     (from stream in ctx.Streaming
-                     where stream.Type == StreamingType.Filter &&
-                         stream.Track == highlight
+                     where stream.Type == StreamingType.User
                      select stream).StartAsync(async strm =>
                      {
                          if (!String.IsNullOrWhiteSpace(strm.Content))
@@ -105,11 +104,47 @@ namespace TwitterPlugin
                              try
                              {
                                  Tweet tweet = JsonHelper.DeserializeFromString<Tweet>(strm.Content);
-                                 channel.SendMessage(ColorCode.BOLD + "Twitter: " + ColorCode.BOLD +
-                                                    ColorCode.CYAN + "@" + tweet.user.screen_name + ColorCode.COLOR + "> " +
-                                                    tweet.text);
+                                 if (tweet != default(Tweet))
+                                 {
+                                     if (tweet.text.StartsWith("RT") && tweet.text.Contains(highlight))
+                                     {
+                                         tweet.text = tweet.text.Remove(0, 3);
+                                         channel.SendMessage(ColorCode.BOLD + "Twitter: " + ColorCode.BOLD +
+                                                            ColorCode.CYAN + "@" + tweet.user.screen_name + ColorCode.COLOR + ColorCode.GREEN + " retweetete " + ColorCode.COLOR +
+                                                            tweet.text);
+                                     }
+                                     else if (tweet.text.Contains(highlight))
+                                     {
+                                         channel.SendMessage(ColorCode.BOLD + "Twitter: " + ColorCode.BOLD +
+                                                            ColorCode.CYAN + "@" + tweet.user.screen_name + ColorCode.COLOR + "> " +
+                                                            tweet.text);
+                                     }
+                                 }
+
+                                 FavoriteEvent fav_event = JsonHelper.DeserializeFromString<FavoriteEvent>(strm.Content);
+                                 if (fav_event != default(FavoriteEvent))
+                                 {
+                                     if (fav_event.@event == "favorite" && fav_event.target.screen_name == highlight)
+                                     {
+                                         channel.SendMessage(ColorCode.BOLD + "Twitter: " + ColorCode.NORMAL +
+                                                     ColorCode.CYAN + "@" + fav_event.source.screen_name + ColorCode.COLOR + ColorCode.YELLOW + " favorisierte " + ColorCode.COLOR +
+                                                     ColorCode.CYAN + "@" + fav_event.target.screen_name + ColorCode.COLOR + " " + fav_event.target_object.text);
+                                     }
+                                 }
+
+                                 FollowEvent fol_event = JsonHelper.DeserializeFromString<FollowEvent>(strm.Content);
+                                 if (fol_event != default(FollowEvent))
+                                 {
+                                     if (fol_event.@event == "follow" && fol_event.target.screen_name == highlight)
+                                     {
+                                         channel.SendMessage(ColorCode.BOLD + "Twitter: " + ColorCode.NORMAL +
+                                                     ColorCode.CYAN + "@" + fav_event.source.screen_name + ColorCode.COLOR + ColorCode.DARK_GREEN + " folgt nun.");
+                                     }
+                                 }
                              }
-                             catch {}
+                             catch {
+                                 string t = strm.Content;
+                             }
 
                          }
                      });				

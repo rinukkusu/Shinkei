@@ -71,6 +71,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\TwitterCommandExecutor.cs" />
+    <Compile Include="FavoriteEvent.cs" />
+    <Compile Include="FollowEvent.cs" />
     <Compile Include="Tweet.cs" />
     <Compile Include="TwitterPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
