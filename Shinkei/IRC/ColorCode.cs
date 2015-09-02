@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Shinkei.IRC
 {
-    public class ColorCode
+    public static class ColorCode
     {
         public static string COLOR = Char.ConvertFromUtf32(3);
         public static string NORMAL = Char.ConvertFromUtf32(15);
@@ -28,5 +29,10 @@ namespace Shinkei.IRC
         public static string MAGENTA = COLOR + "13";
         public static string DARK_GRAY = COLOR + "14";
         public static string LIGHT_GRAY = COLOR + "15";
+
+        public static String StripColors(this String msg)
+        {
+            return Regex.Replace(msg, @"[\x02\x1F\x0F\x16]|\x03(\d\d?(,\d\d?)?)?", String.Empty);
+        }
     }
 }
