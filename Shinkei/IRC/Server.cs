@@ -123,7 +123,6 @@ namespace Shinkei.IRC
                     }
 
                     EntUser sender = new EntUser(this, channel, parts.Groups[1].Value);
-                    EventManager.GetInstance().CallEvent(new IrcMessageEvent(this, sender, recipient, parts.Groups[4].Value));
 
                     if (IsCommandCharacter(parts.Groups[4].Value[0]))
                     {
@@ -135,6 +134,10 @@ namespace Shinkei.IRC
                         List<string> arguments = Util.ParseArguments(argumentString);
 
                         CommandHandler.GetInstance().HandleCommand(new CommandMessage(this, sender, recipient, command, arguments));
+                    }
+                    else
+                    {
+                        EventManager.GetInstance().CallEvent(new IrcMessageEvent(this, sender, recipient, parts.Groups[4].Value));
                     }
 
                 }
