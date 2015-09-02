@@ -27,7 +27,7 @@ namespace Shinkei.API.Events
             _listeners.Add(listener, plugin);
 
             Type type = listener.GetType();
-            foreach (MethodInfo method in type.GetMethods())
+            foreach (MethodInfo method in type.GetRuntimeMethods())
             {
                 bool isEventMethod = method.GetCustomAttributes(false).OfType<EventHandler>().Any();
 

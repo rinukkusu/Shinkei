@@ -97,7 +97,7 @@ namespace Shinkei.IRC
 
                 if (responseCode > 0)
                 {
-                    EventManager.GetInstance().CallEvent(new IrcServerResponseEvent(this, responseCode, parts.Groups[3].Value));
+                    EventManager.GetInstance().CallEvent(new IrcServerResponseEvent(this, responseCode, line));
                 }
                 else if (parts.Groups[2].Value == "JOIN")
                 {
