@@ -3,7 +3,7 @@ using Shinkei.API.Commands;
 
 namespace Shinkei.IRC.Entities
 {
-    class EntConsole : EntUser
+    public class EntConsole : EntUser
     {
         private static EntConsole _instance;
         public static EntConsole GetInstance()
