@@ -24,8 +24,8 @@ namespace Shinkei.API.Events
 
         public void RegisterEvents(IListener listener, Plugin plugin)
         {
-            _listeners.Add(listener, plugin);
-
+            if (!_listeners.ContainsKey(listener)) _listeners.Add(listener, plugin);
+            
             Type type = listener.GetType();
             foreach (MethodInfo method in type.GetRuntimeMethods())
             {
@@ -60,7 +60,8 @@ namespace Shinkei.API.Events
 
                     methods = new List<MethodInfo>();
                 }
-                methods.Add(method);
+                if (!methods.Contains(method)) methods.Add(method);
+
                 if (_eventListeners.ContainsKey(t))
                 {
                     _eventListeners[t] = methods;
@@ -70,7 +71,7 @@ namespace Shinkei.API.Events
                     _eventListeners.Add(t, methods);
                 }
 
-                _listenerInstances.Add(method, listener);
+                if(!_listenerInstances.ContainsKey(method)) _listenerInstances.Add(method, listener);
             }
         }
 

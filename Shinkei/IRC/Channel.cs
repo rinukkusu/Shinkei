@@ -119,22 +119,24 @@ namespace Shinkei.IRC
         [Events.EventHandler(Priority = EventPriority.MONITOR)]
         private void OnIrcServerResponse(IrcServerResponseEvent evnt)
         {
+            if (evnt.RawLine == null) return;
             if (evnt.ResponseCode == (int)ResponseCodes.RPL_NAMREPLY)
             {
                 Regex _messageParser = new Regex("^\\:(.+?)\\s(353)\\s(.+?)\\s[=@]\\s?(#.+?)\\s\\:(.*)$");
                 Match parts = _messageParser.Match(evnt.RawLine);
 
-                if (parts.Groups[4].Value == _name)
+                if (parts.Length >= 6 && parts.Groups[4].Value == _name)
                 {
                     string names_raw = parts.Groups[5].Value;
-
+   
                     lock (userlock)
                     {
-                        _users.Clear();
+                        Users.Clear();
                         foreach (string user in names_raw.Split(' '))
                         {
+                            if (user == null) continue;
                             string cleaned_user = user.Replace("@", "").Replace("+", "").Replace("~", "").Replace("%", "").Replace("&", "");
-                            _users.Add(cleaned_user);
+                            Users.Add(cleaned_user);
                         }
                     }
                 }
