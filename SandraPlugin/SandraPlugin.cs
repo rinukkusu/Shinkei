@@ -321,7 +321,7 @@ namespace SandraPlugin
                         String repoName = repo.Split('/')[1];
                         EntChannel channel = new EntChannel(server, channelName);
                         channel.SendMessage(
-                            "Neue Commits (" + ColorCode.CYAN + commits.Count + ColorCode.NORMAL + ") in "
+                            "Neue Commits (" + ColorCode.CYAN + commits[repo].Count + ColorCode.NORMAL + ") in "
                             + ColorCode.PURPLE + org + ColorCode.NORMAL + "/" + ColorCode.MAGENTA + repoName + ColorCode.NORMAL + ": ");
                         foreach (Entry commit in commits[repo])
                         {
