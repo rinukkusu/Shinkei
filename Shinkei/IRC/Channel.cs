@@ -3,6 +3,8 @@ using System.Threading;
 using Shinkei.API.Events;
 using Shinkei.IRC.Entities;
 using Shinkei.IRC.Events;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Shinkei.IRC
 {
@@ -34,6 +36,22 @@ namespace Shinkei.IRC
             get
             {
                 return _key;
+            }
+        }
+
+        private object userlock = new object();
+        private List<string> _users;
+        public List<string> Users
+        {
+            get
+            {
+                lock (userlock)
+                {
+                    if (_users == default(List<string>))
+                        _users = new List<string>();
+
+                    return _users;
+                }
             }
         }
 
@@ -98,6 +116,40 @@ namespace Shinkei.IRC
             }
         }
 
+        [Events.EventHandler(Priority = EventPriority.MONITOR)]
+        private void OnIrcServerResponse(IrcServerResponseEvent evnt)
+        {
+            if (evnt.ResponseCode == (int)ResponseCodes.RPL_NAMREPLY)
+            {
+                Regex _messageParser = new Regex("^\\:(.+?)\\s(353)\\s(.+?)\\s[=@]\\s?(#.+?)\\s\\:(.*)$");
+                Match parts = _messageParser.Match(evnt.RawLine);
+
+                if (parts.Groups[4].Value == _name)
+                {
+                    string names_raw = parts.Groups[5].Value;
+
+                    lock (userlock)
+                    {
+                        _users.Clear();
+                        foreach (string user in names_raw.Split(' '))
+                        {
+                            string cleaned_user = user.Replace("@", "").Replace("+", "").Replace("~", "").Replace("%", "").Replace("&", "");
+                            _users.Add(cleaned_user);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void NamesThread()
+        {
+            while (true)
+            {
+                _server.WriteLine("NAMES " + _name);
+                Thread.Sleep(1000 * 10); // update names every 10 seconds
+            }
+        }
+
         public bool Join(string key = null)
         {
             if (!_inChannel)
@@ -117,6 +169,9 @@ namespace Shinkei.IRC
                     Thread.Sleep(interval);
                     counter--;
                 }
+
+                Thread NamesT = new Thread(NamesThread);
+                NamesT.Start();
             }
 
             return _inChannel;

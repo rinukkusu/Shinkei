@@ -38,7 +38,14 @@ namespace Shinkei.IRC
 
         public static Server GetServer(string identifier)
         {
-            return GetServers().FirstOrDefault(server => server.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
+            try
+            {
+                return GetServers().FirstOrDefault(server => server.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public Server(string host, int port, string serverIdentifier, string nickname, string username = "shinkei", string realname = "Shinkei Bot", string nickservPassword = "")
@@ -56,6 +63,10 @@ namespace Shinkei.IRC
         private void JoinThread()
         {
             Thread.Sleep(5000);
+
+            // Login
+            EntUser user = new EntUser(this, null, "NickServ");
+            user.SendMessage("login " + NickservPassword);
 
             foreach (KeyValuePair<string, Channel> c in Channels)
             {
@@ -86,7 +97,7 @@ namespace Shinkei.IRC
 
                 if (responseCode > 0)
                 {
-                    EventManager.GetInstance().CallEvent(new IrcServerResponseEvent(this, responseCode, parts.Groups[3].Value));
+                    EventManager.GetInstance().CallEvent(new IrcServerResponseEvent(this, responseCode, line));
                 }
                 else if (parts.Groups[2].Value == "JOIN")
                 {

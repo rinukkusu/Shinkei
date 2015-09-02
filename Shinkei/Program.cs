@@ -182,7 +182,7 @@ namespace Shinkei
                 } 
                 else 
                 {
-                    strTempAssmbPath = System.IO.Path.Combine (baseFolder, "lib", normalizedName + ".dll");
+                    strTempAssmbPath = System.IO.Path.Combine (baseFolder, "libs", normalizedName + ".dll");
                 }
             }
             catch (Exception exi)

@@ -27,6 +27,8 @@ namespace Shinkei.IRC
                 [DataMember]
                 public string Username;
                 [DataMember]
+                public string Password;
+                [DataMember]
                 public string Realname;
 
                 [DataMember]
@@ -139,7 +141,8 @@ namespace Shinkei.IRC
                                               servSettings.Identifier,
                                               servSettings.Nickname, 
                                               servSettings.Username, 
-                                              servSettings.Realname);
+                                              servSettings.Realname,
+                                              servSettings.Password);
 
                 newServer.LocalSettings = servSettings;
 
