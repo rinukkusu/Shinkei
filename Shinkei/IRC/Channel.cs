@@ -77,6 +77,9 @@ namespace Shinkei.IRC
                 if (msgUser.Nickname == evnt.ServerInstance.LocalSettings.Nickname)
                 {
                     _inChannel = true;
+
+                    Thread NamesT = new Thread(NamesThread);
+                    NamesT.Start();
                 }
             }
         }
@@ -163,20 +166,10 @@ namespace Shinkei.IRC
 
                 _server.WriteLine("JOIN " + _name + " " + _key);
 
-                int interval = 250;
-                int counter = (1000 / interval) * 5; // wait for 5 seconds
-
-                while ((counter > 0) && (!_inChannel))
-                {
-                    Thread.Sleep(interval);
-                    counter--;
-                }
-
-                Thread NamesT = new Thread(NamesThread);
-                NamesT.Start();
+                return true;
             }
 
-            return _inChannel;
+            return false;
         }
 
         public bool Part()
