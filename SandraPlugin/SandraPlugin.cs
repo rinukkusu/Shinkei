@@ -19,7 +19,7 @@ using Shinkei.IRC;
 using Shinkei.IRC.Commands;
 using Shinkei.IRC.Entities;
 using Shinkei.IRC.Events;
-using System.Reflection;
+using ChatterBotAPI;
 using WolframAlphaNET;
 
 namespace SandraPlugin
@@ -40,6 +40,10 @@ namespace SandraPlugin
 
         public Markov Markov { get; private set; }
 
+        public ChatterBotFactory Factory { get; private set; }
+
+        private Dictionary<String, ChatterBotSession> sessions = new Dictionary<string, ChatterBotSession>(); 
+        
         [DataContract]
         public class SandraSettings
         {
@@ -79,7 +83,7 @@ namespace SandraPlugin
         public override void OnEnable()
         {
             ServicePointManager.ServerCertificateValidationCallback = Validator;
-
+            Factory = new ChatterBotFactory();
             _settingsPath = Path.Combine(DataDirectory, "SandraPlugin.json");
 
             Settings = LoadSettings();
@@ -119,18 +123,76 @@ namespace SandraPlugin
         }
 
         [Shinkei.IRC.Events.EventHandler]
-        public void OnIrcMessage(IrcMessageEvent evnt)
+        public void OnIrcMessage(IrcMessageEvent @event)
         {
+            string sender = @event.Sender.GetName(); 
+            var regex = new Regex("(^Sandra:?\\s)");
+            var text = regex.Replace(@event.Text, "", 1).StripColors();
+            bool isBotMessage = false;
+
+            if (sender.ToLower().Contains("bot"))
+            {
+                if (!text.StartsWith("[Schrei]"))
+                {
+                    return;
+                }
+
+                regex = new Regex("\\[Schrei\\](?:\\s\\[.*\\])?\\s\\[.*\\]\\s(.*):\\s(.*)");
+                var match = regex.Match(text);
+                if (match.Groups.Count == 2)
+                {
+                    sender = match.Groups[0].Value;
+                    text = match.Groups[1].Value;
+                    isBotMessage = true;
+                }
+            }
+
+            /* For now this doesnt work since Cleverbot changed their API's
+            if (@event.Text.Contains("Sandra"))
+            {
+                string internalName = sender + "_IRC";
+                var prefix = "";
+                // Patch for SinkIRC bots /*
+                if(isBotMessage) {
+                    internalName = sender + "_INGAME";
+                    prefix = "~say ";
+                }
+
+                try
+                {
+                    ChatterBotSession session;
+                    if (sessions.ContainsKey(internalName))
+                    {
+                        session = sessions[internalName];
+                    }
+                    else
+                    {
+                        ChatterBot bot = Factory.Create(ChatterBotType.CLEVERBOT);
+                        session = bot.CreateSession();
+                        sessions.Add(internalName, session);
+                    }
+
+                    @event.Recipient.SendMessage(prefix + sender + ": " + session.Think(text));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("[Sandra] Chatbot error: " + e);
+                }
+            }
+            
+        Markov:
+            */
+
             if (Markov == null)
             {
                 return;
             }
-            if (!IsMarkovEnabled(evnt.Sender.GetName()))
+            if (!IsMarkovEnabled(sender))
             {
                 return;
             }
 
-            Markov.AddSentence(evnt.Text);
+            Markov.AddSentence(text);
         }
 
 
@@ -138,7 +200,7 @@ namespace SandraPlugin
         {
             if (Markov == null)
             {
-                throw new InvalidOperationException("Markov is not enabled");
+                return false;
             }
 
             if (!Markov.DatabaseAvailable())

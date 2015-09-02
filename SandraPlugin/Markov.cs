@@ -11,6 +11,11 @@ namespace SandraPlugin
 
         public Markov(string host, string db, string user, string pw)
         {
+            if (String.IsNullOrWhiteSpace(host) || String.IsNullOrWhiteSpace(db))
+            {
+                throw new Exception("Markov db info has not been setup yet");
+            }
+
             _conn = new MySqlConnection("SERVER=" + host + ";" +
                                         "DATABASE=" + db + ";" +
                                         "UID=" + user + ";" +
