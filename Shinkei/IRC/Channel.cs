@@ -79,7 +79,7 @@ namespace Shinkei.IRC
                     _inChannel = true;
 
                     Thread NamesT = new Thread(NamesThread);
-                    NamesT.Start();
+                    //NamesT.Start();
                 }
             }
         }
