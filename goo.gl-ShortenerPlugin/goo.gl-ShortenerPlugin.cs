@@ -51,7 +51,7 @@ namespace goo.gl_ShortenerPlugin
         {
             if (evnt.Recipient.GetType() == typeof(EntChannel))
             {
-                Regex reg_youtube = new Regex(@"youtu.*v=([A-Za-z0-9_-]+)");
+                Regex reg_youtube = new Regex(@"youtu\.be");
                 if (!reg_youtube.IsMatch(evnt.Text))
                 {
                     if (evnt.Text.Contains("http") || evnt.Text.Contains("www"))
