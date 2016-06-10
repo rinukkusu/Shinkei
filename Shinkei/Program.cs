@@ -187,7 +187,7 @@ namespace Shinkei
             }
             catch (Exception exi)
             {
-                Console.WriteLine (String.Format("Exception: {0}\r\nArgument: {1}", exi.Message, args.Name);
+                Console.WriteLine ("Exception: {0}\r\nArgument: {1}", exi.Message, args.Name);
             }
 
             //Load the assembly from the specified path.                    
