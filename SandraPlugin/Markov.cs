@@ -16,10 +16,10 @@ namespace SandraPlugin
                 throw new Exception("Markov db info has not been setup yet");
             }
 
-            _conn = new MySqlConnection("SERVER=" + host + ";" +
-                                        "DATABASE=" + db + ";" +
-                                        "UID=" + user + ";" +
-                                        "PASSWORD=" + pw + ";");
+            _conn = new MySqlConnection($"SERVER={host};" +
+                                        $"DATABASE={db};" +
+                                        $"UID={user};" +
+                                        $"PASSWORD={pw};");
 
 
         }
@@ -68,7 +68,10 @@ namespace SandraPlugin
             }
             _conn.Open();
             MySqlCommand cmd = _conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM `markovparts` WHERE `word1`=" + wId1 + " AND `word2`=" + wId2 + ";";
+            cmd.CommandText = "SELECT * FROM `markovparts` WHERE `word1`=@wId1 AND `word2`=@wId2;";
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@wId1", wId1);
+            cmd.Parameters.AddWithValue("@wId2", wId2);
 
             MySqlDataReader reader = cmd.ExecuteReader();
             if ((reader.HasRows == false))
@@ -76,7 +79,10 @@ namespace SandraPlugin
                 _conn.Close();
                 _conn.Open();
                 cmd = _conn.CreateCommand();
-                cmd.CommandText = "INSERT INTO `markovparts` SET `word1`=" + wId1 + ", `word2`=" + wId2 + ";";
+                cmd.CommandText = "INSERT INTO `markovparts` SET `word1`=@wId1, `word2`=@wId2;";
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@wId1", wId1);
+                cmd.Parameters.AddWithValue("@wId2", wId2);
                 cmd.ExecuteNonQuery();
                 _conn.Close();
             }
@@ -85,8 +91,10 @@ namespace SandraPlugin
                 _conn.Close();
                 _conn.Open();
                 cmd = _conn.CreateCommand();
-                cmd.CommandText = "UPDATE `markovparts` SET `count`=`count`+1 WHERE `word1`=" + wId1 + " AND `word2`=" +
-                                  wId2 + ";";
+                cmd.CommandText = "UPDATE `markovparts` SET `count`=`count`+1 WHERE `word1`=@wId1 AND `word2`=@wId2;";
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@wId1", wId1);
+                cmd.Parameters.AddWithValue("@wId2", wId2);
                 cmd.ExecuteNonQuery();
                 _conn.Close();
             }
@@ -104,7 +112,9 @@ namespace SandraPlugin
 
             _conn.Open();
             MySqlCommand cmd = _conn.CreateCommand();
-            cmd.CommandText = "SELECT id FROM `words` WHERE `word`='" + word + "';";
+            cmd.CommandText = "SELECT `id` FROM `words` WHERE `word`=@word;";
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@word", word);
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -129,7 +139,9 @@ namespace SandraPlugin
             }
             _conn.Open();
             MySqlCommand cmd = _conn.CreateCommand();
-            cmd.CommandText = "SELECT word FROM `words` WHERE `id`=" + id + ";";
+            cmd.CommandText = "SELECT word FROM `words` WHERE `id`=@id;";
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@id", id);
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -156,7 +168,9 @@ namespace SandraPlugin
             if ((id < 0))
             {
                 MySqlCommand cmd = _conn.CreateCommand();
-                cmd.CommandText = "INSERT INTO `words` SET `word`='" + word + "';";
+                cmd.CommandText = "INSERT INTO `words` SET `word`=@word;";
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@word", word);
                 cmd.ExecuteNonQuery();
                 id = cmd.LastInsertedId;
             }
@@ -198,7 +212,9 @@ namespace SandraPlugin
             }
             _conn.Open();
             MySqlCommand cmd = _conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM `markovparts` WHERE `word1`=" + id + " ORDER BY RAND() LIMIT 1;";
+            cmd.CommandText = "SELECT * FROM `markovparts` WHERE `word1`=@id ORDER BY RAND() LIMIT 1;";
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@id", id);
 
             MySqlDataReader reader = cmd.ExecuteReader();
             if ((reader.HasRows))
