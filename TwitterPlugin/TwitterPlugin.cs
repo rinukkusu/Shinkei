@@ -75,12 +75,57 @@ namespace TwitterPlugin
             Console.WriteLine("Registering TwitterCommands ...");
             EventManager.GetInstance().RegisterEvents(this, this);
             CommandHandler.GetInstance().RegisterCommand(new Command("tweet", "tweet <text>", "Tweets with the given account.", new TwitterCommandExecutor(this)), this);
+            CommandHandler.GetInstance().RegisterCommand(new Command("follow", "follow <name>", "Follows the given account.", new TwitterCommandExecutor(this)), this);
 
 			Thread HighlightT = new Thread(HighlightThread);
 			HighlightT.Start ();
+
+            Thread tweets = new Thread(TweetsListener);
+            tweets.Start();
         }
 
-		public void HighlightThread()
+        private void TweetsListener()
+        {
+            while (IsEnabled())
+            {
+                Thread.Sleep(10 * 1000);
+
+                if (Settings.Follows == null || Settings.Follows.Count == 0)
+                {
+                    continue;
+                }
+
+                Console.WriteLine("TweetListener()");
+
+                foreach (String s in Settings.Follows)
+                {
+                    var tweets = (from tweet in ctx.Status where tweet.Type == StatusType.Show && tweet.ScreenName.ToLower().Equals(s.ToLower()) select tweet).ToList();
+                    var tweetsBefore = tweetCache.ContainsKey(s) ? tweetCache[s] : tweets;
+
+                    if (tweetCache.ContainsKey(s)) tweetCache.Remove(s);
+                    tweetCache.Add(s, tweets);
+
+                    if(tweets.First() == null) continue;
+                    if(tweets.First().ID.Equals(tweetsBefore.First().ID)) continue;
+                    
+                    foreach(Status status in tweets)
+                    {
+                        if (status.ID.Equals(tweetsBefore.First().ID)) break;
+                        AnnounceTweet(status);
+                    }
+                }
+            }
+        }
+
+        private void AnnounceTweet(Status status)
+        {
+            string s = Settings.Accounts[0].Channels.Keys.ElementAt(0);
+            string c = Settings.Accounts[0].Channels[s][0];
+            EntChannel channel = new EntChannel(Server.GetServer(s), c);
+            channel.SendMessage("@" + status.ScreenName + ": " + status.Text);
+        }
+
+        public void HighlightThread()
 		{
 			string highlight = Settings.Accounts [0].Highlight;
 			string s = Settings.Accounts[0].Channels.Keys.ElementAt(0);
@@ -152,6 +197,8 @@ namespace TwitterPlugin
 		}
 
         private string _settingsPath;
+        private Dictionary<String, List<Status>> tweetCache = new Dictionary<string, List<Status>>();
+
         public TwitterSettings LoadSettings()
         {
             TwitterSettings newSettings;
@@ -190,6 +237,18 @@ namespace TwitterPlugin
 
         public void SaveSettings()
         {
+            JsonHelper.Serialize<TwitterSettings>(Settings, _settingsPath);
+        }
+
+        public void Follow(string target)
+        {
+            if (Settings.Follows == null)
+            {
+                Settings.Follows = new List<string>();
+            }
+
+            Settings.Follows.Add(target);
+
             JsonHelper.Serialize<TwitterSettings>(Settings, _settingsPath);
         }
     }

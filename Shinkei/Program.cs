@@ -174,8 +174,13 @@ namespace Shinkei
             }
 
             //Now assemble the paths
-            try {
-                string normalizedName = args.Name.Substring (0, args.Name.IndexOf (","));
+            try
+            {
+                int index = args.Name.IndexOf(",");
+
+                //this is a really really really bad fix
+                if (index == -1) return null;
+                string normalizedName = args.Name.Substring (0, index);
                 if (normalizedName.ToLower ().Contains ("plugin")) 
                 {
                     strTempAssmbPath = System.IO.Path.Combine (baseFolder, "plugins", normalizedName + ".dll");
@@ -187,7 +192,8 @@ namespace Shinkei
             }
             catch (Exception exi)
             {
-                Console.WriteLine ("Exception: {0}\r\nArgument: {1}", exi.Message, args.Name);
+                Console.WriteLine ("Exception: {0}\r\nArgument: {1}", exi, args.Name);
+                
             }
 
             //Load the assembly from the specified path.                    

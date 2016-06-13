@@ -1,12 +1,8 @@
-﻿using Shinkei.API.Commands;
+﻿using System;
+using LinqToTwitter;
+using Shinkei.API.Commands;
 using Shinkei.IRC.Entities;
 using Shinkei.IRC.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LinqToTwitter;
 
 namespace TwitterPlugin.Commands
 {
@@ -42,6 +38,13 @@ namespace TwitterPlugin.Commands
                 data.SendResponse("Nice Tweet! :3");
 
 
+                return true;
+            }
+
+            if (command.CommandName.Equals("follow"))
+            {
+                String target = data.Arguments[0];
+                _plugin.Follow(target);
                 return true;
             }
 

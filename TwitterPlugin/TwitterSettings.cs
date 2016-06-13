@@ -30,6 +30,9 @@ namespace TwitterPlugin
         [DataMember]
         public List<TwitterAccount> Accounts;
 
+        [DataMember] 
+        public List<String> Follows;
+        
         [DataMember]
         public string ConsumerKey;
 

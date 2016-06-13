@@ -20,7 +20,9 @@ using Shinkei.IRC.Commands;
 using Shinkei.IRC.Entities;
 using Shinkei.IRC.Events;
 using ChatterBotAPI;
+using TrelloNet;
 using WolframAlphaNET;
+using Action = TrelloNet.Action;
 
 namespace SandraPlugin
 {
@@ -70,6 +72,12 @@ namespace SandraPlugin
 
             [DataMember] 
             public string WolframAppId;
+
+            [DataMember]
+            public string TrelloId;
+
+            [DataMember]
+            public string TrelloBoard;
         }
 
         public static bool Validator(Object sender, 
@@ -87,7 +95,10 @@ namespace SandraPlugin
             _settingsPath = Path.Combine(DataDirectory, "SandraPlugin.json");
 
             Settings = LoadSettings();
-
+            if (!String.IsNullOrEmpty(Settings.TrelloId) && !String.IsNullOrEmpty(Settings.TrelloBoard))
+            {
+                InitTrello(Settings.TrelloId, Settings.TrelloBoard);
+            }
             WolframAlphaClient = !String.IsNullOrWhiteSpace(Settings.WolframAppId) ? new WolframAlpha(Settings.WolframAppId) : null;
 
             try
@@ -120,6 +131,68 @@ namespace SandraPlugin
                      "Adds a channel for announcing new commits.", new AddCommitChannelCommandExecutor(this), CommandPermission.OP), this);
             Thread thread = new Thread(OnCheck); 
             thread.Start();
+        }
+
+        private ITrello _trello;
+        private Dictionary<string, Action> _trelloActions = new Dictionary<string, Action>();
+        private Board _trelloBoard;
+
+        private void OnCheckTrello()
+        {
+            while (_listen)
+            {
+                foreach (
+                    var action in
+                        GetActions(_trelloBoard).Where(action => !_trelloActions.ContainsKey(action.Id)))
+                {
+                    PublishTrelloAction(action);
+                    _trelloActions.Add(action.Id, action);
+                }
+                Thread.Sleep(60 * 1000);
+            }
+        }
+
+        private void PublishTrelloAction(Action action)
+        {
+            Dictionary<string, List<string>> commitChannels = Settings.CommitChannels;
+            foreach (String serverIdentifier in commitChannels.Keys)
+            {
+                Server server = Server.GetServer(serverIdentifier);
+                if (server == null)
+                {
+                    Console.WriteLine("[Sandra] Warning: Unknown server id:" + serverIdentifier);
+                    continue;
+                }
+
+                foreach (String channelName in commitChannels[serverIdentifier])
+                {
+                    EntChannel channel = new EntChannel(server, channelName);
+                    channel.SendMessage("Trello action: " + action.GetActionId());
+                }
+            }
+        }
+
+        private void InitTrello(string trelloId, string boardId)
+        {
+            _trello = new Trello(trelloId);
+            _trelloBoard = _trello.Boards.WithId(boardId);
+            if (_trelloBoard == null)
+            {
+                Console.WriteLine("[WARN] Trello Board with id " + boardId + " not found, skipping Trello listener");
+                return;
+            }
+            foreach (Action action in GetActions(_trelloBoard))
+            {
+                _trelloActions.Add(action.Id, action);
+            }
+            Thread thread = new Thread(OnCheckTrello);
+            thread.Start();
+        }
+
+        private IEnumerable<Action> GetActions(Board board)
+        {
+            IEnumerable<Action> actions = _trello.Actions.ForBoard(board);
+            return actions ?? new List<Action>();
         }
 
         [Shinkei.IRC.Events.EventHandler]
@@ -395,6 +468,7 @@ namespace SandraPlugin
         }
 
         private string _settingsPath;
+
         public SandraSettings LoadSettings()
         {
             //DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Settings));
