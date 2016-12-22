@@ -128,7 +128,7 @@ namespace Shinkei.IRC
                         EventManager.GetInstance()
                             .CallEvent(new IrcPartEvent(this, sender, channel, parts.Groups[4].Value));
                     }
-                    else if (parts.Groups[2].Value == "PRIVMSG")
+                    else if ((parts.Groups[2].Value == "PRIVMSG") || (parts.Groups[2].Value == "NOTICE"))
                     {
                         ServerEntity recipient;
                         EntChannel channel = null;
@@ -158,11 +158,14 @@ namespace Shinkei.IRC
                         }
                         else
                         {
-                            EventManager.GetInstance()
-                                .CallEvent(new IrcMessageEvent(this, sender, recipient, parts.Groups[4].Value));
-                        }
-
-                    }
+							if (parts.Groups[2].Equals("PRIVMSG"))
+	                            EventManager.GetInstance()
+		                            .CallEvent(new IrcMessageEvent(this, sender, recipient, parts.Groups[4].Value));
+							else
+								EventManager.GetInstance()
+									.CallEvent(new IrcNoticeEvent(this, sender, recipient, parts.Groups[4].Value));
+						}
+					}
                     else if (parts.Groups[0].Value.StartsWith("PING"))
                     {
                         WriteLine(parts.Groups[0].Value.Replace("PING", "PONG"));
