@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+Microsoft Visual Studio Solution File, Format Version 14.00
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shinkei", "Shinkei\Shinkei.csproj", "{15170F0C-0667-48FE-901C-4E53988449DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RejoinPlugin", "RejoinPlugin\RejoinPlugin.csproj", "{F247D289-95F8-410C-B5DD-C8C16C8C019E}"
