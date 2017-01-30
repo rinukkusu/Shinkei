@@ -83,6 +83,7 @@
     <Compile Include="IRC\Events\IrcJoinEvent.cs" />
     <Compile Include="IRC\Events\IrcKickEvent.cs" />
     <Compile Include="IRC\Events\IrcMessageEvent.cs" />
+    <Compile Include="IRC\Events\IrcNoticeEvent.cs" />
     <Compile Include="IRC\Events\IrcPartEvent.cs" />
     <Compile Include="IRC\Events\IrcServerResponseEvent.cs" />
     <Compile Include="IRC\Exceptions\ConnectionException.cs" />
