@@ -158,12 +158,12 @@ namespace Shinkei.IRC
                         }
                         else
                         {
-							if (parts.Groups[2].Equals("PRIVMSG"))
-	                            EventManager.GetInstance()
-		                            .CallEvent(new IrcMessageEvent(this, sender, recipient, parts.Groups[4].Value));
-							else
-								EventManager.GetInstance()
-									.CallEvent(new IrcNoticeEvent(this, sender, recipient, parts.Groups[4].Value));
+                            if (parts.Groups[2].Equals("PRIVMSG"))
+                                EventManager.GetInstance()
+                                    .CallEvent(new IrcMessageEvent(this, sender, recipient, parts.Groups[4].Value));
+                            else
+                                EventManager.GetInstance()
+                                    .CallEvent(new Shinkei.IRC.Events.IrcNoticeEvent(this, sender, recipient, parts.Groups[4].Value));
 						}
 					}
                     else if (parts.Groups[0].Value.StartsWith("PING"))
